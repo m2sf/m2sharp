@@ -1,0 +1,100 @@
+M2Sharp -- Modula-2 to C# Translator and Compiler
+
+* Files in the repository *
+
+(1) Documents
+
+README.md
+  repo landing page, a brief description of the project
+  
+LICENSE
+  the full license text of the license used by the project
+  
+FILES
+  a summary of files and their purpose, (this file)
+  
+m2j-grammar.gll
+  a formal LL(1) grammar for Modula-2 used by the project
+
+
+(2) Source Code
+
+IInfile.cs
+  interface for the file reader class
+
+Infile.cs
+  source file reader class,
+  manages file buffer, current position, lookahead, line and column counters
+  used by the lexer class to read symbols for tokenisation and obtain lexemes
+
+ITerminals.cs
+  interface for the terminals class
+
+Terminals.cs
+  terminals class,
+  defines enumerated tokens representing terminal symbols, classifies tokens,
+  used by the lexer class for symbol tokenisation
+  
+ILexer.cs
+  interface for the lexer class
+
+Lexer.cs
+  lexer class,
+  reads source file via file reader class and tokenises the input,
+  detects lexical faux-pas and errors,
+  reports warnings and errors using the Diagnostics class
+  used by the parser class for syntax analysis
+
+INonTerminals.cs
+  interface for the nonterminals class
+
+NonTerminals.cs
+  nonterminals class
+  defines enumerated productions representing non-terminal symbols,
+  provides FIRST() and FOLLOW() sets for each non-terminal symbol
+  used by the parser class for syntax analysis
+
+IParser.cs
+  interface for the parser class
+
+Parser.cs
+  parser class
+  reads token stream via lexer class and performs syntax analysis
+  detects syntactical faux-pas and errors,
+  reports warnings and errors using the Diagnostics class
+  builds an abstract syntax tree using the AST class
+
+IAstNode.cs
+  interface for the abstract syntax tree class
+
+AstNode.cs
+  abstract syntax tree class
+  provides an API to build tree nodes of different node types
+  used by the parser class to build an abstract syntax tree
+
+IAstNodeType.cs
+  interface for abstract syntax tree node types
+
+AstNodeType.cs
+  abstract syntax tree node types class
+  defines enumerated values representing tree node types
+  provides an API for tree node integrity checks
+  used by the abstract syntax tree class when creating tree nodes
+
+IDiagnostics.cs
+  interface for the diagnostics class
+
+Diagnostics.cs
+  diagnostics class
+  defines enumerated diagnostic codes
+  provides methods to emit formatted warnings and error messages
+  used by lexer and parser classes during lexical and syntactical analysis
+
+Result.cs
+  generic result class
+  used by constructors to return paired results,
+  the first item is the value to return, the second item a status code
+
+(to be continued)
+
+END OF FILE
