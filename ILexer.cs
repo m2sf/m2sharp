@@ -233,7 +233,7 @@ int CurrentColumn ();
 void PrintLineAndMarkColumn (int line, int column);
 
 
-} /* ProtoLexer */
+} /* ILexer */
 
 } /* namespace */
 
