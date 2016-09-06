@@ -43,37 +43,35 @@
  * NB: Components in the domain part of email addresses are in reverse order.
  */
 
-namespace M2SF.M2Sharp {
-
-interface IInfile {
+namespace org.m2sf.m2sharp {
 
 /* ---------------------------------------------------------------------------
- * File size, line and column counter limits
+ * Infile status codes
  * ------------------------------------------------------------------------ */
 
-public static char EOT = '\u04'; /* indicating EOF */
+  public enum InfileStatus {
+    Success,
+    InvalidReference,
+    FileNotFound,
+    FileAccessDenied,
+    AllocationFailed,
+    SourceFileIsEmpty,
+    AttemptToReadPastEOF,
+    IOSubsystemError
+  } /* InfileStatus */
 
-public static int MaxSize = 260000; /* chars */
 
-public static int MaxLines = 64000; /* lines */
-
-public static int MaxColumns = 250; /* columns */
-
+public interface IInfile {
 
 /* ---------------------------------------------------------------------------
- * Status codes
+ * Properties: file size, line and column counter limits
  * ------------------------------------------------------------------------ */
 
-public enum Status {
-  Success,
-  InvalidReference,
-  FileNotFound,
-  FileAccessDenied,
-  AllocationFailed,
-  SourceFileIsEmpty,
-  AttemptToReadPastEOF,
-  IOSubsystemError
-} /* Status */
+uint MaxSize (); /* returns the maximum file buffer size (260000) */
+
+uint MaxLines (); /* returns the line counter limit (64000) */
+
+uint MaxColumns (); /* returns the column counter limit (250) */
 
 
 /* ---------------------------------------------------------------------------
@@ -98,7 +96,7 @@ public enum Status {
  *    infile is null, status is FileAccessDenied
  * ------------------------------------------------------------------------ */
 
-public Result<IInfile, Status> Open (string filename);
+ Result<IInfile, InfileStatus> Open (string filename);
 
 
 /* ---------------------------------------------------------------------------
@@ -106,13 +104,13 @@ public Result<IInfile, Status> Open (string filename);
  * ---------------------------------------------------------------------------
  * Reads the lookahead character from infile, advancing the current reading
  * position, updating line and column counter and returns its character code.
- * Returns EOT if the lookahead character lies beyond the end of infile.
+ * Returns ASCII.EOT if the lookahead character lies beyond the end of infile.
  *
  * pre-conditions:
  * o  infile must be open
  *
  * post-conditions:
- * o  character code of lookahead character or EOT is returned
+ * o  character code of lookahead character or ASCII.EOT is returned
  * o  current reading position and line and column counters are updated
  * o  infile status is set to Success
  *
@@ -120,7 +118,7 @@ public Result<IInfile, Status> Open (string filename);
  * o  none
  * ------------------------------------------------------------------------ */
 
-public char ReadChar ();
+char ReadChar ();
 
 
 /* ---------------------------------------------------------------------------
@@ -138,7 +136,7 @@ public char ReadChar ();
  * o  none
  * ------------------------------------------------------------------------ */
 
-public void MarkLexeme ();
+void MarkLexeme ();
 
 
 /* ---------------------------------------------------------------------------
@@ -163,7 +161,7 @@ public void MarkLexeme ();
  *    no operation is carried out and null is returned
  * ------------------------------------------------------------------------ */
 
-public string ReadMarkedLexeme ();
+string ReadMarkedLexeme ();
 
 
 /* ---------------------------------------------------------------------------
@@ -183,7 +181,7 @@ public string ReadMarkedLexeme ();
  *    no operation is carried out and null is returned
  * ------------------------------------------------------------------------ */
 
-public string SourceForLine (uint line);
+string SourceForLine (uint line);
 
 
 /* ---------------------------------------------------------------------------
@@ -192,13 +190,13 @@ public string SourceForLine (uint line);
  * Consumes the current lookahead character, advancing the current reading
  * position, updating line and column counter and returns the character code
  * of the new lookahead character that follows the consumed character.
- * Returns EOT if the lookahead character lies beyond the end of infile.
+ * Returns ASCII.EOT if the lookahead character lies beyond the end of infile.
  *
  * pre-conditions:
  * o  infile must be open
  *
  * post-conditions:
- * o  character code of lookahead character or EOT is returned
+ * o  character code of lookahead character or ASCII.EOT is returned
  * o  current reading position and line and column counters are updated
  * o  file status is set to Success
  *
@@ -206,21 +204,21 @@ public string SourceForLine (uint line);
  * o  none
  * ------------------------------------------------------------------------ */
 
-public char ConsumeChar ();
+char ConsumeChar ();
 
 
 /* ---------------------------------------------------------------------------
  * method NextChar()
  * ---------------------------------------------------------------------------
  * Reads the lookahead character from infile without advancing the current
- * reading position and returns its character code.  Returns EOT if the
- * lookahead character lies beyond the end of infile.
+ * reading position and returns its character code.  Returns ASCII.EOT if
+ * the lookahead character lies beyond the end of infile.
  *
  * pre-conditions:
  * o  infile must be open
  *
  * post-conditions:
- * o  character code of lookahead character or EOT is returned
+ * o  character code of lookahead character or ASCII.EOT is returned
  * o  current reading position and line and column counters are NOT updated
  * o  file status is set to Success
  *
@@ -228,14 +226,14 @@ public char ConsumeChar ();
  * o  none
  * ------------------------------------------------------------------------ */
 
-public char NextChar ();
+char NextChar ();
 
 
 /* ---------------------------------------------------------------------------
  * method LA2Char()
  * ---------------------------------------------------------------------------
  * Reads the second lookahead character from infile without advancing the
- * current reading position and returns its character code.  Returns EOT
+ * current reading position and returns its character code.  Returns ASCII.EOT
  * if the second lookahead character lies beyond the end of infile.
  *
  * pre-conditions:
@@ -250,7 +248,7 @@ public char NextChar ();
  * o  none
  * ------------------------------------------------------------------------ */
 
-public char LA2Char ();
+char LA2Char ();
 
 
 /* ---------------------------------------------------------------------------
@@ -259,26 +257,27 @@ public char LA2Char ();
  * Returns the filename associated with infile.
  * ------------------------------------------------------------------------ */
 
-public string filename ();
+string filename ();
 
 
 /* ---------------------------------------------------------------------------
- * method LastStatus()
+ * method Status()
  * ---------------------------------------------------------------------------
  * Returns the status of the last operation on infile.
  * ------------------------------------------------------------------------ */
 
-public Status LastStatus ();
+InfileStatus Status ();
 
 
 /* ---------------------------------------------------------------------------
  * method EOF()
  * ---------------------------------------------------------------------------
  * Returns true if the current reading position of infile lies beyond the end
- * of the associated file, returns false otherwise.
+ * of the associated file, returns false otherwise.  This method should be
+ * called whenever ASCII.EOT is read to ascertain that EOF has been reached.
  * ------------------------------------------------------------------------ */
 
-public bool EOF ();
+bool EOF ();
 
 
 /* ---------------------------------------------------------------------------
@@ -287,7 +286,7 @@ public bool EOF ();
  * Returns the current line counter of infile.
  * ------------------------------------------------------------------------ */
 
-public uint CurrentLine ();
+uint CurrentLine ();
 
 
 /* ---------------------------------------------------------------------------
@@ -296,7 +295,7 @@ public uint CurrentLine ();
  * Returns the current column counter of infile.
  * ------------------------------------------------------------------------ */
 
-public uint CurrentColumn ();
+uint CurrentColumn ();
 
 
 /* ---------------------------------------------------------------------------
@@ -315,7 +314,7 @@ public uint CurrentColumn ();
  * o  none
  * ------------------------------------------------------------------------ */
 
-public Status Close ();
+InfileStatus Close ();
 
 
 } /* IInfile */
