@@ -24,7 +24,7 @@
  *
  * ITerminals.cs
  *
- * Public interface for Terminal's token and lexeme lookup.
+ * Public interface for terminal symbols' token and lexeme lookup.
  *
  * @license
  *
@@ -43,9 +43,7 @@
  * NB: Components in the domain part of email addresses are in reverse order.
  */
 
-namespace M2SF.M2Sharp {
-
-interface ProtoTerminals {
+namespace org.m2sf.m2sharp {
 
 /* ---------------------------------------------------------------------------
  * type Token
@@ -55,34 +53,34 @@ interface ProtoTerminals {
 
 public enum Token {
   /* Null Token */
-  
+
   Unknown, /* invalid token */
-  
+
   /* Reserved Words */
 
   AND, ARRAY, BEGIN, BY, CASE, CONST, DEFINITION, DIV, DO, ELSE, ELSIF, END,
   EXIT, EXPORT, FOR, FROM, IF, IMPLEMENTATION, IMPORT, IN, LOOP, MOD, MODULE,
   NOT, OF, OR, POINTER, PROCEDURE, QUALIFIED, RECORD, REPEAT, RETURN, SET,
   THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
-  
+
   /* Identifiers */
-  
+
   Identifier,
-  
+
   /* Literals */
-  
+
   StringLiteral, IntLiteral, RealLiteral, CharLiteral,
-  
+
   /* Malformed Literals */
-  
+
   MalformedString, MalformedInteger, MalformedReal, /* invalid tokens */
-  
+
   /* Pragmas */
-  
+
   Pragma,
-  
+
   /* Special Symbols */
-  
+
   Plus,            /* '+'  */
   Minus,           /* '-'  */
   Equal,           /* '+'  */
@@ -107,15 +105,18 @@ public enum Token {
   RightBracket,    /* ']'  */
   LeftBrace,       /* '{'  */
   RightBrace,      /* '}'  */
-  EndOfFile;
-  
+  EndOfFile
+
   /* Synonyms */
-  
+
   /*  '&' is a synonym for AND, mapped to token AND */
   /*  '~' is a synonym for NOT, mapped to token NOT */
   /* '<>' is a synonym for '#', mapped to token NOTEQUAL */
 
 } /* Token */
+
+
+interface ITerminals {
 
 /* ---------------------------------------------------------------------------
  * method IsValid(token)
@@ -123,7 +124,7 @@ public enum Token {
  * Returns true if token represents a valid token, otherwise false.
  * ------------------------------------------------------------------------ */
 
-public static bool IsValid (Token token);
+bool IsValid (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -132,7 +133,7 @@ public static bool IsValid (Token token);
  * Returns true if token represents a reserved word, otherwise false.
  * ------------------------------------------------------------------------ */
 
-public static bool IsResword (Token token);
+bool IsResword (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -141,7 +142,7 @@ public static bool IsResword (Token token);
  * Returns true if token represents a literal, otherwise false.
  * ------------------------------------------------------------------------ */
 
-public static bool IsLiteral (Token token);
+bool IsLiteral (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -150,7 +151,7 @@ public static bool IsLiteral (Token token);
  * Returns true if token represents a malformed literal, otherwise false.
  * ------------------------------------------------------------------------ */
 
-public static bool IsMalformedLiteral (Token token);
+bool IsMalformedLiteral (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -159,7 +160,7 @@ public static bool IsMalformedLiteral (Token token);
  * Returns true if token represents a special symbol, otherwise false.
  * ------------------------------------------------------------------------ */
 
-public static bool IsSpecialSymbol (Token token);
+bool IsSpecialSymbol (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -169,7 +170,7 @@ public static bool IsSpecialSymbol (Token token);
  * corresponding token or Unknown if it does not match a reserved word.
  * ------------------------------------------------------------------------ */
 
-public static Token TokenForResword (string lexeme, uint length);
+Token TokenForResword (string lexeme, uint length);
 
 
 /* ---------------------------------------------------------------------------
@@ -179,7 +180,7 @@ public static Token TokenForResword (string lexeme, uint length);
  * token.  Returns null if the token does not represent a reserved word.
  * ------------------------------------------------------------------------ */
 
-public static string LexemeForResword (Token token);
+string LexemeForResword (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -189,7 +190,7 @@ public static string LexemeForResword (Token token);
  * token.  Returns null if the token does not represent a special symbol.
  * ------------------------------------------------------------------------ */
 
-public static string LexemeForSpecialSymbol (Token token);
+string LexemeForSpecialSymbol (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -199,11 +200,11 @@ public static string LexemeForSpecialSymbol (Token token);
  * token is not a valid token.
  * ------------------------------------------------------------------------ */
 
-public string NameForToken (Token token);
+string NameForToken (Token token);
 
 
 } /* ITerminals */
 
-} /* M2SF.M2Sharp */
+} /* namespace */
 
 /* END OF FILE */
