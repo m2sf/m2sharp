@@ -93,6 +93,13 @@ CSharpReswords.cs
   C# reserved word recogniser class
   used by code generator to avoid name conflicts in output
 
+IAstWriter.cs
+  interface for AST writer class
+
+AstWriter.cs
+  AST writer class
+  writes an AST in S-expression format to a file
+
 IDiagnostics.cs
   interface for the diagnostics class
   defines enumerated diagnostic codes
