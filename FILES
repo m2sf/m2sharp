@@ -19,6 +19,10 @@ m2j-grammar.gll
 
 (2) Source Code
 
+ASCII.cs
+  provides constants for ASCII codes used in the compiler
+  used by the file reader and lexer class
+
 IInfile.cs
   interface for the file reader class
 
@@ -29,10 +33,11 @@ Infile.cs
 
 ITerminals.cs
   interface for the terminals class
+  defines enumerated tokens representing terminal symbols,
 
 Terminals.cs
   terminals class,
-  defines enumerated tokens representing terminal symbols, classifies tokens,
+  classifies tokens,
   used by the lexer class for symbol tokenisation
   
 ILexer.cs
@@ -47,10 +52,10 @@ Lexer.cs
 
 INonTerminals.cs
   interface for the nonterminals class
+  defines enumerated productions representing non-terminal symbols,
 
 NonTerminals.cs
   nonterminals class
-  defines enumerated productions representing non-terminal symbols,
   provides FIRST() and FOLLOW() sets for each non-terminal symbol
   used by the parser class for syntax analysis
 
@@ -72,21 +77,21 @@ AstNode.cs
   provides an API to build tree nodes of different node types
   used by the parser class to build an abstract syntax tree
 
-IAstNodeType.cs
-  interface for abstract syntax tree node types
-
-AstNodeType.cs
-  abstract syntax tree node types class
+IAstNodeTypeMgr.cs
+  interface for abstract syntax tree node type checks
   defines enumerated values representing tree node types
+
+AstNodeTypeMgr.cs
+  abstract syntax tree node type checker class
   provides an API for tree node integrity checks
   used by the abstract syntax tree class when creating tree nodes
 
 IDiagnostics.cs
   interface for the diagnostics class
+  defines enumerated diagnostic codes
 
 Diagnostics.cs
   diagnostics class
-  defines enumerated diagnostic codes
   provides methods to emit formatted warnings and error messages
   used by lexer and parser classes during lexical and syntactical analysis
 
