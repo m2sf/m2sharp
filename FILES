@@ -93,6 +93,13 @@ AstWriter.cs
   AST writer class
   writes an AST in S-expression format to a file
 
+IDotWriter.cs
+  interface for AST to DOT exporter class
+
+DotWriter.cs
+  AST to DOT exporter class
+  writes an AST in GraphViz DOT format to a file
+
 ICSharpReswords.cs
   interface for C# reserved word recogniser class
 
