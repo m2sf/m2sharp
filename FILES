@@ -86,6 +86,13 @@ AstNodeTypeMgr.cs
   provides an API for tree node integrity checks
   used by the abstract syntax tree class when creating tree nodes
 
+ICSharpReswords.cs
+  interface for C# reserved word recogniser class
+
+CSharpReswords.cs
+  C# reserved word recogniser class
+  used by code generator to avoid name conflicts in output
+
 IDiagnostics.cs
   interface for the diagnostics class
   defines enumerated diagnostic codes
