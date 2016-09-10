@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+
+modula2.xml
+
+Modula-2 syntax mode definition for Monodevelop/Xamarin Studio
+
+see http://www.monodevelop.com/developers/articles/syntax-mode-definition/
+
+-->
+
+<SyntaxMode name = "Modula-2" mimeTypes="text/x-modula2">
+
+<!-- Mime Type and Filename Extensions -->
+  <Extension path = "/MonoDevelop/Core/MimeTypes">
+    <MimeType id="text/x-modula2" _description="Modula-2 source files" isText="true">
+      <File pattern="*.def" />
+      <File pattern="*.mod" />
+    </MimeType>
+  </Extension>
+
+
+<!-- Reserved Words -->
+<Keywords color = "keyword.selection">
+    <Word>ALIAS</Word>
+    <Word>AND</Word>
+    <Word>ARGLIST</Word>
+    <Word>ARRAY</Word>
+    <Word>BARE</Word>
+    <Word>BEGIN</Word>
+    <Word>BLUEPRINT</Word>
+    <Word>BY</Word>
+    <Word>CASE</Word>
+    <Word>CONST</Word>
+    <Word>COPY</Word>
+    <Word>DEFINITION</Word>
+    <Word>DIV</Word>
+    <Word>DO</Word>
+    <Word>ELSE</Word>
+    <Word>ELSIF</Word>
+    <Word>END</Word>
+    <Word>EXIT</Word>
+    <Word>FOR</Word>
+    <Word>FROM</Word>
+    <Word>GENLIB</Word>
+    <Word>IF</Word>
+    <Word>IMPLEMENTATION</Word>
+    <Word>IMPORT</Word>
+    <Word>IN</Word>
+    <Word>LOOP</Word>
+    <Word>MOD</Word>
+    <Word>MODULE</Word>
+    <Word>NEW</Word>
+    <Word>NONE</Word>
+    <Word>NOT</Word>
+    <Word>OF</Word>
+    <Word>OPAQUE</Word>
+    <Word>OR</Word>
+    <Word>POINTER</Word>
+    <Word>PROCEDURE</Word>
+    <Word>RECORD</Word>
+    <Word>REFERENTIAL</Word>
+    <Word>RELEASE</Word>
+    <Word>REPEAT</Word>
+    <Word>RETAIN</Word>
+    <Word>RETURN</Word>
+    <Word>SET</Word>
+    <Word>THEN</Word>
+    <Word>TO</Word>
+    <Word>TYPE</Word>
+    <Word>UNTIL</Word>
+    <Word>VAR</Word>
+    <Word>WHILE</Word>
+    <Word>YIELD</Word>
+</Keywords>
+
+
+<!-- Predefined Identifiers -->
+<Keywords color = "keyword.misc">
+    <Word>NIL</Word>
+    <Word>EMPTY</Word>
+    <Word>TRUE</Word>
+    <Word>FALSE</Word>
+    <Word>BOOLEAN</Word>
+    <Word>OCTET</Word>
+    <Word>CAST</Word>
+    <Word>CHAR</Word>
+    <Word>UNICHAR</Word>
+    <Word>LONGCARD</Word>
+    <Word>INTEGER</Word>
+    <Word>LONGINT</Word>
+    <Word>REAL</Word>
+    <Word>LONGREAL</Word>
+    <Word>ABS</Word>
+    <Word>CAPACITY</Word>
+    <Word>FIRST</Word>
+    <Word>APPEND</Word>
+    <Word>CHR</Word>
+    <Word>COUNT</Word>
+    <Word>COROUTINE</Word>
+    <Word>EXISTS</Word>
+    <Word>INSERT</Word>
+    <Word>LENGTH</Word>
+    <Word>MIN</Word>
+    <Word>MAX</Word>
+    <Word>NEG</Word>
+    <Word>ODD</Word>
+    <Word>ORD</Word>
+    <Word>PRED</Word>
+    <Word>PTR</Word>
+    <Word>READ</Word>
+    <Word>READNEW</Word>
+    <Word>REMOVE</Word>
+    <Word>SORT</Word>
+    <Word>SORTNEW</Word>
+    <Word>SUCC</Word>
+    <Word>TDYN</Word>
+    <Word>TFLAGS</Word>
+    <Word>TLIMIT</Word>
+    <Word>TMAX</Word>
+    <Word>TMIN</Word>
+    <Word>TORDERED</Word>
+    <Word>TREFC</Word>
+    <Word>TSCALAR</Word>
+    <Word>TSIZE</Word>
+    <Word>TSORTED</Word>
+    <Word>VALUE</Word>
+    <Word>WRITE</Word>
+    <Word>WRITEF</Word>
+</Keywords>
+
+
+<!-- String Literals -->
+<Property name="StringQuote">"</Property>
+<Property name="StringQuote">'</Property>
+
+
+<!-- Line Comments -->
+<Property name="LineComment">!</Property>
+
+<EolSpan color = "comment.line" rule="Comment" tagColor="comment.tag.line">!</EolSpan>
+
+
+<!-- Block Comments -->
+<Property name="BlockCommentStart">(*</Property>
+<Property name="BlockCommentEnd">*)</Property>
+
+<Span color = "comment.block" rule="Comment" tagColor="comment.tag.block">
+   <Begin>(*</Begin>
+   <End>*)</End>
+</Span>
+
+
+<!-- Pragmas -->
+<Property name="PragmaStart">&lt;*</Property>
+<Property name="PragmaEnd">*&gt;</Property>
+
+<Span color = "text.preprocessor" rule="pragma" tagColor="text.tag.preprocessor">
+   <Begin>&lt;*</Begin>
+   <End>*&gt;</End>
+</Span>
+
+</SyntaxMode>
