@@ -11,10 +11,13 @@ LICENSE
   the full license text of the license used by the project
   
 FILES
-  a summary of files and their purpose, (this file)
+  summary of files and their purpose, (this file)
   
 m2j-grammar.gll
-  a formal LL(1) grammar for Modula-2 used by the project
+  formal LL(1) grammar for Modula-2 used by the project
+
+modula2.xml
+  syntax mode definition for MonoDevelop/Xamarin Studio
 
 
 (2) Source Code
