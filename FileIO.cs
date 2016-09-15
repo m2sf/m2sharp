@@ -22,9 +22,9 @@
  *
  * @file
  *
- * IFileIO.cs
+ * FileIO.cs
  *
- * Public interface for basic file I/O.
+ * Basic file I/O.
  *
  * @license
  *
@@ -43,26 +43,26 @@
  * NB: Components in the domain part of email addresses are in reverse order.
  */
 
+using System;
+using System.IO;
+
 namespace org.m2sf.m2sharp {
 
 public class FileIO : IFileIO {
 
   FileStream file;
-  string filename;
   FileIOMode mode;
   bool isOpen;
-  ulong pos;
-
 
 /* ---------------------------------------------------------------------------
- * constructor Open(filename, mode)
+ * factory method Open(filename, mode)
  * ---------------------------------------------------------------------------
  * Opens the given file, creates a new instance, associates the filename with
  * the newly created instance and returns a result pair with the instance
  * reference and a status code.
  *
  * pre-conditions:
- * o  filename must reference an existing, accessible file.
+ * o  filename must reference an existing, accessible file
  *
  * post-conditions:
  * o  new file instance created 
@@ -77,37 +77,159 @@ public class FileIO : IFileIO {
  *    file instance is null, status is FileAccessDenied
  * ------------------------------------------------------------------------ */
 
-  Result<IFileIO, FileIOStatus> Open (string filename, FileIOMode mode ) {
+  public static Result<IFileIO, FileIOStatus>
+    Open (string filename, FileIOMode mode) {
 
+    FileIO fio;
+    FileStream fs;
+    FileIOStatus status;
+
+    if (string.IsNullOrEmpty(filename)) {
+      return new Result<IFileIO, FileIOStatus>
+        (null, FileIOStatus.InvalidReference);
+    } /* end if */
+
+    fs = null;
+
+    try {
+      switch (mode) {
+				case FileIOMode.Read:
+					fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+					break;
+				case FileIOMode.Write:
+					fs = new FileStream(filename, FileMode.Open, FileAccess.Write);
+					break;
+				case FileIOMode.Append:
+					fs = new FileStream(filename, FileMode.Append, FileAccess.Write);
+					break;
+      } /* end switch */
+      if (fs != null) {
+        status = FileIOStatus.Success;
+      }
+      else {
+        status = FileIOStatus.IOSubsystemError;
+      } /* end if */
+    }
+    catch (FileNotFoundException) {
+      status = FileIOStatus.FileNotFound;
+    }
+    catch (DirectoryNotFoundException) {
+      status = FileIOStatus.FileNotFound;
+    }
+    catch (UnauthorizedAccessException) {
+      status = FileIOStatus.FileAccessDenied;
+    }
+    catch (PathTooLongException) {
+      status = FileIOStatus.InvalidReference;
+    }
+    catch (IOException) {
+      status = FileIOStatus.IOSubsystemError;
+    } /* end try */
+
+    if (status == FileIOStatus.Success) {
+      fio = new FileIO();
+      fio.isOpen = true;
+      fio.mode = mode;
+      fio.file = fs;
+    }
+    else {
+      fio = null;
+    } /* end if */
+
+    return new Result<IFileIO, FileIOStatus>(fio, status);
   } /* end Open */
 
 
 /* ---------------------------------------------------------------------------
- * constructor OpenNew(filename, mode)
+ * factory method OpenNew(filename, mode)
  * ---------------------------------------------------------------------------
  * Creates a new file with the given filename and opens the file in the given
  * access mode.  Creates a new file instance and returns a result pair with
  * the new file instance and a status code.
  *
  * pre-conditions:
- * o  filename must not reference any existing file.
+ * o  filename must not be null nore empty nor reference any existing file
+ * o  mode must be Write
  *
  * post-conditions:
  * o  new file created, new file instance created
- * o  in Read or Write mode, current position is set to the start of the file
- * o  in Append mode, current position is set to the ebd of the file
+ * o  current position is at the start of the file
  * o  new file instance and status Success is returned
  *
  * error-conditions:
- * o  if the file represented by filename cannot be found
- *    file instance is null, status is FileNotFound
+ * o  if the file represented by filename already exists
+ *    file instance is null, status is FileAlreadyExists
  * o  if the directory path for filename cannot be accessed
  *    file instance is null, status is FileAccessDenied
  * ------------------------------------------------------------------------ */
 
-  Result<IFileIO, FileIOStatus> OpenNew ( string filename, FileIOMode mode ) {
+  public static Result<IFileIO, FileIOStatus>
+    OpenNew (string filename, FileIOMode mode) {
 
-  } /* end OpenNew */
+    FileIO fio;
+    FileStream fs;
+    FileIOStatus status;
+
+	  if (string.IsNullOrEmpty(filename)) {
+			return new Result<IFileIO, FileIOStatus>
+				(null, FileIOStatus.InvalidReference);
+		} /* end if */
+
+		if (mode != FileIOMode.Write) {
+			return new Result<IFileIO, FileIOStatus>
+				(null, FileIOStatus.IllegalOperation);
+		} /* end if */
+
+		fs = null;
+
+		try {
+      fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
+			if (fs != null) {
+				status = FileIOStatus.Success;
+			}
+			else {
+				status = FileIOStatus.IOSubsystemError;
+			} /* end if */
+		}
+		catch (FileNotFoundException) {
+			status = FileIOStatus.FileNotFound;
+		}
+		catch (DirectoryNotFoundException) {
+			status = FileIOStatus.FileNotFound;
+		}
+		catch (UnauthorizedAccessException) {
+			status = FileIOStatus.FileAccessDenied;
+		}
+		catch (PathTooLongException) {
+			status = FileIOStatus.InvalidReference;
+		}
+		catch (IOException) {
+			status = FileIOStatus.IOSubsystemError;
+		} /* end try */
+
+		if (status == FileIOStatus.Success) {
+			fio = new FileIO();
+			fio.isOpen = true;
+			fio.mode = mode;
+			fio.file = fs;
+		}
+		else {
+			fio = null;
+		} /* end if */
+
+		return new Result<IFileIO, FileIOStatus>(fio, status);
+	} /* end OpenNew */
+
+
+/* ---------------------------------------------------------------------------
+ * private constructor FileIO ()
+ * ---------------------------------------------------------------------------
+ * Prevents clients from invoking the constructor.  Clients must use Open().
+ * ------------------------------------------------------------------------ */
+
+  private FileIO () {
+    // no operation
+  } /* end FileIO */
 
 
 /* ---------------------------------------------------------------------------
@@ -125,13 +247,12 @@ public class FileIO : IFileIO {
  * o  null is returned
  * ------------------------------------------------------------------------ */
 
-  string Filename () {
-    if (this.isOpen) {
-      return this.filename;
-    }
-    else {
+  public string Filename () {
+    if (!isOpen) {
       return null;
     } /* end if */
+
+    return file.Name;
   } /* end Filename */
 
 
@@ -150,55 +271,100 @@ public class FileIO : IFileIO {
  * o  out parameter remains unchanged, status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus GetMode ( FileIOMode mode ) {
-    if (this.isOpen) {
-      mode = this.mode;
-      return FileIOStatus.Success;
-    }
-    else {
-      return FileIOStatus.InvalidReference;
-    } /* end if */
-  } /* end GetMode */
+  public FileIOStatus GetMode (ref FileIOMode mode) {
+    if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+		mode = this.mode;
+		return FileIOStatus.Success;
+	} /* end GetMode */
 
 
 /* ---------------------------------------------------------------------------
- * method ReadChar()
+ * method BytesAvailable()
  * ---------------------------------------------------------------------------
- * Reads the next character from the receiver, advancing the current position,
- * passing the read character back in out parameter ch and returns a status.
- * Returns ASCII.EOT if the current position is at the end of the input file.
+ * Returns the number of bytes available for reading from the receiver.
+ * Returns zero if the receiver is not open in Read mode.
  *
  * pre-conditions:
  * o  receiver must be open in Read mode
  *
  * post-conditions:
- * o  character code of lookahead character or ASCII.EOT is passed in ch
- * o  if not at end of input file, current position is advanced by one
+ * o  number of bytes available for reading is returned
+ *
+ * error-conditions:
+ * o  zero is returned
+ * ------------------------------------------------------------------------ */
+
+	public ulong BytesAvailable () {
+		if (!isOpen) {
+			return 0;
+		} /* end if */
+
+		if (mode != FileIOMode.Read) {
+			return 0;
+		} /* end if */
+
+		return (ulong)(file.Length - file.Position);
+	} /* end BytesAvailable */
+
+
+/* ---------------------------------------------------------------------------
+ * method ReadByte()
+ * ---------------------------------------------------------------------------
+ * Reads the next byte from the receiver, advancing the current position,
+ * passing the read byte back in out parameter data and returns a status.
+ *
+ * pre-conditions:
+ * o  receiver must be open in Read mode
+ * o  read/write position must not have reached EOF
+ *
+ * post-conditions:
+ * o  byte at file's read/write position is passed in data
+ * o  current position is advanced by one
  * o  status Success is returned
  *
  * error-conditions:
+ * o  no data is read, no data is passed back
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus ReadChar ( out char ch ) {
-    
-  } /* end ReadChar */
+	public FileIOStatus ReadByte (ref byte data) {
+		FileIOStatus status;
+		int read;
+
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		read = file.ReadByte();
+
+		if (read >= 0) {
+			data = (byte)read;
+			status = FileIOStatus.Success;
+		}
+		else {
+			status = FileIOStatus.AttemptToReadPastEOF;
+		} /* end if */
+
+		return status;
+	} /* end ReadByte */
 
 
 /* ---------------------------------------------------------------------------
- * method ReadNChars()
+ * method ReadNBytes()
  * ---------------------------------------------------------------------------
- * Reads the number of characters given by charsToRead from the receiver into
+ * Reads up to the number of bytes given by bytesToRead from the receiver into
  * the given buffer.  If null is passed in for buffer, a new buffer is first
- * instantiated.  The actual number of characters read is passed back in out
- * parameter charsRead.  Returns a status code.
+ * instantiated.  The actual number of bytes read is passed back in out
+ * parameter bytesRead.  Returns a status code.
  *
  * pre-conditions:
  * o  receiver must be open in Read mode
  *
  * post-conditions:
- * o  if buffer is null, new buffer is instantiated and passed back
- * o  up to charsToRead characters are read from receiver to buffer
+ * o  if buffer is null, a new buffer is instantiated and passed back
+ * o  up to bytesToRead bytes are read from receiver to buffer
  * o  current position of receiver is advanced accordingly
  * o  Success is returned
  *
@@ -206,23 +372,64 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus ReadNChars
-    ( ref char[] buffer, ulong charsToRead, out ulong charsRead ) {
+	public FileIOStatus ReadNBytes
+		(ref byte[] buffer, ulong bytesToRead, out ulong bytesRead) {
 
-  } /* end ReadNChars */
+		ulong bytesAvailable;
+
+		if (bytesToRead == 0) {
+			bytesRead = 0;
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		if (!isOpen) {
+			bytesRead = 0;
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		if (mode != FileIOMode.Read) {
+			bytesRead = 0;
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		bytesAvailable = (ulong)(file.Length - file.Position);
+
+		if (bytesAvailable == 0) {
+			bytesRead = 0;
+			return FileIOStatus.AttemptToReadPastEOF;
+		} /* end if */
+
+		if (bytesToRead > bytesAvailable) {
+			bytesToRead = bytesAvailable;
+		} /* end if */
+
+		if (buffer != null) {
+			if (bytesToRead > (ulong)buffer.Length) {
+				bytesToRead = (ulong)buffer.Length;
+			} /* end if */
+		}
+		else /* buffer == null */ {
+			/* create new buffer of required size */
+			buffer = new byte[bytesToRead];
+		} /* end if */
+
+		bytesRead = (ulong)file.Read(buffer, (int)file.Position, (int)bytesToRead);
+
+		return FileIOStatus.Success;
+	} /* end ReadNBytes */
 
 
 /* ---------------------------------------------------------------------------
- * method WriteChar()
+ * method WriteByte()
  * ---------------------------------------------------------------------------
- * Writes ch to the receiver, advancing the current position and returns a
+ * Writes data to the receiver, advancing the current position and returns a
  * status code.
  *
  * pre-conditions:
  * o  receiver must be open in Write mode
  *
  * post-conditions:
- * o  ch is written to receiver
+ * o  data is written to the receiver
  * o  current position is advanced by one
  * o  status Success is returned
  *
@@ -230,16 +437,25 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus WriteChar ( char ch ) {
+	public FileIOStatus WriteByte (byte data) {
+		FileIOStatus status;
 
-  } /* end WriteChar */
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		file.WriteByte(data);
+		status = FileIOStatus.Success;
+
+		return status;
+	} /* end WriteByte */
 
 
 /* ---------------------------------------------------------------------------
- * method WriteNChars()
+ * method WriteNBytes()
  * ---------------------------------------------------------------------------
- * Writes the characters in the given buffer to the receiver.  The actual
- * number of characters read is passed back in out parameter charsWritten.
+ * Writes the bytes in the given buffer to the receiver.  The actual number of
+ * bytes written is passed back in out parameter bytesWritten.
  * Returns a status code.
  *
  * pre-conditions:
@@ -247,7 +463,7 @@ public class FileIO : IFileIO {
  * o  buffer must not be null
  *
  * post-conditions:
- * o  up to buffer.length characters are written from buffer to receiver
+ * o  up to buffer.length bytes are written from buffer to receiver
  * o  current position of receiver is advanced accordingly
  * o  Success is returned
  *
@@ -255,11 +471,26 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus WriteNChars
-    ( ref char[] buffer, out ulong charsWritten ) {
+	public FileIOStatus WriteNBytes (byte[] buffer, out ulong bytesWritten) {
+		int bytesToWrite;
 
-  } /* end WriteNChars */
+		if (!isOpen) {
+			bytesWritten = 0;
+			return FileIOStatus.InvalidReference;
+		} /* end if */
 
+		if ((mode != FileIOMode.Write) || (mode != FileIOMode.Append)) {
+			bytesWritten = 0;
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		bytesToWrite = buffer.Length;
+
+		file.Write(buffer, 0, bytesToWrite);
+
+		bytesWritten = (ulong)bytesToWrite;
+		return FileIOStatus.Success;
+	} /* end WriteNBytes */
 
 
 /* ---------------------------------------------------------------------------
@@ -279,15 +510,14 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus GetPos ( out ulong pos ) {
-    if (this.isOpen) {
-      pos = this.pos;
-      return FileIOStatus.Success;
-    }
-    else {
-      return FileIOStatus.InvalidReference;
-    } /* end if */
-  } /* end GetPos */
+  public FileIOStatus GetPos (ref ulong pos) {
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		pos = (ulong)file.Position;
+		return FileIOStatus.Success;
+	} /* end GetPos */
 
 
 /* ---------------------------------------------------------------------------
@@ -309,9 +539,56 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus SetPos ( ulong pos ) {
+	public FileIOStatus SetPos (ulong pos) {
+		FileIOStatus status;
 
-  } /* end SetPos */
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		/* may set position up to length-1 in read mode */
+		if ((mode == FileIOMode.Read) && (pos < (ulong)file.Length)) {
+			file.Position = (long)pos;
+			status = FileIOStatus.Success;
+		}
+		/* may set position up to length in write mode */
+		else if ((mode == FileIOMode.Write) && (pos <= (ulong)file.Length)) {
+			file.Position = (long)pos;
+			status = FileIOStatus.Success;
+		}
+		/* may not set position in append mode */
+		else {
+			status = FileIOStatus.IOSubsystemError;
+		} /* end if */
+
+		return status;
+	} /* end SetPos */
+
+
+/* ---------------------------------------------------------------------------
+ * method Rewind ()
+ * ---------------------------------------------------------------------------
+ * Resets the read/write position to the beginning of the file.
+ * Returns a status.
+ *
+ * pre-conditions:
+ * o  receiver must be open in Read or Write mode
+ *
+ * post-conditions:
+ * o  current position is set to zero
+ * o  Success is returned
+ *
+ * error-conditions:
+ * o  status other than Success is returned
+ * ------------------------------------------------------------------------ */
+
+  public FileIOStatus Rewind () {
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		return SetPos(0);
+	} /* end Rewind */
 
 
 /* ---------------------------------------------------------------------------
@@ -332,9 +609,44 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus Advance ( ulong offset ) {
+	public FileIOStatus Advance (ulong offset) {
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
 
-  } /* end Advance */
+		return SetPos((ulong)file.Position + offset);
+	} /* end Advance */
+
+
+/* ---------------------------------------------------------------------------
+ * method Sync ()
+ * ---------------------------------------------------------------------------
+ * Writes unwritten data to disk. Returns a status.
+ *
+ * pre-conditions:
+ * o  receiver must be open in Write or Append mode
+ *
+ * post-conditions:
+ * o  all data written to disk
+ * o  Success is returned
+ *
+ * error-conditions:
+ * o  status other than Success is returned
+ * ------------------------------------------------------------------------ */
+
+  public FileIOStatus Sync () {
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		if (mode == FileIOMode.Read) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
+
+		file.Flush();
+
+		return FileIOStatus.Success;
+	} /* end Sync */
 
 
 /* ---------------------------------------------------------------------------
@@ -353,12 +665,19 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-  FileIOStatus Close () {
+	public FileIOStatus Close () {
+		if (!isOpen) {
+			return FileIOStatus.InvalidReference;
+		} /* end if */
 
-  } /* end Close */
+		file.Close();
+		isOpen = false;
+
+		return FileIOStatus.Success;
+	} /* end Close */
 
 
-} /* IFileIO */
+} /* FileIO */
 
 } /* namespace */
 
