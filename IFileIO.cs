@@ -61,6 +61,8 @@ public enum FileIOStatus {
   InvalidReference,
   FileNotFound,
   FileAccessDenied,
+  FileAlreadyExists,
+  IllegalOperation,
   AllocationFailed,
   SourceFileIsEmpty,
   AttemptToReadPastEOF,
@@ -71,7 +73,16 @@ public enum FileIOStatus {
 public interface IFileIO {
 
 /* ---------------------------------------------------------------------------
- * constructor Open(filename, mode)
+ * Factory Methods
+ * ---------------------------------------------------------------------------
+ * Since C# does not fully support the concept of information hiding,
+ * factory methods are specified as comments for documentation purposes.
+ * The class constructor must be hidden to prevent clients from using it.
+ * ------------------------------------------------------------------------ */
+
+
+/* ---------------------------------------------------------------------------
+ * factory method Open(filename, mode)
  * ---------------------------------------------------------------------------
  * Opens the given file, creates a new instance, associates the filename with
  * the newly created instance and returns a result pair with the instance
@@ -93,11 +104,12 @@ public interface IFileIO {
  *    file instance is null, status is FileAccessDenied
  * ------------------------------------------------------------------------ */
 
-Result<IFileIO, FileIOStatus> Open (string filename, FileIOMode mode );
+// public static Result<IFileIO, FileIOStatus>
+//   Open (string filename, FileIOMode mode );
 
 
 /* ---------------------------------------------------------------------------
- * constructor OpenNew(filename, mode)
+ * factory method OpenNew(filename, mode)
  * ---------------------------------------------------------------------------
  * Creates a new file with the given filename and opens the file in the given
  * access mode.  Creates a new file instance and returns a result pair with
@@ -119,7 +131,8 @@ Result<IFileIO, FileIOStatus> Open (string filename, FileIOMode mode );
  *    file instance is null, status is FileAccessDenied
  * ------------------------------------------------------------------------ */
 
-Result<IFileIO, FileIOStatus> OpenNew ( string filename, FileIOMode mode );
+// public static Result<IFileIO, FileIOStatus>
+//   OpenNew ( string filename, FileIOMode mode );
 
 
 /* ---------------------------------------------------------------------------
@@ -155,46 +168,65 @@ string Filename ();
  * o  out parameter remains unchanged, status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-FileIOStatus GetMode ( FileIOMode mode );
+FileIOStatus GetMode ( ref FileIOMode mode );
 
 
 /* ---------------------------------------------------------------------------
- * method ReadChar()
+ * method BytesAvailable()
  * ---------------------------------------------------------------------------
- * Reads the next character from the receiver, advancing the current position,
- * passing the read character back in out parameter ch and returns a status.
- * Returns ASCII.EOT if the current position is at the end of the input file.
+ * Returns the number of bytes available for reading from the receiver.
+ * Returns zero if the receiver is not open in Read mode.
  *
  * pre-conditions:
  * o  receiver must be open in Read mode
  *
  * post-conditions:
- * o  character code of lookahead character or ASCII.EOT is passed in ch
- * o  if not at end of input file, current position is advanced by one
+ * o  number of bytes available for reading is returned
+ *
+ * error-conditions:
+ * o  zero is returned
+ * ------------------------------------------------------------------------ */
+
+ulong BytesAvailable ();
+
+
+/* ---------------------------------------------------------------------------
+ * method ReadByte()
+ * ---------------------------------------------------------------------------
+ * Reads the next byte from the receiver, advancing the current position,
+ * passing the read byte back in out parameter data and returns a status.
+ *
+ * pre-conditions:
+ * o  receiver must be open in Read mode
+ * o  read/write position must not have reached EOF
+ *
+ * post-conditions:
+ * o  byte at file's read/write position is passed in data
+ * o  current position is advanced by one
  * o  status Success is returned
  *
  * error-conditions:
+ * o  no data is read, no data is passed back
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-FileIOStatus ReadChar ( out char ch );
-
+FileIOStatus ReadByte ( ref byte data );
 
 
 /* ---------------------------------------------------------------------------
- * method ReadNChars()
+ * method ReadNBytes()
  * ---------------------------------------------------------------------------
- * Reads the number of characters given by charsToRead from the receiver into
+ * Reads up to the number of bytes given by bytesToRead from the receiver into
  * the given buffer.  If null is passed in for buffer, a new buffer is first
- * instantiated.  The actual number of characters read is passed back in out
- * parameter charsRead.  Returns a status code.
+ * instantiated.  The actual number of bytes read is passed back in out
+ * parameter bytesRead.  Returns a status code.
  *
  * pre-conditions:
  * o  receiver must be open in Read mode
  *
  * post-conditions:
- * o  if buffer is null, new buffer is instantiated and passed back
- * o  up to charsToRead characters are read from receiver to buffer
+ * o  if buffer is null, a new buffer is instantiated and passed back
+ * o  up to bytesToRead bytes are read from receiver to buffer
  * o  current position of receiver is advanced accordingly
  * o  Success is returned
  *
@@ -202,21 +234,21 @@ FileIOStatus ReadChar ( out char ch );
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-FileIOStatus ReadNChars
-  ( ref char[] buffer, ulong charsToRead, out ulong charsRead );
+FileIOStatus ReadNBytes
+  ( ref byte[] buffer, ulong bytesToRead, out ulong bytesRead );
 
 
 /* ---------------------------------------------------------------------------
- * method WriteChar()
+ * method WriteByte()
  * ---------------------------------------------------------------------------
- * Writes ch to the receiver, advancing the current position and returns a
+ * Writes data to the receiver, advancing the current position and returns a
  * status code.
  *
  * pre-conditions:
  * o  receiver must be open in Write mode
  *
  * post-conditions:
- * o  ch is written to receiver
+ * o  data is written to the receiver
  * o  current position is advanced by one
  * o  status Success is returned
  *
@@ -224,14 +256,14 @@ FileIOStatus ReadNChars
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-FileIOStatus WriteChar ( char ch );
+FileIOStatus WriteByte ( byte data );
 
 
 /* ---------------------------------------------------------------------------
- * method WriteNChars()
+ * method WriteNBytes()
  * ---------------------------------------------------------------------------
- * Writes the characters in the given buffer to the receiver.  The actual
- * number of characters read is passed back in out parameter charsWritten.
+ * Writes the bytes in the given buffer to the receiver.  The actual number of
+ * bytes written is passed back in out parameter bytesWritten.
  * Returns a status code.
  *
  * pre-conditions:
@@ -239,7 +271,7 @@ FileIOStatus WriteChar ( char ch );
  * o  buffer must not be null
  *
  * post-conditions:
- * o  up to buffer.length characters are written from buffer to receiver
+ * o  up to buffer.length bytes are written from buffer to receiver
  * o  current position of receiver is advanced accordingly
  * o  Success is returned
  *
@@ -247,9 +279,7 @@ FileIOStatus WriteChar ( char ch );
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-FileIOStatus WriteNChars
-  ( ref char[] buffer, out ulong charsWritten );
-
+FileIOStatus WriteNBytes ( byte[] buffer, out ulong bytesWritten );
 
 
 /* ---------------------------------------------------------------------------
@@ -269,7 +299,7 @@ FileIOStatus WriteNChars
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-FileIOStatus GetPos ( out ulong pos );
+FileIOStatus GetPos ( ref ulong pos );
 
 
 /* ---------------------------------------------------------------------------
@@ -295,6 +325,26 @@ FileIOStatus SetPos ( ulong pos );
 
 
 /* ---------------------------------------------------------------------------
+ * method Rewind ()
+ * ---------------------------------------------------------------------------
+ * Resets the read/write position to the beginning of the file.
+ * Returns a status.
+ *
+ * pre-conditions:
+ * o  receiver must be open in Read or Write mode
+ *
+ * post-conditions:
+ * o  current position is set to zero
+ * o  Success is returned
+ *
+ * error-conditions:
+ * o  status other than Success is returned
+ * ------------------------------------------------------------------------ */
+
+FileIOStatus Rewind ();
+
+
+/* ---------------------------------------------------------------------------
  * method Advance (offset)
  * ---------------------------------------------------------------------------
  * Advances the receiver's read/write position by offset.  Returns a status.
@@ -313,6 +363,25 @@ FileIOStatus SetPos ( ulong pos );
  * ------------------------------------------------------------------------ */
 
 FileIOStatus Advance ( ulong offset );
+
+
+/* ---------------------------------------------------------------------------
+ * method Sync ()
+ * ---------------------------------------------------------------------------
+ * Writes unwritten data to disk. Returns a status.
+ *
+ * pre-conditions:
+ * o  receiver must be open in Write or Append mode
+ *
+ * post-conditions:
+ * o  all data written to disk
+ * o  Success is returned
+ *
+ * error-conditions:
+ * o  status other than Success is returned
+ * ------------------------------------------------------------------------ */
+
+FileIOStatus Sync ();
 
 
 /* ---------------------------------------------------------------------------
