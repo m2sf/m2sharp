@@ -93,15 +93,15 @@ public class FileIO : IFileIO {
 
     try {
       switch (mode) {
-				case FileIOMode.Read:
-					fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-					break;
-				case FileIOMode.Write:
-					fs = new FileStream(filename, FileMode.Open, FileAccess.Write);
-					break;
-				case FileIOMode.Append:
-					fs = new FileStream(filename, FileMode.Append, FileAccess.Write);
-					break;
+        case FileIOMode.Read:
+          fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+          break;
+        case FileIOMode.Write:
+          fs = new FileStream(filename, FileMode.Open, FileAccess.Write);
+          break;
+        case FileIOMode.Append:
+          fs = new FileStream(filename, FileMode.Append, FileAccess.Write);
+          break;
       } /* end switch */
       if (fs != null) {
         status = FileIOStatus.Success;
@@ -170,55 +170,55 @@ public class FileIO : IFileIO {
     FileStream fs;
     FileIOStatus status;
 
-	  if (string.IsNullOrEmpty(filename)) {
-			return new Result<IFileIO, FileIOStatus>
-				(null, FileIOStatus.InvalidReference);
-		} /* end if */
+    if (string.IsNullOrEmpty(filename)) {
+      return new Result<IFileIO, FileIOStatus>
+        (null, FileIOStatus.InvalidReference);
+    } /* end if */
 
-		if (mode != FileIOMode.Write) {
-			return new Result<IFileIO, FileIOStatus>
-				(null, FileIOStatus.IllegalOperation);
-		} /* end if */
+    if (mode != FileIOMode.Write) {
+      return new Result<IFileIO, FileIOStatus>
+        (null, FileIOStatus.IllegalOperation);
+    } /* end if */
 
-		fs = null;
+    fs = null;
 
-		try {
+    try {
       fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
-			if (fs != null) {
-				status = FileIOStatus.Success;
-			}
-			else {
-				status = FileIOStatus.IOSubsystemError;
-			} /* end if */
-		}
-		catch (FileNotFoundException) {
-			status = FileIOStatus.FileNotFound;
-		}
-		catch (DirectoryNotFoundException) {
-			status = FileIOStatus.FileNotFound;
-		}
-		catch (UnauthorizedAccessException) {
-			status = FileIOStatus.FileAccessDenied;
-		}
-		catch (PathTooLongException) {
-			status = FileIOStatus.InvalidReference;
-		}
-		catch (IOException) {
-			status = FileIOStatus.IOSubsystemError;
-		} /* end try */
+      if (fs != null) {
+        status = FileIOStatus.Success;
+      }
+      else {
+        status = FileIOStatus.IOSubsystemError;
+      } /* end if */
+    }
+    catch (FileNotFoundException) {
+      status = FileIOStatus.FileNotFound;
+    }
+    catch (DirectoryNotFoundException) {
+      status = FileIOStatus.FileNotFound;
+    }
+    catch (UnauthorizedAccessException) {
+      status = FileIOStatus.FileAccessDenied;
+    }
+    catch (PathTooLongException) {
+      status = FileIOStatus.InvalidReference;
+    }
+    catch (IOException) {
+      status = FileIOStatus.IOSubsystemError;
+    } /* end try */
 
-		if (status == FileIOStatus.Success) {
-			fio = new FileIO();
-			fio.isOpen = true;
-			fio.mode = mode;
-			fio.file = fs;
-		}
-		else {
-			fio = null;
-		} /* end if */
+    if (status == FileIOStatus.Success) {
+      fio = new FileIO();
+      fio.isOpen = true;
+      fio.mode = mode;
+      fio.file = fs;
+    }
+    else {
+      fio = null;
+    } /* end if */
 
-		return new Result<IFileIO, FileIOStatus>(fio, status);
-	} /* end OpenNew */
+    return new Result<IFileIO, FileIOStatus>(fio, status);
+  } /* end OpenNew */
 
 
 /* ---------------------------------------------------------------------------
@@ -273,11 +273,11 @@ public class FileIO : IFileIO {
 
   public FileIOStatus GetMode (ref FileIOMode mode) {
     if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
-		mode = this.mode;
-		return FileIOStatus.Success;
-	} /* end GetMode */
+      return FileIOStatus.InvalidReference;
+    } /* end if */
+    mode = this.mode;
+    return FileIOStatus.Success;
+  } /* end GetMode */
 
 
 /* ---------------------------------------------------------------------------
@@ -296,17 +296,17 @@ public class FileIO : IFileIO {
  * o  zero is returned
  * ------------------------------------------------------------------------ */
 
-	public ulong BytesAvailable () {
-		if (!isOpen) {
-			return 0;
-		} /* end if */
+  public ulong BytesAvailable () {
+    if (!isOpen) {
+      return 0;
+    } /* end if */
 
-		if (mode != FileIOMode.Read) {
-			return 0;
-		} /* end if */
+    if (mode != FileIOMode.Read) {
+      return 0;
+    } /* end if */
 
-		return (ulong)(file.Length - file.Position);
-	} /* end BytesAvailable */
+    return (ulong)(file.Length - file.Position);
+  } /* end BytesAvailable */
 
 
 /* ---------------------------------------------------------------------------
@@ -329,26 +329,26 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus ReadByte (ref byte data) {
-		FileIOStatus status;
-		int read;
+  public FileIOStatus ReadByte (ref byte data) {
+    FileIOStatus status;
+    int read;
 
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		read = file.ReadByte();
+    read = file.ReadByte();
 
-		if (read >= 0) {
-			data = (byte)read;
-			status = FileIOStatus.Success;
-		}
-		else {
-			status = FileIOStatus.AttemptToReadPastEOF;
-		} /* end if */
+    if (read >= 0) {
+      data = (byte)read;
+      status = FileIOStatus.Success;
+    }
+    else {
+    status = FileIOStatus.AttemptToReadPastEOF;
+    } /* end if */
 
-		return status;
-	} /* end ReadByte */
+    return status;
+  } /* end ReadByte */
 
 
 /* ---------------------------------------------------------------------------
@@ -372,51 +372,51 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus ReadNBytes
-		(ref byte[] buffer, ulong bytesToRead, out ulong bytesRead) {
+  public FileIOStatus ReadNBytes
+    (ref byte[] buffer, ulong bytesToRead, out ulong bytesRead) {
 
-		ulong bytesAvailable;
+    ulong bytesAvailable;
 
-		if (bytesToRead == 0) {
-			bytesRead = 0;
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (bytesToRead == 0) {
+      bytesRead = 0;
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		if (!isOpen) {
-			bytesRead = 0;
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      bytesRead = 0;
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		if (mode != FileIOMode.Read) {
-			bytesRead = 0;
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (mode != FileIOMode.Read) {
+      bytesRead = 0;
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		bytesAvailable = (ulong)(file.Length - file.Position);
+    bytesAvailable = (ulong)(file.Length - file.Position);
 
-		if (bytesAvailable == 0) {
-			bytesRead = 0;
-			return FileIOStatus.AttemptToReadPastEOF;
-		} /* end if */
+    if (bytesAvailable == 0) {
+      bytesRead = 0;
+      return FileIOStatus.AttemptToReadPastEOF;
+    } /* end if */
 
-		if (bytesToRead > bytesAvailable) {
-			bytesToRead = bytesAvailable;
-		} /* end if */
+    if (bytesToRead > bytesAvailable) {
+      bytesToRead = bytesAvailable;
+    } /* end if */
 
-		if (buffer != null) {
-			if (bytesToRead > (ulong)buffer.Length) {
-				bytesToRead = (ulong)buffer.Length;
-			} /* end if */
-		}
-		else /* buffer == null */ {
-			/* create new buffer of required size */
-			buffer = new byte[bytesToRead];
-		} /* end if */
+    if (buffer != null) {
+      if (bytesToRead > (ulong)buffer.Length) {
+        bytesToRead = (ulong)buffer.Length;
+      } /* end if */
+    }
+    else /* buffer == null */ {
+      /* create new buffer of required size */
+      buffer = new byte[bytesToRead];
+    } /* end if */
 
-		bytesRead = (ulong)file.Read(buffer, (int)file.Position, (int)bytesToRead);
+    bytesRead = (ulong)file.Read(buffer, (int)file.Position, (int)bytesToRead);
 
-		return FileIOStatus.Success;
-	} /* end ReadNBytes */
+    return FileIOStatus.Success;
+  } /* end ReadNBytes */
 
 
 /* ---------------------------------------------------------------------------
@@ -437,18 +437,18 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus WriteByte (byte data) {
-		FileIOStatus status;
+  public FileIOStatus WriteByte (byte data) {
+    FileIOStatus status;
 
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		file.WriteByte(data);
-		status = FileIOStatus.Success;
+    file.WriteByte(data);
+    status = FileIOStatus.Success;
 
-		return status;
-	} /* end WriteByte */
+    return status;
+  } /* end WriteByte */
 
 
 /* ---------------------------------------------------------------------------
@@ -471,26 +471,26 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus WriteNBytes (byte[] buffer, out ulong bytesWritten) {
-		int bytesToWrite;
+  public FileIOStatus WriteNBytes (byte[] buffer, out ulong bytesWritten) {
+    int bytesToWrite;
 
-		if (!isOpen) {
-			bytesWritten = 0;
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      bytesWritten = 0;
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		if ((mode != FileIOMode.Write) || (mode != FileIOMode.Append)) {
-			bytesWritten = 0;
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if ((mode != FileIOMode.Write) || (mode != FileIOMode.Append)) {
+      bytesWritten = 0;
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		bytesToWrite = buffer.Length;
+    bytesToWrite = buffer.Length;
 
-		file.Write(buffer, 0, bytesToWrite);
+    file.Write(buffer, 0, bytesToWrite);
 
-		bytesWritten = (ulong)bytesToWrite;
-		return FileIOStatus.Success;
-	} /* end WriteNBytes */
+    bytesWritten = (ulong)bytesToWrite;
+    return FileIOStatus.Success;
+  } /* end WriteNBytes */
 
 
 /* ---------------------------------------------------------------------------
@@ -511,13 +511,13 @@ public class FileIO : IFileIO {
  * ------------------------------------------------------------------------ */
 
   public FileIOStatus GetPos (ref ulong pos) {
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		pos = (ulong)file.Position;
-		return FileIOStatus.Success;
-	} /* end GetPos */
+    pos = (ulong)file.Position;
+    return FileIOStatus.Success;
+  } /* end GetPos */
 
 
 /* ---------------------------------------------------------------------------
@@ -539,30 +539,30 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus SetPos (ulong pos) {
-		FileIOStatus status;
+  public FileIOStatus SetPos (ulong pos) {
+    FileIOStatus status;
 
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		/* may set position up to length-1 in read mode */
-		if ((mode == FileIOMode.Read) && (pos < (ulong)file.Length)) {
-			file.Position = (long)pos;
-			status = FileIOStatus.Success;
-		}
-		/* may set position up to length in write mode */
-		else if ((mode == FileIOMode.Write) && (pos <= (ulong)file.Length)) {
-			file.Position = (long)pos;
-			status = FileIOStatus.Success;
-		}
-		/* may not set position in append mode */
-		else {
-			status = FileIOStatus.IOSubsystemError;
-		} /* end if */
+    /* may set position up to length-1 in read mode */
+    if ((mode == FileIOMode.Read) && (pos < (ulong)file.Length)) {
+      file.Position = (long)pos;
+      status = FileIOStatus.Success;
+    }
+    /* may set position up to length in write mode */
+    else if ((mode == FileIOMode.Write) && (pos <= (ulong)file.Length)) {
+      file.Position = (long)pos;
+      status = FileIOStatus.Success;
+    }
+    /* may not set position in append mode */
+    else {
+      status = FileIOStatus.IOSubsystemError;
+    } /* end if */
 
-		return status;
-	} /* end SetPos */
+    return status;
+  } /* end SetPos */
 
 
 /* ---------------------------------------------------------------------------
@@ -583,12 +583,12 @@ public class FileIO : IFileIO {
  * ------------------------------------------------------------------------ */
 
   public FileIOStatus Rewind () {
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		return SetPos(0);
-	} /* end Rewind */
+    return SetPos(0);
+  } /* end Rewind */
 
 
 /* ---------------------------------------------------------------------------
@@ -609,13 +609,13 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus Advance (ulong offset) {
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+  public FileIOStatus Advance (ulong offset) {
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		return SetPos((ulong)file.Position + offset);
-	} /* end Advance */
+    return SetPos((ulong)file.Position + offset);
+  } /* end Advance */
 
 
 /* ---------------------------------------------------------------------------
@@ -635,18 +635,18 @@ public class FileIO : IFileIO {
  * ------------------------------------------------------------------------ */
 
   public FileIOStatus Sync () {
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		if (mode == FileIOMode.Read) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+    if (mode == FileIOMode.Read) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		file.Flush();
+    file.Flush();
 
-		return FileIOStatus.Success;
-	} /* end Sync */
+    return FileIOStatus.Success;
+  } /* end Sync */
 
 
 /* ---------------------------------------------------------------------------
@@ -665,16 +665,16 @@ public class FileIO : IFileIO {
  * o  status other than Success is returned
  * ------------------------------------------------------------------------ */
 
-	public FileIOStatus Close () {
-		if (!isOpen) {
-			return FileIOStatus.InvalidReference;
-		} /* end if */
+  public FileIOStatus Close () {
+    if (!isOpen) {
+      return FileIOStatus.InvalidReference;
+    } /* end if */
 
-		file.Close();
-		isOpen = false;
+    file.Close();
+    isOpen = false;
 
-		return FileIOStatus.Success;
-	} /* end Close */
+    return FileIOStatus.Success;
+  } /* end Close */
 
 
 } /* FileIO */
