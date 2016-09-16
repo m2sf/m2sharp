@@ -55,22 +55,31 @@ public enum LexerStatus {
   FileAccessDenied,
   NotInitialized,
   TODO
-} /* InfileStatus */
+} /* LexerStatus */
 
 
 public interface ILexer {
 
 /* ---------------------------------------------------------------------------
- * Lexical limits
+ * Factory Methods
+ * ---------------------------------------------------------------------------
+ * Since C# does not fully support the concept of information hiding,
+ * factory methods are specified as comments for documentation purposes.
+ * The class constructor must be hidden to prevent clients from using it.
  * ------------------------------------------------------------------------ */
-
-int MaxIdentLength (); /* default 32 */
-
-int CommentNestingLimit (); /* default 100 */
 
 
 /* ---------------------------------------------------------------------------
- * constructor newLexer(filename)
+ * Lexical limits
+ * ------------------------------------------------------------------------ */
+
+uint MaxIdentLength (); /* default 32 */
+
+uint CommentNestingLimit (); /* default 100 */
+
+
+/* ---------------------------------------------------------------------------
+ * factory method newLexer(filename)
  * ---------------------------------------------------------------------------
  * Creates a new lexer instance, opens an input file, associates the file with
  * the newly created lexer and returns a Result pair with the lexer reference
@@ -90,7 +99,7 @@ int CommentNestingLimit (); /* default 100 */
  *    lexer is set to null, status is set to FileAccessDenied
  * ----------------------------------------------------------------------- */
 
-Result<ILexer, LexerStatus> NewLexer (string filename);
+// public static Result<ILexer, LexerStatus> NewLexer (string filename);
 
 
 /* --------------------------------------------------------------------------
@@ -193,7 +202,7 @@ string CurrentLexeme ();
  * Returns the line counter of the lookahead symbol.
  * ----------------------------------------------------------------------- */
 
-int LookaheadLine ();
+uint LookaheadLine ();
 
 
 /* --------------------------------------------------------------------------
@@ -202,7 +211,7 @@ int LookaheadLine ();
  * Returns the line counter of the most recently consumed symbol.
  * ----------------------------------------------------------------------- */
 
-int CurrentLine ();
+uint CurrentLine ();
 
 
 /* --------------------------------------------------------------------------
@@ -211,7 +220,7 @@ int CurrentLine ();
  * Returns the column counter of the lookahead symbol.
  * ----------------------------------------------------------------------- */
 
-int LookaheadColumn ();
+uint LookaheadColumn ();
 
 
 /* --------------------------------------------------------------------------
@@ -220,7 +229,7 @@ int LookaheadColumn ();
  * Returns the column counter of the most recently consumed symbol.
  * ----------------------------------------------------------------------- */
 
-int CurrentColumn ();
+uint CurrentColumn ();
 
 
 /* --------------------------------------------------------------------------
@@ -230,7 +239,7 @@ int CurrentColumn ();
  * marks the given coloumn with a caret '^'.
  * ----------------------------------------------------------------------- */
 
-void PrintLineAndMarkColumn (int line, int column);
+void PrintLineAndMarkColumn (uint line, uint column);
 
 
 } /* ILexer */
