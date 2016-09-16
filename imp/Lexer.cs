@@ -1,4 +1,4 @@
-﻿/* M2Sharp -- Modula-2 to C# Translator & Compiler
+/* M2Sharp -- Modula-2 to C# Translator & Compiler
  *
  * Copyright (c) 2016 The Modula-2 Software Foundation
  *
@@ -342,7 +342,13 @@ private void GetNewLookaheadSym () {
 
       case '!' :
         /* line comment */
-        nextChar = SkipLineComment();
+        if (CompilerOptions.LineComments()) {
+          nextChar = SkipLineComment();
+        }
+        else /* illegal character */ {
+          // TO DO : report error with offending character
+          token = Token.Unknown;
+        } /* end if */
         break;
 
       case '"' :
@@ -361,8 +367,14 @@ private void GetNewLookaheadSym () {
 
       case '&' :
         /* ampersand synonym */
-        nextChar = infile.ConsumeChar();
-        token = Token.AND;
+        if (CompilerOptions.Synonyms()) {
+          nextChar = infile.ConsumeChar();
+          token = Token.AND;
+        }
+        else /* illegal character */ {
+          // TO DO : report error with offending character
+          token = Token.Unknown;
+        } /* end if */
         break;
 
       case '\'' :
@@ -474,7 +486,8 @@ private void GetNewLookaheadSym () {
       case '<' :
         /* not-equal, less-equal or less operator */
         nextChar = infile.ConsumeChar();
-        if /* not-equal synonym */ (nextChar == '>') {
+        if (CompilerOptions.Synonyms() && (nextChar == '>')) {
+          /* not-equal synonym */
           nextChar = infile.ConsumeChar();
           token = Token.NotEqual;
         }
@@ -552,6 +565,18 @@ private void GetNewLookaheadSym () {
         token = Token.LeftBracket;
         break;
 
+      case '\\' :
+        /* backslash */
+        if (CompilerOptions.BackslashSetDiffOp()) {
+          nextChar = infile.ConsumeChar();
+          token = Token.Backslash;
+        }
+        else /* illegal character */ {
+          // TO DO : report error with offending character
+          token = Token.Unknown;
+        } /* end if */
+        break;
+
       case ']' :
         /* right bracket */
         nextChar = infile.ConsumeChar();
@@ -562,11 +587,6 @@ private void GetNewLookaheadSym () {
         /* caret */
         nextChar = infile.ConsumeChar();
         token = Token.Deref;
-        break;
-
-      case '_' :
-        /* foreign identifier */
-        // TO DO 
         break;
 
       case 'a' :
@@ -620,8 +640,14 @@ private void GetNewLookaheadSym () {
 
       case '~' :
         /* tilde synonym */
-        nextChar = infile.ConsumeChar();
-        token = Token.NOT;
+        if (CompilerOptions.Synonyms()) {
+          nextChar = infile.ConsumeChar();
+          token = Token.NOT;
+        }
+        else /* illegal character */ {
+          // TO DO : report error with offending character
+          token = Token.Unknown;
+        } /* end if */
         break;
 
       default :
