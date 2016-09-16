@@ -91,6 +91,7 @@ public enum Token {
   GreaterEqual,    /* '>=' */
   Asterisk,        /* '*'  */
   Solidus,         /* '/'  */
+  Backslash,       /* '\\' */
   Assign,          /* ':=' */
   Comma,           /* ','  */
   Period,          /* '.'  */
