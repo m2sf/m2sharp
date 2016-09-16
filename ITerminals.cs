@@ -116,6 +116,14 @@ public enum Token {
 } /* Token */
 
 
+/* ---------------------------------------------------------------------------
+ * interface ITerminals
+ * ---------------------------------------------------------------------------
+ * This interface describes a singleton class.
+ * Since C# does not fully support the concept of information hiding, this
+ * interface is entirely comprised of comments for documentation purposes.
+ * ------------------------------------------------------------------------ */
+
 interface ITerminals {
 
 /* ---------------------------------------------------------------------------
@@ -124,7 +132,7 @@ interface ITerminals {
  * Returns true if token represents a valid token, otherwise false.
  * ------------------------------------------------------------------------ */
 
-bool IsValid (Token token);
+// public static bool IsValid (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -133,7 +141,7 @@ bool IsValid (Token token);
  * Returns true if token represents a reserved word, otherwise false.
  * ------------------------------------------------------------------------ */
 
-bool IsResword (Token token);
+// public static bool IsResword (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -142,7 +150,7 @@ bool IsResword (Token token);
  * Returns true if token represents a literal, otherwise false.
  * ------------------------------------------------------------------------ */
 
-bool IsLiteral (Token token);
+// public static bool IsLiteral (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -151,7 +159,7 @@ bool IsLiteral (Token token);
  * Returns true if token represents a malformed literal, otherwise false.
  * ------------------------------------------------------------------------ */
 
-bool IsMalformedLiteral (Token token);
+// public static bool IsMalformedLiteral (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -160,17 +168,17 @@ bool IsMalformedLiteral (Token token);
  * Returns true if token represents a special symbol, otherwise false.
  * ------------------------------------------------------------------------ */
 
-bool IsSpecialSymbol (Token token);
+// public static bool IsSpecialSymbol (Token token);
 
 
 /* ---------------------------------------------------------------------------
- * method TokenForResword(lexeme, length)
+ * method TokenForResword(lexeme)
  * ---------------------------------------------------------------------------
  * Tests if the given lexeme represents a reserved word and returns the
  * corresponding token or Unknown if it does not match a reserved word.
  * ------------------------------------------------------------------------ */
 
-Token TokenForResword (string lexeme, uint length);
+// public static Token TokenForResword (string lexeme);
 
 
 /* ---------------------------------------------------------------------------
@@ -180,7 +188,7 @@ Token TokenForResword (string lexeme, uint length);
  * token.  Returns null if the token does not represent a reserved word.
  * ------------------------------------------------------------------------ */
 
-string LexemeForResword (Token token);
+// public static string LexemeForResword (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -190,7 +198,7 @@ string LexemeForResword (Token token);
  * token.  Returns null if the token does not represent a special symbol.
  * ------------------------------------------------------------------------ */
 
-string LexemeForSpecialSymbol (Token token);
+// public static string LexemeForSpecialSymbol (Token token);
 
 
 /* ---------------------------------------------------------------------------
@@ -200,7 +208,7 @@ string LexemeForSpecialSymbol (Token token);
  * token is not a valid token.
  * ------------------------------------------------------------------------ */
 
-string NameForToken (Token token);
+// public static string NameForToken (Token token);
 
 
 } /* ITerminals */
