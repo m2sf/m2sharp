@@ -1,0 +1,153 @@
+M2C, M2J, M2Sharp Compiler Options
+
+Document version 2.0, status 2016-09-16
+
+
+(1) information options, all dialects
+
+--help, -h
+--version, -V
+--license
+
+
+(2) diagnostic options, all dialects
+
+--verbose, -v
+--lexer-debug
+--parser-debug
+--errant-semicolons
+
+defaults:
+
+all diagnostic options are off
+
+
+(3) compilation product options, all dialects
+
+(a) all compilers
+
+--ast, --no-ast
+--graph, --no-graph
+--xlat, --no-xlat
+--obj, --no-obj
+
+--syntax-only  (--no-ast, --no-graph, --no-xlat, --no-obj)
+--ast-only     (--no-graph, --no-xlat, --no-obj)
+--graph-only   (--no-ast, --no-xlat, --no-obj)
+--xlat-only    (--no-ast, --no-graph, --no-obj)
+--obj-only     (--no-ast, --no-graph, --no-xlat)
+
+in combination with --xlat
+
+--strip-comments
+--preserve-comments
+
+defaults:
+
+--ast, --xlat, --obj, --preserve-comments
+
+
+(b) compiler specific
+
+available on M2C:
+
+--c            (same as --xlat)
+--no-c         (same as --no-xlat)
+--c-only       (--c, --no-ast, --no-graph, --no-obj)
+
+available on M2J:
+
+--java         (same as --xlat)
+--no-java      (same as --no-xlat)
+--java-only    (--java, --no-ast, --no-graph, --no-obj)
+
+available on M2Sharp:
+
+--cs           (same as --xlat)
+--no-cs        (same as --no-xlat)
+--cs-only      (--cs, --no-ast, --no-graph, --no-obj)
+
+
+(4) Dialect options
+
+--ext  (see capability table below)
+--pim3 (see capability table below)
+--pim4 (see capability table below)
+
+default:
+
+--ext
+
+
+(5) Capability options
+
+(a) available in Extended dialect mode on all compilers
+
+--lowline-identifiers, --no-lowline-identifiers
+--to-do-statement, --no-to-do-statement
+
+defaults:
+
+--no-lowline-identifiers, --to-do-statement
+
+
+(b) available in PIM3 and PIM4 dialect modes on all compilers
+
+--synonyms, --no-synonyms
+--octal-literals, --no-octal-literals
+--explicit-cast, --no-explicit-cast
+--coroutines, --no-coroutines
+--variant-records, --no-variant-records
+--local-modules, --no-local-modules
+
+--safer
+  (--no-synonyms, --no-octal-literals, --explicit-cast,
+   --no-coroutines, --no-variant-records, --no-local-modules)
+
+--compliant
+  (--synonyms, --octal-literals, --no-explicit-cast,
+   --coroutines, --variant-records, --local-modules)
+
+defaults:
+
+--safer
+
+
+(6) Capability overview
+
+most capabilities are determined by the dialect mode, some are user selectable
+
+Capabilities               | Extended       | PIM3           | PIM4
+---------------------------+----------------+----------------+----------------
+Synonyms ~, &, <>          | off, immutable | off, mutable   | off, mutable
+Line comments              | on,  immutable | off, immutable | off, immutable
+Prefix literals            | on,  immutable | off, immutable | off, immutable
+Suffix literals            | off, immutable | on,  immutable | on,  immutable
+Octal literals             | off, immutable | off, mutable   | off, mutable
+Lowline identifiers        | off, mutable   | off, immutable | off, immutable
+Escape tab and newline     | on,  immutable | off, immutable | off, immutable
+Set difference operator \  | on,  immutable | off, immutable | off, immutable
+Postfix ++/-- statements   | on,  immutable | off, immutable | off, immutable
+Pragma delimiters <*, *>   | on,  immutable | off, immutable | off, immutable
+---------------------------+----------------+----------------+----------------
+Subtyped cardinals         | off, immutable | off, immutable | on,  immutable
+Safe string termination    | on,  immutable | off, immutable | on,  immutable
+Import variables immutable | on,  immutable | off, immutable | off, immutable
+CONST parameters           | on,  immutable | off, immutable | off, immutable
+Variadic parameters        | on,  immutable | off, immutable | off, immutable
+Additional types           | on,  immutable | off, immutable | off, immutable
+Additional functions       | on,  immutable | off, immutable | off, immutable
+Unified conversion         | on,  immutable | off, immutable | off, immutable
+Explicit cast              | on,  immutable | on,  mutable   | on,  mutable
+---------------------------+----------------+----------------+----------------
+Coroutines                 | off, immutable | off, mutable   | off, mutable
+Variant records            | off, immutable | off, mutable   | off, mutable
+Extensible records         | on,  immutable | off, immutable | off, immutable
+Indeterminate records      | on,  immutable | off, immutable | off, immutable
+Unqualified import         | off, immutable | on,  immutable | on,  immutable
+Local modules              | off, immutable | off, mutable   | off, mutable
+WITH statement             | off, immutable | on,  immutable | on,  immutable
+TO DO statement            | on,  mutable   | off, immutable | off, immutable
+-------------------------------------------------------------------------------
+
+END OF FILE
