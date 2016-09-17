@@ -74,12 +74,13 @@ public class Capabilities : ICapabilities {
   private static bool unifiedConversion = true;
   private static bool explicitCast = true;
   private static bool coroutines = false;
+  private static bool variantRecords = false;
   private static bool extensibleRecords = true;
   private static bool indeterminateRecords = true;
   private static bool unqualifiedImport = false;
   private static bool localModules = false;
   private static bool withStatement = false;
-  private static bool toDoList = true;
+  private static bool toDoStatement = true;
 
 
 /* ---------------------------------------------------------------------------
@@ -196,7 +197,7 @@ public static bool IsEnabled (Capability capability) {
       return coroutines;
 
     case Capability.VariantRecords :
-      return !extensibleRecords;
+      return variantRecords;
 
     case Capability.ExtensibleRecords :
       return extensibleRecords;
@@ -213,8 +214,8 @@ public static bool IsEnabled (Capability capability) {
     case Capability.WithStatement :
       return withStatement;
 
-    case Capability.ToDoList :
-      return toDoList;
+    case Capability.ToDoStatement :
+      return toDoStatement;
 
     default :
       return false;
@@ -462,7 +463,7 @@ public static bool Coroutines () {
  * ------------------------------------------------------------------------ */
 
 public static bool VariantRecords () {
-  return !extensibleRecords;
+  return variantRecords;
 } /* end VariantRecords */
 
 
@@ -522,14 +523,14 @@ public static bool WithStatement () {
 
 
 /* ---------------------------------------------------------------------------
- * convenience method ToDoList()
+ * convenience method ToDoStatement()
  * ---------------------------------------------------------------------------
- * Returns true if capability ToDoList is enabled, else false.
+ * Returns true if capability ToDoStatement is enabled, else false.
  * ------------------------------------------------------------------------ */
 
-public static bool ToDoList () {
-  return toDoList;
-} /* end ToDoList */
+public static bool ToDoStatement () {
+  return toDoStatement;
+} /* end ToDoStatement */
 
 
 /* ---------------------------------------------------------------------------
@@ -635,21 +636,29 @@ private static void SetCapability (Capability capability, bool value) {
       break;
 
     case Capability.VariantRecords :
-      extensibleRecords = !value;
-      break;
+      if (((extensibleRecords || indeterminateRecords) && !value) &&
+          (!(extensibleRecords || indeterminateRecords) && value)) {
+        variantRecords = value;
+      } /* end if */
+      break; 
 
     case Capability.ExtensibleRecords :
-      extensibleRecords = value;
+      if ((variantRecords && !value) || (!variantRecords && value)) {
+        extensibleRecords = value;
+      } /* end if */
       break;
 
     case Capability.IndeterminateRecords :
-      if (extensibleRecords) {
+      if ((variantRecords && !value) || (!variantRecords && value)) {
         indeterminateRecords = value;
       } /* end if */
       break;
 
     case Capability.UnqualifiedImport :
       unqualifiedImport = value;
+      if (!unqualifiedImport) {
+        localModules = false;
+      } /* end if */
       break;
 
     case Capability.LocalModules :
@@ -662,8 +671,8 @@ private static void SetCapability (Capability capability, bool value) {
       withStatement = value;
       break;
 
-    case Capability.ToDoList :
-      toDoList = value;
+    case Capability.ToDoStatement :
+      toDoStatement = value;
       break;
 
   } /* end switch */
