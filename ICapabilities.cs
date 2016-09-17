@@ -79,7 +79,7 @@ public enum Capability {
   UnqualifiedImport,
   LocalModules,
   WithStatement,
-  ToDoList
+  ToDoStatement
 } /* Capability */
 
 
@@ -100,13 +100,14 @@ public interface ICapabilities {
  *
  * The following constraints apply:
  * o  PrefixLiterals = NOT SuffixLiterals
- * o  IntraCommentPragmas = NOT IsoPragmaDelimiters
- * o  ExtensibleRecords = NOT VariantRecords
+ * o  IsoPragmaDelimiters = NOT IntraCommentPragmas
+ * o  VariantRecords and ExtensibleRecords are mutually exclusive
+ * o  VariantRecords and IndeterminateRecords are mutually exclusive
  * o  Enabling OctalLiterals fails if SuffixLiterals is disabled
  * o  Enabling LocalModules fails if UnqualifiedImport is disabled
  * ------------------------------------------------------------------------ */
 
-// public void Enable (params Capability[] caps);
+// public static void Enable (params Capability[] caps);
 
 
 /* ---------------------------------------------------------------------------
@@ -116,13 +117,12 @@ public interface ICapabilities {
  *
  * The following constraints apply:
  * o  PrefixLiterals = NOT SuffixLiterals
- * o  IntraCommentPragmas = NOT IsoPragmaDelimiters
- * o  ExtensibleRecords = NOT VariantRecords
+ * o  IsoPragmaDelimiters = NOT IntraCommentPragmas
  * o  Disabling SuffixLiterals also disables OctalLiterals
  * o  Disabling UnqualifiedImport also disables LocalModules
  * ------------------------------------------------------------------------ */
 
-// public void Disable (params Capability[] caps);
+// public static void Disable (params Capability[] caps);
 
 
 /* ---------------------------------------------------------------------------
@@ -378,12 +378,12 @@ public interface ICapabilities {
 
 
 /* ---------------------------------------------------------------------------
- * convenience method ToDoList()
+ * convenience method ToDoStatement()
  * ---------------------------------------------------------------------------
- * Returns true if capability ToDoList is enabled, else false.
+ * Returns true if capability ToDoStatement is enabled, else false.
  * ------------------------------------------------------------------------ */
 
-// public static bool ToDoList ();
+// public static bool ToDoStatement ();
 
   
 } /* ICapabilities */
