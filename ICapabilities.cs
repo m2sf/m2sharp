@@ -22,9 +22,9 @@
  *
  * @file
  *
- * ICompilerOptions.cs
+ * ICapabilities.cs
  *
- * public interface of compiler options class
+ * public interface of compiler capability settings class
  *
  * @license
  *
