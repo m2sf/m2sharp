@@ -1,4 +1,4 @@
-/* M2Sharp -- Modula-2 to C# Translator & Compiler
+﻿/* M2Sharp -- Modula-2 to C# Translator & Compiler
  *
  * Copyright (c) 2016 The Modula-2 Software Foundation
  *
@@ -53,17 +53,25 @@ public class ASCII {
 
   /* ASCII NUL is used as string terminator in M2 strings */
 
-  const char NUL = '\u0000';
+  public const char NUL = '\u0000';
 
   /* ASCII EOT is used to signal the end of a source file */
 
-  const char EOT = '\u0004';
+  public const char EOT = '\u0004';
 
   /* TAB, LF and CRLF are legal within M2 source files */
 
-  const char TAB = '\u0009'; 
-  const char LF  = '\u000A';
-  const char CR  = '\u000D';
+  public const char TAB = '\u0009';
+  public const char LF  = '\u000A';
+  public const char CR  = '\u000D';
+
+  /* SPACE */
+
+  public const char SPACE = '\u0020';
+
+  /* BACKSLASH */
+
+  public const char BACKSLASH = '\\';
 
 } /* ASCII */
 
