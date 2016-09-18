@@ -1,4 +1,4 @@
-/* M2Sharp -- Modula-2 to C# Translator & Compiler
+﻿/* M2Sharp -- Modula-2 to C# Translator & Compiler
  *
  * Copyright (c) 2016 The Modula-2 Software Foundation
  *
@@ -316,7 +316,7 @@ private void GetNewLookaheadSym () {
   while (token == Token.Unknown) {
   
     /* skip all whitespace and line feeds */
-    while ((nextChar == ' ') ||
+    while ((nextChar == ASCII.SPACE) ||
            (nextChar == ASCII.TAB) ||
            (nextChar == ASCII.LF)) {
       
@@ -342,7 +342,7 @@ private void GetNewLookaheadSym () {
 
       case '!' :
         /* line comment */
-        if (CompilerOptions.LineComments()) {
+        if (Capabilities.LineComments()) {
           nextChar = SkipLineComment();
         }
         else /* illegal character */ {
@@ -367,7 +367,7 @@ private void GetNewLookaheadSym () {
 
       case '&' :
         /* ampersand synonym */
-        if (CompilerOptions.Synonyms()) {
+        if (Capabilities.Synonyms()) {
           nextChar = infile.ConsumeChar();
           token = Token.AND;
         }
@@ -484,9 +484,16 @@ private void GetNewLookaheadSym () {
         break;
 
       case '<' :
+        if (Capabilities.IsoPragmaDelimiters() && (infile.LA2Char() == '*')) {
+          /* pragma */
+          nextChar = GetPragma();
+          token = Token.Pragma;
+          break;
+        } /* end if */
+
         /* not-equal, less-equal or less operator */
         nextChar = infile.ConsumeChar();
-        if (CompilerOptions.Synonyms() && (nextChar == '>')) {
+        else if (Capabilities.Synonyms() && (nextChar == '>')) {
           /* not-equal synonym */
           nextChar = infile.ConsumeChar();
           token = Token.NotEqual;
@@ -565,9 +572,9 @@ private void GetNewLookaheadSym () {
         token = Token.LeftBracket;
         break;
 
-      case '\\' :
+      case ASCII.BACKSLASH :
         /* backslash */
-        if (CompilerOptions.BackslashSetDiffOp()) {
+        if (Capabilities.BackslashSetDiffOp()) {
           nextChar = infile.ConsumeChar();
           token = Token.Backslash;
         }
@@ -640,7 +647,7 @@ private void GetNewLookaheadSym () {
 
       case '~' :
         /* tilde synonym */
-        if (CompilerOptions.Synonyms()) {
+        if (Capabilities.Synonyms()) {
           nextChar = infile.ConsumeChar();
           token = Token.NOT;
         }
