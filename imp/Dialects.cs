@@ -45,14 +45,6 @@
 
 namespace org.m2sf.m2sharp {
 
-/* ---------------------------------------------------------------------------
- * interface IDialects
- * ---------------------------------------------------------------------------
- * This interface describes a singleton class.
- * Since C# does not fully support the concept of information hiding, this
- * interface is entirely comprised of comments for documentation purposes.
- * ------------------------------------------------------------------------ */
-
 public class Dialects : IDialects {
 
 /* ---------------------------------------------------------------------------
