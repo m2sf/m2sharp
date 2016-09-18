@@ -84,43 +84,158 @@ public class Capabilities : ICapabilities {
 
 
 /* ---------------------------------------------------------------------------
- * method Enable(capability1, capability2, ...)
+ * method SetCapability(capability, value)
  * ---------------------------------------------------------------------------
- * Enables capabilities given in the argument list.
+ * Sets the given capability to the given boolean value.
+ * A value of true enables the capability, a value of false disables it.
  *
  * The following constraints apply:
- * o  PrefixLiterals = NOT SuffixLiterals
- * o  IntraCommentPragmas = NOT IsoPragmaDelimiters
- * o  ExtensibleRecords = NOT VariantRecords
+ * o  Enabling PrefixLiterals disables SuffixLiterals and vice versa
+ * o  Enabling IsoPragmaDelimiters disables IntraCommentPragmas and vice versa
+ * o  VariantRecords and ExtensibleRecords are mutually exclusive
+ * o  VariantRecords and IndeterminateRecords are mutually exclusive
  * o  Enabling OctalLiterals fails if SuffixLiterals is disabled
  * o  Enabling LocalModules fails if UnqualifiedImport is disabled
  * ------------------------------------------------------------------------ */
 
-public static void Enable (params Capability[] caps) {
-  foreach (Capability cap in caps) {
-    SetCapability(cap, true);
-  } /* end if */
-} /* end Enable */
+public static void SetCapability ( Capability capability, bool value) {
 
+  switch (capability) {
+  
+    case Capability.Synonyms :
+      synonyms = value;
+      break;
 
-/* ---------------------------------------------------------------------------
- * method Disable(capability1, capability2, ...)
- * ---------------------------------------------------------------------------
- * Disables capabilities given in the argument list.
- *
- * The following constraints apply:
- * o  PrefixLiterals = NOT SuffixLiterals
- * o  IntraCommentPragmas = NOT IsoPragmaDelimiters
- * o  ExtensibleRecords = NOT VariantRecords
- * o  Disabling SuffixLiterals also disables OctalLiterals
- * o  Disabling UnqualifiedImport also disables LocalModules
- * ------------------------------------------------------------------------ */
+    case Capability.LineComments :
+      lineComments = value;
+      break;
 
-public static void Disable (params Capability[] caps) {
-  foreach (Capability cap in caps) {
-    SetCapability(cap, false);
-  } /* end if */
-} /* end Disable */
+    case Capability.PrefixLiterals :
+      prefixLiterals = value;
+      if (prefixLiterals) {
+        octalLiterals = false;
+      } /* end if */
+      break;
+
+    case Capability.SuffixLiterals :
+      prefixLiterals = !value;
+      if (prefixLiterals) {
+        octalLiterals = false;
+      } /* end if */
+      break;
+
+    case Capability.OctalLiterals :
+      if (!prefixLiterals) {
+        octalLiterals = value;
+      } /* end if */
+      break;
+
+    case Capability.LowlineIdentifiers :
+      lowlineIdentifiers = value;
+      break;
+
+    case Capability.EscapeTabAndNewline :
+      escapeTabAndNewline = value;
+      break;
+
+    case Capability.BackslashSetDiffOp :
+      backslashSetDiffOp = value;
+      break;
+
+    case Capability.PostfixIncAndDec :
+      postfixIncAndDec = value;
+      break;
+
+    case Capability.IntraCommentPragmas :
+      isoPragmaDelimiters = !value;
+      break;
+
+    case Capability.IsoPragmaDelimiters :
+      isoPragmaDelimiters = value;
+      break;
+
+    case Capability.SubtypeCardinals :
+      subtypeCardinals = value;
+      break;
+
+    case Capability.SafeStringTermination :
+      safeStringTermination = value;
+      break;
+
+    case Capability.ImportVarsImmutable :
+      importVarsImmutable = value;
+      break;
+
+    case Capability.ConstParameters :
+      constParameters = value;
+      break;
+
+    case Capability.VariadicParameters :
+      variadicParameters = value;
+      break;
+
+    case Capability.AdditionalTypes :
+      additionalTypes = value;
+      break;
+
+    case Capability.AdditionalFunctions :
+      additionalFunctions = value;
+      break;
+
+    case Capability.UnifiedConversion :
+      unifiedConversion = value;
+      break;
+
+    case Capability.ExplicitCast :
+      explicitCast = value;
+      break;
+
+    case Capability.Coroutines :
+      coroutines = value;
+      break;
+
+    case Capability.VariantRecords :
+      if (((extensibleRecords || indeterminateRecords) && !value) &&
+          (!(extensibleRecords || indeterminateRecords) && value)) {
+        variantRecords = value;
+      } /* end if */
+      break; 
+
+    case Capability.ExtensibleRecords :
+      if ((variantRecords && !value) || (!variantRecords && value)) {
+        extensibleRecords = value;
+      } /* end if */
+      break;
+
+    case Capability.IndeterminateRecords :
+      if ((variantRecords && !value) || (!variantRecords && value)) {
+        indeterminateRecords = value;
+      } /* end if */
+      break;
+
+    case Capability.UnqualifiedImport :
+      unqualifiedImport = value;
+      if (!unqualifiedImport) {
+        localModules = false;
+      } /* end if */
+      break;
+
+    case Capability.LocalModules :
+      if (unqualifiedImport) {
+        localModules = value;
+      } /* end if */
+      break;
+
+    case Capability.WithStatement :
+      withStatement = value;
+      break;
+
+    case Capability.ToDoStatement :
+      toDoStatement = value;
+      break;
+
+  } /* end switch */
+} /* end SetCapability */
 
 
 /* ---------------------------------------------------------------------------
@@ -531,152 +646,6 @@ public static bool WithStatement () {
 public static bool ToDoStatement () {
   return toDoStatement;
 } /* end ToDoStatement */
-
-
-/* ---------------------------------------------------------------------------
- * private method SetCapability(capability, boolean)
- * ---------------------------------------------------------------------------
- * Sets the given capability to the given boolean value.
- * ------------------------------------------------------------------------ */
-
-private static void SetCapability (Capability capability, bool value) {
-
-  switch (capability) {
-  
-    case Capability.Synonyms :
-      synonyms = value;
-      break;
-
-    case Capability.LineComments :
-      lineComments = value;
-      break;
-
-    case Capability.PrefixLiterals :
-      prefixLiterals = value;
-      if (prefixLiterals) {
-        octalLiterals = false;
-      } /* end if */
-      break;
-
-    case Capability.SuffixLiterals :
-      prefixLiterals = !value;
-      if (prefixLiterals) {
-        octalLiterals = false;
-      } /* end if */
-      break;
-
-    case Capability.OctalLiterals :
-      if (!prefixLiterals) {
-        octalLiterals = value;
-      } /* end if */
-      break;
-
-    case Capability.LowlineIdentifiers :
-      lowlineIdentifiers = value;
-      break;
-
-    case Capability.EscapeTabAndNewline :
-      escapeTabAndNewline = value;
-      break;
-
-    case Capability.BackslashSetDiffOp :
-      backslashSetDiffOp = value;
-      break;
-
-    case Capability.PostfixIncAndDec :
-      postfixIncAndDec = value;
-      break;
-
-    case Capability.IntraCommentPragmas :
-      isoPragmaDelimiters = !value;
-      break;
-
-    case Capability.IsoPragmaDelimiters :
-      isoPragmaDelimiters = value;
-      break;
-
-    case Capability.SubtypeCardinals :
-      subtypeCardinals = value;
-      break;
-
-    case Capability.SafeStringTermination :
-      safeStringTermination = value;
-      break;
-
-    case Capability.ImportVarsImmutable :
-      importVarsImmutable = value;
-      break;
-
-    case Capability.ConstParameters :
-      constParameters = value;
-      break;
-
-    case Capability.VariadicParameters :
-      variadicParameters = value;
-      break;
-
-    case Capability.AdditionalTypes :
-      additionalTypes = value;
-      break;
-
-    case Capability.AdditionalFunctions :
-      additionalFunctions = value;
-      break;
-
-    case Capability.UnifiedConversion :
-      unifiedConversion = value;
-      break;
-
-    case Capability.ExplicitCast :
-      explicitCast = value;
-      break;
-
-    case Capability.Coroutines :
-      coroutines = value;
-      break;
-
-    case Capability.VariantRecords :
-      if (((extensibleRecords || indeterminateRecords) && !value) &&
-          (!(extensibleRecords || indeterminateRecords) && value)) {
-        variantRecords = value;
-      } /* end if */
-      break; 
-
-    case Capability.ExtensibleRecords :
-      if ((variantRecords && !value) || (!variantRecords && value)) {
-        extensibleRecords = value;
-      } /* end if */
-      break;
-
-    case Capability.IndeterminateRecords :
-      if ((variantRecords && !value) || (!variantRecords && value)) {
-        indeterminateRecords = value;
-      } /* end if */
-      break;
-
-    case Capability.UnqualifiedImport :
-      unqualifiedImport = value;
-      if (!unqualifiedImport) {
-        localModules = false;
-      } /* end if */
-      break;
-
-    case Capability.LocalModules :
-      if (unqualifiedImport) {
-        localModules = value;
-      } /* end if */
-      break;
-
-    case Capability.WithStatement :
-      withStatement = value;
-      break;
-
-    case Capability.ToDoStatement :
-      toDoStatement = value;
-      break;
-
-  } /* end switch */
-} /* end SetCapability */
 
   
 } /* Capabilities */

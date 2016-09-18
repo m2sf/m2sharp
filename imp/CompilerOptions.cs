@@ -45,6 +45,52 @@
 
 namespace org.m2sf.m2sharp {
 
+/* ---------------------------------------------------------------------------
+ * type Option
+ * ---------------------------------------------------------------------------
+ * Enumerated values representing compiler options.
+ * ------------------------------------------------------------------------ */
+
+public enum OptionX {
+
+  /* diagnostic options */
+
+  Verbose,            /* --verbose */
+  LexerDebug,         /* --lexer-debug */
+  ParserDebug,        /* --parser-debug */
+  ErrantSemicolons,   /* --errant-semicolons */
+
+  /* build product options */
+
+  AstRequired,        /* --ast, --no-ast */
+  GraphRequired,      /* --graph, --no-graph */
+  XlatRequired,       /* --xlat, --no-xlat */
+  ObjRequired,        /* --obj, --no-obj */
+
+  PreserveComments,   /* --preserve-comments, --strip-comments */
+
+  /* capability options */
+
+  Synonyms,           /* --synonyms, --no-synonyms */
+  OctalLiterals,      /* --octal-literals, --no-octal-literals */
+  LowlineIdentifiers, /* --lowline-identifiers, --no-lowline-identifiers */
+  ExplicitCast,       /* --explicit-cast, --no-explicit-cast */
+  Coroutines,         /* --coroutines, --no-coroutines */
+  VariantRecords,     /* --variant-records, --no-variant-records */
+  LocalModules,       /* --local-modules, --no-local-modules */
+  ToDoStatement       /* --to-do-statement, --no-to-do-statement */
+
+} /* Option */
+
+
+/* ---------------------------------------------------------------------------
+ * interface ICompilerOptions
+ * ---------------------------------------------------------------------------
+ * This interface describes a singleton class.
+ * Since C# does not fully support the concept of information hiding, this
+ * interface is entirely comprised of comments for documentation purposes.
+ * ------------------------------------------------------------------------ */
+
 public class CompilerOptions : ICompilerOptions {
 
   private static Dialect dialect = Dialect.Extended;
@@ -52,424 +98,344 @@ public class CompilerOptions : ICompilerOptions {
   private static bool verbose = false;
   private static bool lexerDebug = false;
   private static bool parserDebug = false;
-  private static bool synonyms = false;
-  private static bool lineComments = true;
-  private static bool prefixLiterals = false;
-  private static bool suffixLiterals = true;
-  private static bool octalLiterals = false;
-  private static bool lowlineIdentifiers = false;
-  private static bool escapeTabAndNewline = true;
-  private static bool backslashSetDiffOp = true;
-  private static bool subtypeCardinals = false;
-  private static bool safeStringTermination = true;
-  private static bool constParameters = true;
-  private static bool variadicParameters = false;
-  private static bool additionalTypes = true;
-  private static bool additionalFunctions = true;
-  private static bool unifiedConversion = true;
-  private static bool explicitCast = true;
-  private static bool coroutines = false;
-  private static bool variantRecords = false;
-  private static bool extensibleRecords = true;
-  private static bool indeterminateRecords = true;
-  private static bool localModules = false;
   private static bool errantSemicolons = false;
-  private static bool stripComments = true;
-  private static bool toDoList = false;
+
+  private static bool astRequired = true;
+  private static bool graphRequired = false;
+  private static bool xlatRequired = true;
+  private static bool objRequired = false;
+
+  private static bool preserveComments = true;
 
 
 /* ---------------------------------------------------------------------------
- * method SetOptions(dialect, option1, option2, ...)
+ * method SetDialect(dialect)
  * ---------------------------------------------------------------------------
- * Sets current dialect and options.
+ * Sets the current dialect to the given dialect and sets all capabilities to
+ * the dialect's default capability settings. 
  * ------------------------------------------------------------------------ */
 
-public void SetOptions (Dialect dialect, params Option[] options) {
-// TO DO
-} /* end SetOptions */
+public static void SetDialect (Dialect dialect) {
+  Capability cap;
+  bool value;
+
+  for (cap = Capability.First; cap <= Capability.Last; cap++) {
+
+    value = Dialects.IsDefaultCapability(dialect, cap);
+    Capabilities.SetCapability(cap, value);
+
+  } /* end for */
+
+  CompilerOptions.dialect = dialect;
+} /* end SetDialect */
 
 
 /* ---------------------------------------------------------------------------
- * method GetDialect()
+ * method CurrentDialect()
  * ---------------------------------------------------------------------------
  * Returns the current dialect.
  * ------------------------------------------------------------------------ */
 
-public static Dialect GetDialect () {
+public static Dialect CurrentDialect () {
   return dialect;
-} /* end Dialect */
+} /* end CurrentDialect */
 
 
 /* ---------------------------------------------------------------------------
- * method GetOpt(option)
+ * method SetOption(option, value)
  * ---------------------------------------------------------------------------
- * Returns true if option is turned on, otherwise false.
+ * Sets the given option to the given boolean value.
  * ------------------------------------------------------------------------ */
 
-public static bool GetOpt (Option option) {
+public static void SetOption (Option option, bool value) {
+
   switch (option) {
 
     case Option.Verbose :
-      return verbose;
+      verbose = value;
+      break;
 
     case Option.LexerDebug :
-      return lexerDebug;
+      lexerDebug = value;
+      break;
 
     case Option.ParserDebug :
-      return parserDebug;
-
-    case Option.Synonyms :
-      return synonyms;
-
-    case Option.LineComments :
-      return lineComments;
-
-    case Option.PrefixLiterals :
-      return prefixLiterals;
-
-    case Option.SuffixLiterals :
-      return suffixLiterals;
-
-    case Option.OctalLiterals :
-      return octalLiterals;
-
-    case Option.LowlineIdentifiers :
-      return lowlineIdentifiers;
-
-    case Option.EscapeTabAndNewline :
-      return escapeTabAndNewline;
-
-    case Option.BackslashSetDiffOp :
-      return backslashSetDiffOp;
-
-    case Option.SubtypeCardinals :
-      return subtypeCardinals;
-
-    case Option.SafeStringTermination :
-      return safeStringTermination;
-
-    case Option.ConstParameters :
-      return constParameters;
-
-    case Option.VariadicParameters :
-      return variadicParameters;
-
-    case Option.AdditionalTypes :
-      return additionalTypes;
-
-    case Option.AdditionalFunctions :
-      return additionalFunctions;
-
-    case Option.UnifiedConversion :
-      return unifiedConversion;
-
-    case Option.ExplicitCast :
-      return explicitCast;
-
-    case Option.Coroutines :
-      return coroutines;
-
-    case Option.VariantRecords :
-      return variantRecords;
-
-    case Option.ExtensibleRecords :
-      return extensibleRecords;
-
-    case Option.IndeterminateRecords :
-      return indeterminateRecords;
-
-    case Option.LocalModules :
-      return localModules;
+      parserDebug = value;
+      break;
 
     case Option.ErrantSemicolons :
-      return errantSemicolons;
+      errantSemicolons = value;
+      break;
 
-    case Option.StripComments :
-      return stripComments;
+    case Option.AstRequired :
+      astRequired = value;
+      break;
 
-    case Option.ToDoList :
-      return toDoList;
+    case Option.GraphRequired :
+      graphRequired = value;
+      break;
+
+    case Option.XlatRequired :
+      xlatRequired = value;
+      break;
+
+    case Option.ObjRequired :
+      objRequired = value;
+      break;
+
+    case Option.PreserveComments :
+      preserveComments = value;
+      break;
 
     default :
-      return false;
+      SetCapability(option, value);
+      break;
 
   } /* end switch */
-} /* end GetOpt */
+
+} /* end SetOpt */
 
 
 /* ---------------------------------------------------------------------------
- * convenience method Verbose()
+ * method Verbose()
  * ---------------------------------------------------------------------------
  * Returns true if option --verbose is turned on, else false.
  * ------------------------------------------------------------------------ */
 
 public static bool Verbose () {
   return verbose;
-} /* end  */
+} /* end Verbose */
 
 
 /* ---------------------------------------------------------------------------
- * convenience method LexerDebug()
+ * method LexerDebug()
  * ---------------------------------------------------------------------------
  * Returns true if option --lexer-debug is turned on, else false.
  * ------------------------------------------------------------------------ */
 
 public static bool LexerDebug () {
   return lexerDebug;
-} /* end  */
+} /* end LexerDebug */
 
 
 /* ---------------------------------------------------------------------------
- * convenience method ParserDebug()
+ * method ParserDebug()
  * ---------------------------------------------------------------------------
  * Returns true if option --parser-debug is turned on, else false.
  * ------------------------------------------------------------------------ */
 
 public static bool ParserDebug () {
   return parserDebug;
-} /* end  */
+} /* end ParserDebug */
 
 
 /* ---------------------------------------------------------------------------
- * convenience method Synonyms()
- * ---------------------------------------------------------------------------
- * Returns true if option --synonyms is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool Synonyms () {
-  return synonyms;
-} /* end  */
-  
-  
-/* ---------------------------------------------------------------------------
- * convenience method LineComments()
- * ---------------------------------------------------------------------------
- * Returns true if option --line-comments is turned on, else false.
- * ------------------------------------------------------------------------ */
-  
-public static bool LineComments () {
-  return lineComments;
-} /* end  */
-  
-  
-/* ---------------------------------------------------------------------------
- * convenience method PrefixLiterals()
- * ---------------------------------------------------------------------------
- * Returns true if option --prefix-literals is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool PrefixLiterals () {
-  return prefixLiterals;
-} /* end  */
-  
-  
-/* ---------------------------------------------------------------------------
- * convenience method SuffixLiterals()
- * ---------------------------------------------------------------------------
- * Returns true if option --suffix-literals is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool SuffixLiterals () {
-  return suffixLiterals;
-} /* end  */
-  
-  
-/* ---------------------------------------------------------------------------
- * convenience method OctalLiterals()
- * ---------------------------------------------------------------------------
- * Returns true if option --octal-literals is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool OctalLiterals () {
-  return octalLiterals;
-} /* end  */
-  
-  
-/* ---------------------------------------------------------------------------
- * convenience method LowlineIdentifiers()
- * ---------------------------------------------------------------------------
- * Returns true if option --lowline-identifiers is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool LowlineIdentifiers () {
-  return lowlineIdentifiers;
-} /* end  */
-  
-  
-/* ---------------------------------------------------------------------------
- * convenience method EscapeTabAndNewline()
- * ---------------------------------------------------------------------------
- * Returns true if option --escape-tab-and-newline is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool EscapeTabAndNewline () {
-  return escapeTabAndNewline;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method BackslashSetDiffOp()
- * ---------------------------------------------------------------------------
- * Returns true if option --backslash-set-diff-op is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool BackslashSetDiffOp () {
-  return backslashSetDiffOp;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method SubtypeCardinals()
- * ---------------------------------------------------------------------------
- * Returns true if option --subtype-cardinals is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool SubtypeCardinals () {
-  return subtypeCardinals;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method SafeStringTermination()
- * ---------------------------------------------------------------------------
- * Returns true if option --safe-string-termination is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool SafeStringTermination () {
-  return safeStringTermination;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method ConstParameters()
- * ---------------------------------------------------------------------------
- * Returns true if option --const-parameters is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool ConstParameters () {
-  return constParameters;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method VariadicParameters()
- * ---------------------------------------------------------------------------
- * Returns true if option --variadic-parameters is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool VariadicParameters () {
-  return variadicParameters;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method AdditionalTypes()
- * ---------------------------------------------------------------------------
- * Returns true if option --additional-types is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool AdditionalTypes () {
-  return additionalTypes;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method AdditionalFunctions()
- * ---------------------------------------------------------------------------
- * Returns true if option --additional-functions is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool AdditionalFunctions () {
-  return additionalFunctions;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method UnifiedConversion()
- * ---------------------------------------------------------------------------
- * Returns true if option --unified-conversion is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool UnifiedConversion () {
-  return unifiedConversion;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method ExplicitCast()
- * ---------------------------------------------------------------------------
- * Returns true if option --explicit-cast is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool ExplicitCast () {
-  return explicitCast;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method Coroutines()
- * ---------------------------------------------------------------------------
- * Returns true if option --coroutines is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool Coroutines () {
-  return coroutines;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method VariantRecords()
- * ---------------------------------------------------------------------------
- * Returns true if option --variant-records is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool VariantRecords () {
-  return variantRecords;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method LocalModules()
- * ---------------------------------------------------------------------------
- * Returns true if option --local-modules is turned on, else false.
- * ------------------------------------------------------------------------ */
-
-public static bool LocalModules () {
-  return localModules;
-} /* end  */
-
-
-/* ---------------------------------------------------------------------------
- * convenience method ErrantSemicolons()
+ * method ErrantSemicolons()
  * ---------------------------------------------------------------------------
  * Returns true if option --errant-semicolons is turned on, else false.
  * ------------------------------------------------------------------------ */
 
 public static bool ErrantSemicolons () {
   return errantSemicolons;
-} /* end  */
+} /* end ErrantSemicolons */
 
 
 /* ---------------------------------------------------------------------------
- * convenience method StripComments()
+ * method AstRequired()
  * ---------------------------------------------------------------------------
- * Returns true if option --strip-comments is turned on, else false.
+ * Returns true if option --ast is turned on, else false.
  * ------------------------------------------------------------------------ */
 
-public static bool StripComments () {
-  return stripComments;
-} /* end  */
+public static bool AstRequired () {
+  return astRequired;
+} /* end AstRequired */
 
 
 /* ---------------------------------------------------------------------------
- * convenience method ToDoList()
+ * method GraphRequired()
  * ---------------------------------------------------------------------------
- * Returns true if option --to-do-list is turned on, else false.
+ * Returns true if option --graph is turned on, else false.
  * ------------------------------------------------------------------------ */
 
-public static bool ToDoList () {
-  return toDoList;
-} /* end  */
+public static bool GraphRequired () {
+  return graphRequired;
+} /* end GraphRequired */
+
+
+/* ---------------------------------------------------------------------------
+ * method XlatRequired()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --xlat is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool XlatRequired () {
+  return xlatRequired;
+} /* end XlatRequired */
+
+
+/* ---------------------------------------------------------------------------
+ * method ObjRequired()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --obj is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool ObjRequired () {
+  return objRequired;
+} /* end ObjRequired */
+
+
+/* ---------------------------------------------------------------------------
+ * method PreserveComments()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --preserve-comments is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool PreserveComments () {
+  return preserveComments;
+} /* end PreserveComments */
+
+
+/* ---------------------------------------------------------------------------
+ * method Synonyms()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --synonyms is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool Synonyms () {
+  return Capabilities.Synonyms();
+} /* end Synonyms */
+  
+  
+/* ---------------------------------------------------------------------------
+ * method OctalLiterals()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --octal-literals is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool OctalLiterals () {
+  return Capabilities.OctalLiterals();
+} /* end OctalLiterals */
+  
+  
+/* ---------------------------------------------------------------------------
+ * method LowlineIdentifiers()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --lowline-identifiers is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool LowlineIdentifiers () {
+  return Capabilities.LowlineIdentifiers();
+} /* end LowlineIdentifiers */
+  
+  
+/* ---------------------------------------------------------------------------
+ * method ExplicitCast()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --explicit-cast is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool ExplicitCast () {
+  return Capabilities.ExplicitCast();
+} /* end ExplicitCast */
+
+
+/* ---------------------------------------------------------------------------
+ * method Coroutines()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --coroutines is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool Coroutines () {
+  return Capabilities.Coroutines();
+} /* end Coroutines */
+
+
+/* ---------------------------------------------------------------------------
+ * method VariantRecords()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --variant-records is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool VariantRecords () {
+  return Capabilities.VariantRecords();
+} /* end VariantRecords */
+
+
+/* ---------------------------------------------------------------------------
+ * method LocalModules()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --local-modules is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool LocalModules () {
+  return Capabilities.LocalModules();
+} /* end LocalModules */
+
+
+/* ---------------------------------------------------------------------------
+ * method ToDoStatement()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --to-do-statements is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool ToDoStatement () {
+  return Capabilities.ToDoStatement();
+} /* end ToDoStatement */
+
+
+/* ---------------------------------------------------------------------------
+ * private method SetCapability(option, value)
+ * ---------------------------------------------------------------------------
+ * Sets the capability associated with option to the given value.
+ * ------------------------------------------------------------------------ */
+
+private static void SetCapability (Option option, bool value) {
+  Capability capability;
+
+  switch (option) {
+
+    case Option.Synonyms :
+      capability = Capability.Synonyms;
+      break;
+
+    case Option.OctalLiterals :
+      capability = Capability.OctalLiterals;
+      break;
+
+    case Option.LowlineIdentifiers :
+      capability = Capability.LowlineIdentifiers;
+      break;
+
+    case Option.ExplicitCast :
+      capability = Capability.ExplicitCast;
+      break;
+
+    case Option.VariantRecords :
+      capability = Capability.VariantRecords;
+      break;
+
+    case Option.LocalModules :
+      capability = Capability.LocalModules;
+      break;
+
+    case Option.ToDoStatement :
+      capability = Capability.ToDoStatement;
+      break;
+
+    default :
+      // error : not a capability option
+      return;
+
+  } /* end switch */
+  
+  if (Dialects.IsMutableCapability(dialect, capability)) {
+    Capabilities.SetCapability(capability, value);
+  }
+  else /* immutable capability */ {
+    // error : not a mutable option
+  } /* end if */
+  
+} /* end SetCapability */
 
   
 } /* CompilerOptions */
