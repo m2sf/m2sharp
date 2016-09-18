@@ -53,6 +53,7 @@ namespace org.m2sf.m2sharp {
 
 public enum Capability {
   Synonyms,
+  First = Synonyms,
   LineComments,
   PrefixLiterals,
   SuffixLiterals,
@@ -79,7 +80,8 @@ public enum Capability {
   UnqualifiedImport,
   LocalModules,
   WithStatement,
-  ToDoStatement
+  ToDoStatement,
+  Last = ToDoStatement
 } /* Capability */
 
 
@@ -94,35 +96,21 @@ public enum Capability {
 public interface ICapabilities {
 
 /* ---------------------------------------------------------------------------
- * method Enable(capability1, capability2, ...)
+ * method SetCapability(capability, value)
  * ---------------------------------------------------------------------------
- * Enables capabilities given in the argument list.
+ * Sets the given capability to the given boolean value.
+ * A value of true enables the capability, a value of false disables it.
  *
  * The following constraints apply:
- * o  PrefixLiterals = NOT SuffixLiterals
- * o  IsoPragmaDelimiters = NOT IntraCommentPragmas
+ * o  Enabling PrefixLiterals disables SuffixLiterals and vice versa
+ * o  Enabling IsoPragmaDelimiters disables IntraCommentPragmas and vice versa
  * o  VariantRecords and ExtensibleRecords are mutually exclusive
  * o  VariantRecords and IndeterminateRecords are mutually exclusive
  * o  Enabling OctalLiterals fails if SuffixLiterals is disabled
  * o  Enabling LocalModules fails if UnqualifiedImport is disabled
  * ------------------------------------------------------------------------ */
 
-// public static void Enable (params Capability[] caps);
-
-
-/* ---------------------------------------------------------------------------
- * method Disable(capability1, capability2, ...)
- * ---------------------------------------------------------------------------
- * Disables capabilities given in the argument list.
- *
- * The following constraints apply:
- * o  PrefixLiterals = NOT SuffixLiterals
- * o  IsoPragmaDelimiters = NOT IntraCommentPragmas
- * o  Disabling SuffixLiterals also disables OctalLiterals
- * o  Disabling UnqualifiedImport also disables LocalModules
- * ------------------------------------------------------------------------ */
-
-// public static void Disable (params Capability[] caps);
+// public static void SetCapability ( Capability capability, bool value);
 
 
 /* ---------------------------------------------------------------------------
