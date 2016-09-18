@@ -1,0 +1,198 @@
+﻿
+M2C/M2J/M2Sharp Compiler Option Grammar
+
+
+/* N O N - T E R M I N A L S */
+
+options :
+  infoRequest | compilationRequest
+  ;
+
+infoRequest :
+  HELP | VERSION | LICENSE
+  ;
+
+compilationRequest :
+  dialect? diagnostics? products? capabilities? sourceFile
+  ;
+
+dialect :
+  PIM3 | PIM4 | EXT
+  ;
+
+diagnostics :
+  VERBOSE | LEXER_DEBUG | PARSER_DEBUG | ERRANT_SEMICOLONS
+  ;
+
+products :
+  ( singleProduct | multipleProducts ) commentOption?
+  ;
+
+singleProduct :
+  SYNTAX_ONLY | AST_ONLY | GRAPH_ONLY | XLAT_ONLY | OBJ_ONLY
+  ;
+
+multipleProducts :
+  ( ast | graph | xlat | obj )+
+  ;
+
+ast :
+  AST | NO_AST
+  ;
+
+graph :
+  GRAPH | NO_GRAPH
+  ;
+
+xlat :
+  XLAT | NO_XLAT
+  ;
+
+obj :
+  OBJ | NO_OBJ
+  ;
+
+commentOption :
+  PRESERVE_COMMENTS | STRIP_COMMENTS
+  ;
+
+capabilities :
+  capabilityGroup capability? | capability
+  ;
+
+capabilityGroup :
+  SAFER | COMPLIANT
+  ;
+
+capability :
+  synonyms | octalLiterals | explicitCast |
+  coroutines | variantRecords | localModules |
+  lowlineIdentifiers | toDoStatement
+  ;
+
+synonyms :
+  SYNONYMS | NO_SYNONYMS
+  ;
+
+octalLiterals :
+  OCTAL_LITERALS | NO_OCTAL_LITERALS
+  ;
+
+explicitCast :
+  EXPLICIT_CAST | NO_EXPLICIT_CAST
+  ;
+
+coroutines :
+  COROUTINES | NO_COROUTINES
+  ;
+
+variantRecords :
+  VARIANT_RECORDS | NO_VARIANT_RECORDS
+  ;
+
+localModules :
+  LOCAL_MODULES | NO_LOCAL_MODULES
+  ;
+
+lowlineIdentifiers :
+  LOWLINE_IDENTIFIERS | NO_LOWLINE_IDENTIFIERS
+  ;
+
+toDoStatement :
+  TO_DO_STATEMENT | NO_TO_DO_STATEMENT
+  ;
+
+sourceFile :
+  <platform dependent pathname or filename>;
+
+
+/* T E R M I N A L S */
+  
+HELP : '--help' | '-h' ;
+
+VERSION : '--version' | '-V' ;
+
+LICENSE : '--license' ;
+
+PIM3 : '--pim3' ;
+
+PIM4 : '--pim4' ;
+
+EXT : '--ext' ;
+
+VERBOSE : '--verbose' | '-v' ;
+
+LEXER_DEBUG : '--lexer-debug' ;
+
+PARSER_DEBUG : '--parser-debug' ;
+
+ERRANT_SEMICOLONS : '--errant-semicolons' ;
+
+SYNTAX_ONLY : '--syntax-only' ;
+
+AST_ONLY : '--ast-only' ;
+
+GRAPH_ONLY : '--graph-only' ;
+
+XLAT_ONLY : '--xlat-only' ;
+
+OBJ_ONLY : '--obj-only' ;
+
+AST : '--ast' ;
+
+NO_AST : '--no-ast' ;
+
+GRAPH : '--graph' ;
+
+NO_GRAPH : '--no-graph' ;
+
+XLAT : '--xlat' ;
+
+NO_XLAT : '--no-xlat' ;
+
+OBJ : '--obj' ;
+
+NO_OBJ : '--no-obj' ;
+
+PRESERVE_COMMENTS : '--preserve-comments' ;
+
+STRIP_COMMENTS : '--strip-comments' ;
+
+SAFER : '--safer' ;
+
+COMPLIANT : '--compliant' ;
+
+SYNONYMS : '--synonyms' ;
+
+NO_SYNONYMS : '--no-synonyms' ;
+
+OCTAL_LITERALS : '--octal-literals' ;
+
+NO_OCTAL_LITERALS : '--no-octal-literals' ;
+
+EXPLICIT_CAST : '--explicit-cast' ;
+
+NO_EXPLICIT_CAST : '--no-explicit-cast' ;
+
+COROUTINES : '--coroutines' ;
+
+NO_COROUTINES : '--no-coroutines' ;
+
+VARIANT_RECORDS : '--variant-records' ;
+
+NO_VARIANT_RECORDS : '--no-variant-records' ;
+
+LOCAL_MODULES : '--local-modules' ;
+
+NO_LOCAL_MODULES : '--no-local-modules' ;
+
+LOWLINE_IDENTIFIERS : '--lowline-identifiers' ;
+
+NO_LOWLINE_IDENTIFIERS : '--no-lowline-identifiers' ;
+
+TO_DO_STATEMENT : '--to-do-statement' ;
+
+NO_TO_DO_STATEMENT : '--no-to-do-statement' ;
+
+
+/* END OF FILE */
