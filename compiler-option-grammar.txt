@@ -57,7 +57,7 @@ commentOption :
   ;
 
 capabilities :
-  capabilityGroup capability? | capability
+  capabilityGroup capability* | capability+
   ;
 
 capabilityGroup :
