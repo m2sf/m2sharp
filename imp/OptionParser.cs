@@ -47,7 +47,7 @@ namespace org.m2sf.m2sharp {
 
 public class OptionParser : IOptionParser {
 
-  public OptionParser () {
+  private OptionParser () {
     // no operation
   } /* end OptionParser */
 
