@@ -47,9 +47,15 @@ namespace org.m2sf.m2sharp {
 
 public class OptionParser : IOptionParser {
 
+  private string[] argument;
+  private uint argCount = 0;
+  private uint index = 0;
+
+
   private OptionParser () {
     // no operation
   } /* end OptionParser */
+
 
 /* N O N - T E R M I N A L S */
 
@@ -61,10 +67,13 @@ public class OptionParser : IOptionParser {
  *   ;
  * ------------------------------------------------------------------------ */
 
-public void ParseOptions () {
+public void ParseOptions (string[] args) {
   OptionToken sym;
+
+  argument = args;
+  argCount = (uint)args.Length;
   
-  sym = NextArg();
+  sym = NextToken();
 
   if (IsInfoRequest(sym)) {
     sym = ParseInfoRequest(sym);
@@ -106,7 +115,7 @@ private OptionToken ParseInfoRequest (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseInfoRequest */
 
 
@@ -173,7 +182,7 @@ private OptionToken ParseDialect (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseDialect */
 
 
@@ -207,7 +216,7 @@ private OptionToken ParseDiagnostics (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseDiagnostics */
 
 
@@ -288,7 +297,7 @@ private OptionToken ParseSingleProduct (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseSingleProduct */
 
 
@@ -340,7 +349,7 @@ private OptionToken ParseMultipleProducts (OptionToken sym) {
 
     } /* end switch */
 
-    sym = NextArg();
+    sym = NextToken();
   } /* end while */
 
   return sym;
@@ -369,7 +378,7 @@ private OptionToken ParseCommentOption (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseCommentOption */
 
 
@@ -432,7 +441,7 @@ private OptionToken ParseCapabilityGroup (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseCapabilityGroup */
 
 
@@ -516,7 +525,7 @@ private OptionToken ParseCapability (OptionToken sym) {
 
   } /* end switch */
 
-  return NextArg();
+  return NextToken();
 } /* end ParseCapability */
 
 
@@ -529,7 +538,7 @@ private OptionToken ParseCapability (OptionToken sym) {
 
 private OptionToken ParseSourceFile (OptionToken sym) {
 
-  return NextArg();
+  return NextToken();
 } /* end  */
 
 
@@ -660,11 +669,408 @@ private bool IsSingleCapabilityOption (OptionToken sym) {
 
 /* T E R M I N A L S */
 
-private OptionToken NextArg() {
+private OptionToken NextToken() {
+  string nextArg;
+  uint length;
+  
+  nextArg = NextArg();
 
-  // TO DO : read argument and tokenise
+  if (nextArg == null) {
+    return OptionToken.END_OF_INPUT;
+  } /* end if */
+
+  if (nextArg[0] != '-') {
+    return OptionToken.SOURCE_FILE;
+  } /* end if */
+
+  length = (uint)nextArg.Length;
+  
+  switch (length) {
+    case 2 :
+      switch (nextArg[1]) {
+
+        case 'h' :
+          return OptionToken.HELP;
+
+        case 'v' :
+          return OptionToken.VERBOSE;
+
+        case 'V' :
+          return OptionToken.VERSION;
+
+      } /* end switch */
+      break;
+
+    case 5 :
+      switch (nextArg[2]) {
+
+        case 'a' :
+          if (string.CompareOrdinal(nextArg, "--ast") == 0) {
+            return OptionToken.AST;
+          } /* end if */
+          break;
+
+        case 'e' :
+          if (string.CompareOrdinal(nextArg, "--ext") == 0) {
+            return OptionToken.EXT;
+          } /* end if */
+          break;
+
+        case 'o' :
+          if (string.CompareOrdinal(nextArg, "--obj") == 0) {
+            return OptionToken.OBJ;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 6 :
+      switch (nextArg[5]) {
+
+        case '3' :
+          if (string.CompareOrdinal(nextArg, "--pim3") == 0) {
+            return OptionToken.PIM3;
+          } /* end if */
+          break;
+
+        case '4' :
+          if (string.CompareOrdinal(nextArg, "--pim4") == 0) {
+            return OptionToken.PIM4;
+          } /* end if */
+          break;
+
+        case 'p' :
+          if (string.CompareOrdinal(nextArg, "--help") == 0) {
+            return OptionToken.HELP;
+          } /* end if */
+          break;
+
+        case 't' :
+          if (string.CompareOrdinal(nextArg, "--xlat") == 0) {
+            return OptionToken.PIM4;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 7 :
+      switch (nextArg[2]) {
+
+        case 'g' :
+          if (string.CompareOrdinal(nextArg, "--graph") == 0) {
+            return OptionToken.GRAPH;
+          } /* end if */
+          break;
+
+        case 's' :
+          if (string.CompareOrdinal(nextArg, "--safer") == 0) {
+            return OptionToken.SAFER;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 8 :
+      switch (nextArg[5]) {
+
+        case 'a' :
+          if (string.CompareOrdinal(nextArg, "--no-ast") == 0) {
+            return OptionToken.NO_AST;
+          } /* end if */
+          break;
+
+        case 'o' :
+          if (string.CompareOrdinal(nextArg, "--no-obj") == 0) {
+            return OptionToken.NO_OBJ;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 9 :
+      switch (nextArg[5]) {
+
+        case 'b' :
+          if (string.CompareOrdinal(nextArg, "--verbose") == 0) {
+            return OptionToken.VERBOSE;
+          } /* end if */
+          break;
+
+        case 'e' :
+          if (string.CompareOrdinal(nextArg, "--license") == 0) {
+            return OptionToken.LICENSE;
+          } /* end if */
+          break;
+
+        case 's' :
+          if (string.CompareOrdinal(nextArg, "--version") == 0) {
+            return OptionToken.VERSION;
+          } /* end if */
+          break;
+
+        case 'x' :
+          if (string.CompareOrdinal(nextArg, "--no-xlat") == 0) {
+            return OptionToken.NO_XLAT;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 10 :
+      switch (nextArg[2]) {
+
+        case 'a' :
+          if (string.CompareOrdinal(nextArg, "--ast-only") == 0) {
+            return OptionToken.AST_ONLY;
+          } /* end if */
+          break;
+
+        case 'n' :
+          if (string.CompareOrdinal(nextArg, "--no-graph") == 0) {
+            return OptionToken.NO_GRAPH;
+          } /* end if */
+          break;
+
+        case 'o' :
+          if (string.CompareOrdinal(nextArg, "--obj-only") == 0) {
+            return OptionToken.OBJ_ONLY;
+          } /* end if */
+          break;
+
+        case 's' :
+          if (string.CompareOrdinal(nextArg, "--synonyms") == 0) {
+            return OptionToken.SYNONYMS;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 11 :
+      switch (nextArg[2]) {
+
+        case 'c' :
+          if (string.CompareOrdinal(nextArg, "--compliant") == 0) {
+            return OptionToken.COMPLIANT;
+          } /* end if */
+          break;
+
+        case 'x' :
+          if (string.CompareOrdinal(nextArg, "--xlat-only") == 0) {
+            return OptionToken.XLAT_ONLY;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 12 :
+      switch (nextArg[2]) {
+
+        case 'c' :
+          if (string.CompareOrdinal(nextArg, "--coroutines") == 0) {
+            return OptionToken.COROUTINES;
+          } /* end if */
+          break;
+
+        case 'g' :
+          if (string.CompareOrdinal(nextArg, "--graph-only") == 0) {
+            return OptionToken.GRAPH_ONLY;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 13 :
+      switch (nextArg[2]) {
+
+        case 'n' :
+          if (string.CompareOrdinal(nextArg, "--no-synonyms") == 0) {
+            return OptionToken.NO_SYNONYMS;
+          } /* end if */
+          break;
+
+        case 'l' :
+          if (string.CompareOrdinal(nextArg, "--lexer-debug") == 0) {
+            return OptionToken.LEXER_DEBUG;
+          } /* end if */
+          break;
+
+        case 's' :
+          if (string.CompareOrdinal(nextArg, "--syntax-only") == 0) {
+            return OptionToken.SYNTAX_ONLY;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 14 :
+      if (string.CompareOrdinal(nextArg, "--parser-debug") == 0) {
+        return OptionToken.PARSER_DEBUG;
+      } /* end if */
+      break;
+
+    case 15 :
+      switch (nextArg[2]) {
+
+        case 'e' :
+          if (string.CompareOrdinal(nextArg, "--explicit-cast") == 0) {
+            return OptionToken.EXPLICIT_CAST;
+          } /* end if */
+          break;
+
+        case 'n' :
+          if (string.CompareOrdinal(nextArg, "--no-coroutines") == 0) {
+            return OptionToken.NO_COROUTINES;
+          } /* end if */
+          break;
+
+        case 'l' :
+          if (string.CompareOrdinal(nextArg, "--local-modules") == 0) {
+            return OptionToken.LOCAL_MODULES;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 16 :
+      switch (nextArg[2]) {
+
+        case 'o' :
+          if (string.CompareOrdinal(nextArg, "--octal-literals") == 0) {
+            return OptionToken.OCTAL_LITERALS;
+          } /* end if */
+          break;
+
+        case 's' :
+          if (string.CompareOrdinal(nextArg, "--strip-comments") == 0) {
+            return OptionToken.STRIP_COMMENTS;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 17 :
+      switch (nextArg[2]) {
+
+        case 't' :
+          if (string.CompareOrdinal(nextArg, "--to-do-statement") == 0) {
+            return OptionToken.TO_DO_STATEMENT;
+          } /* end if */
+          break;
+
+        case 'v' :
+          if (string.CompareOrdinal(nextArg, "--variant-records") == 0) {
+            return OptionToken.VARIANT_RECORDS;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 18 :
+      switch (nextArg[5]) {
+
+        case 'e' :
+          if (string.CompareOrdinal(nextArg, "--no-explicit-cast") == 0) {
+            return OptionToken.NO_EXPLICIT_CAST;
+          } /* end if */
+          break;
+
+        case 'l' :
+          if (string.CompareOrdinal(nextArg, "--no-local-modules") == 0) {
+            return OptionToken.NO_LOCAL_MODULES;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 19 :
+      switch (nextArg[2]) {
+
+        case 'e' :
+          if (string.CompareOrdinal(nextArg, "--errant-semicolons") == 0) {
+            return OptionToken.ERRANT_SEMICOLONS;
+          } /* end if */
+          break;
+
+        case 'n' :
+          if (string.CompareOrdinal(nextArg, "--no-octal-literals") == 0) {
+            return OptionToken.NO_OCTAL_LITERALS;
+          } /* end if */
+          break;
+
+        case 'p' :
+          if (string.CompareOrdinal(nextArg, "--preserve-comments") == 0) {
+            return OptionToken.PRESERVE_COMMENTS;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 20 :
+      switch (nextArg[5]) {
+
+        case 't' :
+          if (string.CompareOrdinal(nextArg, "--no-to-do-statement") == 0) {
+            return OptionToken.NO_EXPLICIT_CAST;
+          } /* end if */
+          break;
+
+        case 'v' :
+          if (string.CompareOrdinal(nextArg, "--no-variant-records") == 0) {
+            return OptionToken.NO_LOCAL_MODULES;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
+
+    case 21 :
+      if (string.CompareOrdinal(nextArg, "--lowline-identifiers") == 0) {
+        return OptionToken.LOWLINE_IDENTIFIERS;
+      } /* end if */
+      break;
+
+    case 24 :
+      if (string.CompareOrdinal(nextArg, "--no-lowline-identifiers") == 0) {
+        return OptionToken.NO_LOWLINE_IDENTIFIERS;
+      } /* end if */
+      break;
+
+  } /* end switch */
 
   return OptionToken.UNKNOWN;
+} /* end NextToken */
+
+
+/* ---------------------------------------------------------------------------
+ * method NextArg()
+ * ---------------------------------------------------------------------------
+ * Consumes and returns the next command line argument.  Returns null if all
+ * arguments have previously been consumed.
+ * ------------------------------------------------------------------------ */
+
+private string NextArg() {
+
+  if (index >= argCount) {
+    return null;
+  } /* end if */
+
+  index++;
+  return argument[index-1];
+
 } /* end NextArg */
 
 
