@@ -47,10 +47,11 @@ namespace org.m2sf.m2sharp {
 
 public class OptionParser : IOptionParser {
 
+  private uint optionSet = 0;
   private string[] argument;
   private uint argCount = 0;
   private uint index = 0;
-
+  private string sourceFile;
 
   private OptionParser () {
     // no operation
@@ -316,35 +317,35 @@ private OptionToken ParseMultipleProducts (OptionToken sym) {
     switch (sym) {
 
       case OptionToken.AST :
-        CompilerOptions.SetOption(Option.AstRequired, true);
+        SetOption(Option.AstRequired, true);
         break;
 
       case OptionToken.NO_AST :
-        CompilerOptions.SetOption(Option.AstRequired, false);
+        SetOption(Option.AstRequired, false);
         break;
 
       case OptionToken.GRAPH :
-        CompilerOptions.SetOption(Option.GraphRequired, true);
+        SetOption(Option.GraphRequired, true);
         break;
 
       case OptionToken.NO_GRAPH :
-        CompilerOptions.SetOption(Option.GraphRequired, false);
+        SetOption(Option.GraphRequired, true);
         break;
 
       case OptionToken.XLAT :
-        CompilerOptions.SetOption(Option.XlatRequired, true);
+        SetOption(Option.XlatRequired, true);
         break;
 
       case OptionToken.NO_XLAT :
-        CompilerOptions.SetOption(Option.XlatRequired, false);
+        SetOption(Option.XlatRequired, false);
         break;
 
       case OptionToken.OBJ :
-        CompilerOptions.SetOption(Option.ObjRequired, true);
+        SetOption(Option.ObjRequired, true);
         break;
 
       case OptionToken.NO_OBJ :
-        CompilerOptions.SetOption(Option.ObjRequired, false);
+        SetOption(Option.ObjRequired, true);
         break;
 
     } /* end switch */
@@ -369,11 +370,21 @@ private OptionToken ParseCommentOption (OptionToken sym) {
   switch (sym) {
 
     case OptionToken.PRESERVE_COMMENTS :
-      CompilerOptions.SetOption(Option.PreserveComments, true);
+        if (CompilerOptions.XlatRequired()) {
+          CompilerOptions.SetOption(Option.PreserveComments, true);
+        }
+        else {
+          // error : option only available with --xlat
+        } /* end if */
       break;
 
     case OptionToken.STRIP_COMMENTS :
-      CompilerOptions.SetOption(Option.PreserveComments, false);
+        if (CompilerOptions.XlatRequired()) {
+          CompilerOptions.SetOption(Option.PreserveComments, false);
+        }
+        else {
+          // error : option only available with --xlat
+        } /* end if */
       break;
 
   } /* end switch */
@@ -460,67 +471,67 @@ private OptionToken ParseCapability (OptionToken sym) {
   switch (sym) {
 
     case OptionToken.SYNONYMS :
-      CompilerOptions.SetOption(Option.Synonyms, true);
+      SetOption(Option.Synonyms, true);
       break;
 
     case OptionToken.NO_SYNONYMS :
-      CompilerOptions.SetOption(Option.Synonyms, false);
+      SetOption(Option.Synonyms, false);
       break;
 
     case OptionToken.OCTAL_LITERALS :
-      CompilerOptions.SetOption(Option.OctalLiterals, true);
+      SetOption(Option.OctalLiterals, true);
       break;
 
     case OptionToken.NO_OCTAL_LITERALS :
-      CompilerOptions.SetOption(Option.OctalLiterals, false);
+      SetOption(Option.OctalLiterals, false);
       break;
 
     case OptionToken.EXPLICIT_CAST :
-      CompilerOptions.SetOption(Option.ExplicitCast, true);
+      SetOption(Option.ExplicitCast, true);
       break;
 
     case OptionToken.NO_EXPLICIT_CAST :
-      CompilerOptions.SetOption(Option.ExplicitCast, false);
+      SetOption(Option.ExplicitCast, false);
       break;
 
     case OptionToken.COROUTINES :
-      CompilerOptions.SetOption(Option.Coroutines, true);
+      SetOption(Option.Coroutines, true);
       break;
 
     case OptionToken.NO_COROUTINES :
-      CompilerOptions.SetOption(Option.Coroutines, false);
+      SetOption(Option.Coroutines, false);
       break;
 
     case OptionToken.VARIANT_RECORDS :
-      CompilerOptions.SetOption(Option.VariantRecords, true);
+      SetOption(Option.VariantRecords, true);
       break;
 
     case OptionToken.NO_VARIANT_RECORDS :
-      CompilerOptions.SetOption(Option.VariantRecords, false);
+      SetOption(Option.VariantRecords, false);
       break;
 
     case OptionToken.LOCAL_MODULES :
-      CompilerOptions.SetOption(Option.LocalModules, true);
+      SetOption(Option.LocalModules, true);
       break;
 
     case OptionToken.NO_LOCAL_MODULES :
-      CompilerOptions.SetOption(Option.LocalModules, false);
+      SetOption(Option.LocalModules, false);
       break;
 
     case OptionToken.LOWLINE_IDENTIFIERS :
-      CompilerOptions.SetOption(Option.LowlineIdentifiers, true);
+      SetOption(Option.LowlineIdentifiers, true);
       break;
 
     case OptionToken.NO_LOWLINE_IDENTIFIERS :
-      CompilerOptions.SetOption(Option.LowlineIdentifiers, false);
+      SetOption(Option.LowlineIdentifiers, false);
       break;
 
     case OptionToken.TO_DO_STATEMENT :
-      CompilerOptions.SetOption(Option.ToDoStatement, true);
+      SetOption(Option.ToDoStatement, true);
       break;
 
     case OptionToken.NO_TO_DO_STATEMENT :
-      CompilerOptions.SetOption(Option.ToDoStatement, false);
+      SetOption(Option.ToDoStatement, false);
       break;
 
   } /* end switch */
@@ -594,7 +605,7 @@ private bool IsDiagnosticsOption (OptionToken sym) {
  * ------------------------------------------------------------------------ */
 
 private bool IsProductOption (OptionToken sym) {
-  return IsSingleProductOption(sym) || IsMultipleProductsOption(sym);
+  return (IsSingleProductOption(sym) || IsMultipleProductsOption(sym));
 } /* end IsProductOption */
 
 
@@ -640,7 +651,7 @@ private bool IsCommentOption (OptionToken sym) {
  * ------------------------------------------------------------------------ */
 
 private bool IsCapabilityOption (OptionToken sym) {
-  return IsSingleProductOption(sym) || IsMultipleProductsOption(sym);
+  return (IsSingleProductOption(sym) || IsMultipleProductsOption(sym));
 } /* end IsCapabilityOption */
 
 
@@ -669,6 +680,12 @@ private bool IsSingleCapabilityOption (OptionToken sym) {
 
 /* T E R M I N A L S */
 
+/* ---------------------------------------------------------------------------
+ * method NextToken()
+ * ---------------------------------------------------------------------------
+ * Reads and consumes the next commmand line argument and returns its token
+ * ------------------------------------------------------------------------ */
+
 private OptionToken NextToken() {
   string nextArg;
   uint length;
@@ -680,6 +697,7 @@ private OptionToken NextToken() {
   } /* end if */
 
   if (nextArg[0] != '-') {
+    sourceFile = nextArg;
     return OptionToken.SOURCE_FILE;
   } /* end if */
 
@@ -1072,6 +1090,47 @@ private string NextArg() {
   return argument[index-1];
 
 } /* end NextArg */
+
+
+/* ---------------------------------------------------------------------------
+ * method SetOption(option)
+ * ---------------------------------------------------------------------------
+ * Sets option unless duplicate.
+ * ------------------------------------------------------------------------ */
+
+private void SetOption (Option option, bool value) {
+
+  if (!IsInOptionSet(option)) {
+    CompilerOptions.SetOption(option, value);
+    StoreInOptionSet(option);
+  }
+  else {
+    // error : duplicate option
+  } /* end if */
+
+} /* end SetOption */
+
+
+/* ---------------------------------------------------------------------------
+ * method StoreInOptionSet(option)
+ * ---------------------------------------------------------------------------
+ * Stores option in optionSet.
+ * ------------------------------------------------------------------------ */
+
+private void StoreInOptionSet (Option option) {
+  optionSet = (optionSet | (uint)(1 << (int)option));
+} /* end StoreInOptionSet */
+
+
+/* ---------------------------------------------------------------------------
+ * method IsInOptionSet(option)
+ * ---------------------------------------------------------------------------
+ * Returns true if option is present in optionSet.
+ * ------------------------------------------------------------------------ */
+
+private bool IsInOptionSet (Option option) {
+  return (optionSet & (uint)(1 << (int)option)) != 0;
+} /* end IsInOptionSet */
 
 
 } /* OptionParser */
