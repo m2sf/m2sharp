@@ -21,7 +21,8 @@ dialect :
   ;
 
 diagnostics :
-  VERBOSE | LEXER_DEBUG | PARSER_DEBUG | ERRANT_SEMICOLONS
+  ( VERBOSE | LEXER_DEBUG | PARSER_DEBUG | PRINT_SETTINGS |
+    ERRANT_SEMICOLONS )+
   ;
 
 products :
@@ -125,6 +126,8 @@ VERBOSE : '--verbose' | '-v' ;
 LEXER_DEBUG : '--lexer-debug' ;
 
 PARSER_DEBUG : '--parser-debug' ;
+
+PRINT_SETTINGS : '--print-settings' ;
 
 ERRANT_SEMICOLONS : '--errant-semicolons' ;
 

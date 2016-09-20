@@ -1,6 +1,6 @@
 M2C, M2J, M2Sharp Compiler Options
 
-Document version 2.0, status 2016-09-16
+Document version 2.0.1, status 2016-09-20
 
 
 (1) information options, all dialects
@@ -15,6 +15,7 @@ Document version 2.0, status 2016-09-16
 --verbose, -v
 --lexer-debug
 --parser-debug
+--print-settings
 --errant-semicolons
 
 defaults:
