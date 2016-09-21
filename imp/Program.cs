@@ -208,37 +208,37 @@ public static void PrintOSInfo () {
  * ------------------------------------------------------------------------ */
     
 public static void Main (string[] args) {
-  ArgumentStatus status;
+  ArgumentStatus argStatus;
 
   if (PlatformInfo.IsSupported() == false) {
     Console.WriteLine("platform not supported");
     Environment.Exit(1);
   } /* end if */
 
-  ArgumentParser.ParseOptions(args);
+  argStatus = ArgumentParser.ParseOptions(args);
 
-  switch (x) {
+  switch (argStatus) {
 
-    case HelpRequested :
+    case ArgumentStatus.Success :
+      PrintBanner();
+      break;
+
+    case ArgumentStatus.HelpRequested :
       PrintHelp();
       Environment.Exit(0);
       break;
 
-    case VersionRequested :
+    case ArgumentStatus.VersionRequested :
       PrintVersion();
       Environment.Exit(0);
       break;
 
-    case LicenseRequested :
+    case ArgumentStatus.LicenseRequested :
       PrintLicense();
       Environment.Exit(0);
       break;
 
-    case CompilationRequested :
-      PrintBanner();
-      break;
-
-    default :
+    case ArgumentStatus.ErrorsEncountered :
       Console.WriteLine("use m2sharp --help for usage info");
       Environment.Exit(1);
       break;
