@@ -46,6 +46,21 @@
 namespace org.m2sf.m2sharp {
 
 /* ---------------------------------------------------------------------------
+ * type ArgumentStatus
+ * ---------------------------------------------------------------------------
+ * Enumerated status values representing command line arguments.
+ * ------------------------------------------------------------------------ */
+
+public enum ArgumentStatus {
+  Success,
+  HelpRequested,
+  VersionRequested,
+  LicenseRequested,
+  ErrorsEncountered
+} /* ArgumentStatus */
+
+
+/* ---------------------------------------------------------------------------
  * interface IArgumentParser
  * ---------------------------------------------------------------------------
  * This interface describes a singleton class.
@@ -61,7 +76,25 @@ public interface IArgumentParser {
  * Parses command line arguments and sets compiler options accordingly.
  * ------------------------------------------------------------------------ */
 
-// public static void ParseOptions (string[] args);
+// public static ArgumentStatus ParseOptions (string[] args);
+
+
+/* ---------------------------------------------------------------------------
+ * method SourceFile()
+ * ---------------------------------------------------------------------------
+ * Returns sourcefile
+ * ------------------------------------------------------------------------ */
+
+// public static string SourceFile ();
+
+
+/* ---------------------------------------------------------------------------
+ * method ErrorCount()
+ * ---------------------------------------------------------------------------
+ * Returns error count
+ * ------------------------------------------------------------------------ */
+
+// public static uint ErrorCount ();
 
 
 } /* OptionParser */

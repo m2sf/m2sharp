@@ -58,6 +58,7 @@ public enum Option {
   Verbose,            /* --verbose */
   LexerDebug,         /* --lexer-debug */
   ParserDebug,        /* --parser-debug */
+  ShowSettings,       /* --show-settings */
   ErrantSemicolons,   /* --errant-semicolons */
 
   /* build product options */
@@ -66,6 +67,14 @@ public enum Option {
   GraphRequired,      /* --graph, --no-graph */
   XlatRequired,       /* --xlat, --no-xlat */
   ObjRequired,        /* --obj, --no-obj */
+
+  /* identifier option */
+
+  UseIdentifiersVerbatim,
+                      /* --use-identifiers-verbatim,
+                         --transliterate-identifiers */
+
+  /* comment option */
 
   PreserveComments,   /* --preserve-comments, --strip-comments */
 
@@ -122,6 +131,15 @@ public interface ICompilerOptions {
 
 
 /* ---------------------------------------------------------------------------
+ * method IsMutableOption(option)
+ * ---------------------------------------------------------------------------
+ * Returns true if option is mutable for the current dialect, else false.
+ * ------------------------------------------------------------------------ */
+
+// public static bool IsMutableOption (Option option);
+
+
+/* ---------------------------------------------------------------------------
  * method Verbose()
  * ---------------------------------------------------------------------------
  * Returns true if option --verbose is turned on, else false.
@@ -146,6 +164,15 @@ public interface ICompilerOptions {
  * ------------------------------------------------------------------------ */
 
 // public static bool ParserDebug ();
+
+
+/* ---------------------------------------------------------------------------
+ * method ShowSettings()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --show-settings is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+// public static bool ShowSettings ();
 
 
 /* ---------------------------------------------------------------------------
@@ -191,6 +218,15 @@ public interface ICompilerOptions {
  * ------------------------------------------------------------------------ */
 
 // public static bool ObjRequired ();
+
+
+/* ---------------------------------------------------------------------------
+ * method UseIdentifiersVerbatim()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --use-identifiers-verbatim is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+// public static bool UseIdentifiersVerbatim ();
 
 
 /* ---------------------------------------------------------------------------
@@ -273,7 +309,16 @@ public interface ICompilerOptions {
 
 // public static bool ToDoStatement ();
 
-  
+
+/* ---------------------------------------------------------------------------
+ * method PrintSettings()
+ * ---------------------------------------------------------------------------
+ * Prints the current settings to the console.
+ * ------------------------------------------------------------------------ */
+
+// public static void PrintSettings ();
+
+
 } /* ICompilerOptions */
 
 } /* namespace */

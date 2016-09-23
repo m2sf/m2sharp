@@ -56,75 +56,80 @@ public enum ArgumentToken {
 
   /* information options */
 
-  HELP,                     /* --help, -h */
-  VERSION,                  /* --version, -V */
-  LICENSE,                  /* --license */
+  HELP,                      /* --help, -h */
+  VERSION,                   /* --version, -V */
+  LICENSE,                   /* --license */
 
   /* dialect options */
 
-  PIM3,                     /* --pim3 */
-  PIM4,                     /* --pim4 */
-  EXT,                      /* --ext */
+  PIM3,                      /* --pim3 */
+  PIM4,                      /* --pim4 */
+  EXT,                       /* --ext */
 
-  /* diagnostic options */
+  /* dialect qualifier options */
 
-  VERBOSE,                  /* --verbose, -v */
-  LEXER_DEBUG,              /* --lexer-debug */
-  PARSER_DEBUG,             /* --parser-debug */
-  PRINT_SETTINGS,           /* --print-settings */
-  ERRANT_SEMICOLONS,        /* --errant-semicolons */
+  SAFER,                     /* --safer */
+  COMPLIANT,                 /* --compliant */
 
   /* singe product options */
 
-  SYNTAX_ONLY,              /* --syntax-only */
-  AST_ONLY,                 /* --ast-only */
-  GRAPH_ONLY,               /* --graph-only */
-  XLAT_ONLY,                /* --xlat-only */
-  OBJ_ONLY,                 /* --obj-only */
+  SYNTAX_ONLY,               /* --syntax-only */
+  AST_ONLY,                  /* --ast-only */
+  GRAPH_ONLY,                /* --graph-only */
+  XLAT_ONLY,                 /* --xlat-only */
+  OBJ_ONLY,                  /* --obj-only */
 
   /* multiple product options */
 
-  AST,                      /* --ast */
-  NO_AST,                   /* --no-ast */
-  GRAPH,                    /* --graph */
-  NO_GRAPH,                 /* --no-graph */
-  XLAT,                     /* --xlat */
-  NO_XLAT,                  /* --no-xlat */
-  OBJ,                      /* --obj */
-  NO_OBJ,                   /* --no-obj */
+  AST,                       /* --ast */
+  NO_AST,                    /* --no-ast */
+  GRAPH,                     /* --graph */
+  NO_GRAPH,                  /* --no-graph */
+  XLAT,                      /* --xlat */
+  NO_XLAT,                   /* --no-xlat */
+  OBJ,                       /* --obj */
+  NO_OBJ,                    /* --no-obj */
 
-  /* comment option */
+  /* identifier options */
 
-  PRESERVE_COMMENTS,        /* --preserve-comments */
-  STRIP_COMMENTS,           /* --strip-comments */
+  USE_IDENTIFIERS_VERBATIM,  /* --use-identifiers-verbatim */
+  TRANSLITERATE_IDENTIFIERS, /* --transliterate-identifiers */
 
-  /* capability group options */
+  /* comment options */
 
-  SAFER,                    /* --safer */
-  COMPLIANT,                /* --compliant */
+  PRESERVE_COMMENTS,         /* --preserve-comments */
+  STRIP_COMMENTS,            /* --strip-comments */
 
   /* capability options */
 
-  SYNONYMS,                 /* --synonyms */
-  NO_SYNONYMS,              /* --no-synonyms */
-  OCTAL_LITERALS,           /* --octal-literals */
-  NO_OCTAL_LITERALS,        /* --no-octal-literals */
-  EXPLICIT_CAST,            /* --explicit-cast */
-  NO_EXPLICIT_CAST,         /* --no-explicit-cast */
-  COROUTINES,               /* --coroutines */
-  NO_COROUTINES,            /* --no-coroutines */
-  VARIANT_RECORDS,          /* --variant-records */
-  NO_VARIANT_RECORDS,       /* --no-variant-records */
-  LOCAL_MODULES,ES,         /* --local-modules */
-  NO_LOCAL_MODULES,         /* --no-local-modules */
-  LOWLINE_IDENTIFIERS,      /* --lowline-identifiers */
-  NO_LOWLINE_IDENTIFIERS,   /* --no-lowline-identifiers */
-  TO_DO_STATEMENT,          /* --to-do-statement */
-  NO_TO_DO_STATEMENT,       /* --no-to-do-statement */
+  SYNONYMS,                  /* --synonyms */
+  NO_SYNONYMS,               /* --no-synonyms */
+  OCTAL_LITERALS,            /* --octal-literals */
+  NO_OCTAL_LITERALS,         /* --no-octal-literals */
+  EXPLICIT_CAST,             /* --explicit-cast */
+  NO_EXPLICIT_CAST,          /* --no-explicit-cast */
+  COROUTINES,                /* --coroutines */
+  NO_COROUTINES,             /* --no-coroutines */
+  VARIANT_RECORDS,           /* --variant-records */
+  NO_VARIANT_RECORDS,        /* --no-variant-records */
+  LOCAL_MODULES,ES,          /* --local-modules */
+  NO_LOCAL_MODULES,          /* --no-local-modules */
+  LOWLINE_IDENTIFIERS,       /* --lowline-identifiers */
+  NO_LOWLINE_IDENTIFIERS,    /* --no-lowline-identifiers */
+  TO_DO_STATEMENT,           /* --to-do-statement */
+  NO_TO_DO_STATEMENT,        /* --no-to-do-statement */
 
   /* source file argument */
 
   SOURCE_FILE,
+
+  /* diagnostic options */
+
+  VERBOSE,                   /* --verbose, -v */
+  LEXER_DEBUG,               /* --lexer-debug */
+  PARSER_DEBUG,              /* --parser-debug */
+  SHOW_SETTINGS,             /* --show-settings */
+  ERRANT_SEMICOLONS,         /* --errant-semicolons */
 
   /* end of input sentinel */
 
@@ -199,12 +204,12 @@ public interface IArgumentLexer {
 
 
 /* ---------------------------------------------------------------------------
- * method IsDiagnosticsOption(sym)
+ * method IsDialectQualifierOption(sym)
  * ---------------------------------------------------------------------------
- * Returns true if sym is a diagnostic option
+ * Returns true if sym is a dialect qualifier option
  * ------------------------------------------------------------------------ */
 
-// public static bool IsDiagnosticsOption (ArgumentToken sym);
+// public static bool IsDialectQualifierOption (ArgumentToken sym);
 
 
 /* ---------------------------------------------------------------------------
@@ -235,6 +240,15 @@ public interface IArgumentLexer {
 
 
 /* ---------------------------------------------------------------------------
+ * method IsIdentifierOption(sym)
+ * ---------------------------------------------------------------------------
+ * Returns true if sym is an identifier option
+ * ------------------------------------------------------------------------ */
+
+// public static bool IsIdentifierOption (ArgumentToken sym);
+
+
+/* ---------------------------------------------------------------------------
  * method IsCommentOption(sym)
  * ---------------------------------------------------------------------------
  * Returns true if sym is a comment option
@@ -253,21 +267,12 @@ public interface IArgumentLexer {
 
 
 /* ---------------------------------------------------------------------------
- * method IsCapabilityGroupOption(sym)
+ * method IsDiagnosticsOption(sym)
  * ---------------------------------------------------------------------------
- * Returns true if sym is a capability group option
+ * Returns true if sym is a diagnostic option
  * ------------------------------------------------------------------------ */
 
-// public static bool IsCapabilityGroupOption (ArgumentToken sym);
-
-
-/* ---------------------------------------------------------------------------
- * method IsSingleCapabilityOption(sym)
- * ---------------------------------------------------------------------------
- * Returns true if sym is a single capability option
- * ------------------------------------------------------------------------ */
-
-// public static bool IsSingleCapabilityOption (ArgumentToken sym);
+// public static bool IsDiagnosticsOption (ArgumentToken sym);
 
 
 } /* IArgumentLexer */
