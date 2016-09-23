@@ -49,7 +49,7 @@ namespace org.m2sf.m2sharp {
  * ASCII codes used within the compiler.
  * ----------------------------------------------------------------------- */
 
-public class ASCII {
+public static class ASCII {
 
   /* ASCII NUL is used as string terminator in M2 strings */
 
