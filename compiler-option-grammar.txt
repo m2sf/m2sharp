@@ -13,20 +13,15 @@ infoRequest :
   ;
 
 compilationRequest :
-  dialect? diagnostics? products? capabilities? sourceFile
+  dialect? products? capabilities? sourceFile diagnostics?
   ;
 
 dialect :
-  PIM3 | PIM4 | EXT
-  ;
-
-diagnostics :
-  ( VERBOSE | LEXER_DEBUG | PARSER_DEBUG | PRINT_SETTINGS |
-    ERRANT_SEMICOLONS )+
+  ( PIM3 | PIM4 ) ( SAFER | COMPLIANT )? | EXT
   ;
 
 products :
-  ( singleProduct | multipleProducts ) commentOption?
+  ( singleProduct | multipleProducts ) identifierOption? commentOption?
   ;
 
 singleProduct :
@@ -53,22 +48,18 @@ obj :
   OBJ | NO_OBJ
   ;
 
+identifierOption :
+  USE_IDENTIFIERS_VERBATIM | TRANSLITERATE_IDENTIFIERS
+  ;
+
 commentOption :
   PRESERVE_COMMENTS | STRIP_COMMENTS
   ;
 
 capabilities :
-  capabilityGroup capability* | capability+
-  ;
-
-capabilityGroup :
-  SAFER | COMPLIANT
-  ;
-
-capability :
-  synonyms | octalLiterals | explicitCast |
-  coroutines | variantRecords | localModules |
-  lowlineIdentifiers | toDoStatement
+  ( synonyms | octalLiterals | explicitCast |
+    coroutines | variantRecords | localModules |
+    lowlineIdentifiers | toDoStatement )+
   ;
 
 synonyms :
@@ -106,6 +97,11 @@ toDoStatement :
 sourceFile :
   <platform dependent pathname or filename>;
 
+diagnostics :
+  ( VERBOSE | LEXER_DEBUG | PARSER_DEBUG | PRINT_SETTINGS |
+    ERRANT_SEMICOLONS )+
+  ;
+
 
 /* T E R M I N A L S */
   
@@ -118,6 +114,10 @@ LICENSE : '--license' ;
 PIM3 : '--pim3' ;
 
 PIM4 : '--pim4' ;
+
+SAFER : '--safer' ;
+
+COMPLIANT : '--compliant' ;
 
 EXT : '--ext' ;
 
@@ -157,13 +157,13 @@ OBJ : '--obj' ;
 
 NO_OBJ : '--no-obj' ;
 
+USE_IDENTIFIERS_VERBATIM : '--use-identifiers-verbatim' ;
+
+TRANSLITERATE_IDENTIFIERS : '--transliterate-identifiers' ;
+
 PRESERVE_COMMENTS : '--preserve-comments' ;
 
 STRIP_COMMENTS : '--strip-comments' ;
-
-SAFER : '--safer' ;
-
-COMPLIANT : '--compliant' ;
 
 SYNONYMS : '--synonyms' ;
 
