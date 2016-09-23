@@ -195,20 +195,19 @@ public static void SetCapability ( Capability capability, bool value) {
       break;
 
     case Capability.VariantRecords :
-      if (((extensibleRecords || indeterminateRecords) && !value) &&
-          (!(extensibleRecords || indeterminateRecords) && value)) {
+      if ((value == false) || (!extensibleRecords && !indeterminateRecords)) {
         variantRecords = value;
       } /* end if */
       break; 
 
     case Capability.ExtensibleRecords :
-      if ((variantRecords && !value) || (!variantRecords && value)) {
+      if ((value == false) || (variantRecords == false)) {
         extensibleRecords = value;
       } /* end if */
       break;
 
     case Capability.IndeterminateRecords :
-      if ((variantRecords && !value) || (!variantRecords && value)) {
+      if ((value == false) || (variantRecords == false)) {
         indeterminateRecords = value;
       } /* end if */
       break;

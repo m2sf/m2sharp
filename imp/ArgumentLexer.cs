@@ -115,6 +115,13 @@ public static ArgumentToken NextToken() {
       } /* end switch */
       break;
 
+    case 4 :
+      if (string.CompareOrdinal(thisArg, "--cs") == 0) {
+            return ArgumentToken.XLAT;
+      } /* end if */
+      break;
+
+
     case 5 :
       switch (thisArg[2]) {
 
@@ -178,6 +185,12 @@ public static ArgumentToken NextToken() {
           } /* end if */
           break;
 
+        case 'n' :
+          if (string.CompareOrdinal(thisArg, "--no-cs") == 0) {
+            return ArgumentToken.NO_XLAT;
+          } /* end if */
+          break;
+
         case 's' :
           if (string.CompareOrdinal(thisArg, "--safer") == 0) {
             return ArgumentToken.SAFER;
@@ -217,6 +230,12 @@ public static ArgumentToken NextToken() {
         case 'e' :
           if (string.CompareOrdinal(thisArg, "--license") == 0) {
             return ArgumentToken.LICENSE;
+          } /* end if */
+          break;
+
+        case 'o' :
+          if (string.CompareOrdinal(thisArg, "--cs-only") == 0) {
+            return ArgumentToken.XLAT_ONLY;
           } /* end if */
           break;
 
@@ -352,6 +371,12 @@ public static ArgumentToken NextToken() {
           } /* end if */
           break;
 
+        case 's' :
+          if (string.CompareOrdinal(thisArg, "--show-settings") == 0) {
+            return ArgumentToken.SHOW_SETTINGS;
+          } /* end if */
+          break;
+
       } /* end switch */
       break;
 
@@ -361,12 +386,6 @@ public static ArgumentToken NextToken() {
         case 'o' :
           if (string.CompareOrdinal(thisArg, "--octal-literals") == 0) {
             return ArgumentToken.OCTAL_LITERALS;
-          } /* end if */
-          break;
-
-        case 'p' :
-          if (string.CompareOrdinal(thisArg, "--print-settings") == 0) {
-            return ArgumentToken.PRINT_SETTINGS;
           } /* end if */
           break;
 
@@ -469,6 +488,19 @@ public static ArgumentToken NextToken() {
       } /* end if */
       break;
 
+    case 26 :
+      if (string.CompareOrdinal(thisArg, "--use-identifiers-verbatim") == 0) {
+        return ArgumentToken.USE_IDENTIFIERS_VERBATIM;
+      } /* end if */
+      break;
+
+    case 27 :
+      if
+        (string.CompareOrdinal(thisArg, "--transliterate-identifiers") == 0) {
+        return ArgumentToken.TRANSLITERATE_IDENTIFIERS;
+      } /* end if */
+      break;
+
   } /* end switch */
 
   return ArgumentToken.UNKNOWN;
@@ -527,16 +559,16 @@ public static bool IsDialectOption (ArgumentToken sym) {
 
 
 /* ---------------------------------------------------------------------------
- * method IsDiagnosticsOption(sym)
+ * method IsDialectQualifierOption(sym)
  * ---------------------------------------------------------------------------
- * Returns true if sym is a diagnostic option
+ * Returns true if sym is a dialect qualifier option
  * ------------------------------------------------------------------------ */
 
-public static bool IsDiagnosticsOption (ArgumentToken sym) {
+public static bool IsDialectQualifierOption (ArgumentToken sym) {
   return
-    (sym >= ArgumentToken.VERBOSE) &&
-    (sym <= ArgumentToken.ERRANT_SEMICOLONS);
-} /* end IsDiagnosticsOption */
+    (sym >= ArgumentToken.SAFER) &&
+    (sym <= ArgumentToken.COMPLIANT);
+} /* end IsDialectQualifierOption */
 
 
 /* ---------------------------------------------------------------------------
@@ -577,6 +609,19 @@ public static bool IsMultipleProductsOption (ArgumentToken sym) {
 
 
 /* ---------------------------------------------------------------------------
+ * method IsIdentifierOption(sym)
+ * ---------------------------------------------------------------------------
+ * Returns true if sym is an identifier option
+ * ------------------------------------------------------------------------ */
+
+public static bool IsIdentifierOption (ArgumentToken sym) {
+  return
+    (sym >= ArgumentToken.USE_IDENTIFIERS_VERBATIM) &&
+    (sym <= ArgumentToken.TRANSLITERATE_IDENTIFIERS);
+} /* end IsIdentifierOption */
+
+
+/* ---------------------------------------------------------------------------
  * method IsCommentOption(sym)
  * ---------------------------------------------------------------------------
  * Returns true if sym is a comment option
@@ -596,34 +641,23 @@ public static bool IsCommentOption (ArgumentToken sym) {
  * ------------------------------------------------------------------------ */
 
 public static bool IsCapabilityOption (ArgumentToken sym) {
-  return (IsSingleProductOption(sym) || IsMultipleProductsOption(sym));
+  return
+    (sym >= ArgumentToken.SYNONYMS) &&
+    (sym <= ArgumentToken.NO_TO_DO_STATEMENT);
 } /* end IsCapabilityOption */
 
 
 /* ---------------------------------------------------------------------------
- * method IsCapabilityGroupOption(sym)
+ * method IsDiagnosticsOption(sym)
  * ---------------------------------------------------------------------------
- * Returns true if sym is a capability group option
+ * Returns true if sym is a diagnostic option
  * ------------------------------------------------------------------------ */
 
-public static bool IsCapabilityGroupOption (ArgumentToken sym) {
+public static bool IsDiagnosticsOption (ArgumentToken sym) {
   return
-    (sym >= ArgumentToken.SAFER) &&
-    (sym <= ArgumentToken.COMPLIANT);
-} /* end IsCapabilityGroupOption */
-
-
-/* ---------------------------------------------------------------------------
- * method IsSingleCapabilityOption(sym)
- * ---------------------------------------------------------------------------
- * Returns true if sym is a single capability option
- * ------------------------------------------------------------------------ */
-
-public static bool IsSingleCapabilityOption (ArgumentToken sym) {
-  return
-    (sym >= ArgumentToken.SYNONYMS) &&
-    (sym <= ArgumentToken.NO_TO_DO_STATEMENT);
-} /* end IsSingleCapabilityOption */
+    (sym >= ArgumentToken.VERBOSE) &&
+    (sym <= ArgumentToken.ERRANT_SEMICOLONS);
+} /* end IsDiagnosticsOption */
 
 
 /* ---------------------------------------------------------------------------

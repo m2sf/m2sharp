@@ -43,45 +43,9 @@
  * NB: Components in the domain part of email addresses are in reverse order.
  */
 
+using System;
+
 namespace org.m2sf.m2sharp {
-
-/* ---------------------------------------------------------------------------
- * type Option
- * ---------------------------------------------------------------------------
- * Enumerated values representing compiler options.
- * ------------------------------------------------------------------------ */
-
-public enum OptionX {
-
-  /* diagnostic options */
-
-  Verbose,            /* --verbose */
-  LexerDebug,         /* --lexer-debug */
-  ParserDebug,        /* --parser-debug */
-  ErrantSemicolons,   /* --errant-semicolons */
-
-  /* build product options */
-
-  AstRequired,        /* --ast, --no-ast */
-  GraphRequired,      /* --graph, --no-graph */
-  XlatRequired,       /* --xlat, --no-xlat */
-  ObjRequired,        /* --obj, --no-obj */
-
-  PreserveComments,   /* --preserve-comments, --strip-comments */
-
-  /* capability options */
-
-  Synonyms,           /* --synonyms, --no-synonyms */
-  OctalLiterals,      /* --octal-literals, --no-octal-literals */
-  LowlineIdentifiers, /* --lowline-identifiers, --no-lowline-identifiers */
-  ExplicitCast,       /* --explicit-cast, --no-explicit-cast */
-  Coroutines,         /* --coroutines, --no-coroutines */
-  VariantRecords,     /* --variant-records, --no-variant-records */
-  LocalModules,       /* --local-modules, --no-local-modules */
-  ToDoStatement       /* --to-do-statement, --no-to-do-statement */
-
-} /* Option */
-
 
 /* ---------------------------------------------------------------------------
  * interface ICompilerOptions
@@ -98,6 +62,7 @@ public class CompilerOptions : ICompilerOptions {
   private static bool verbose = false;
   private static bool lexerDebug = false;
   private static bool parserDebug = false;
+  private static bool showSettings = false;
   private static bool errantSemicolons = false;
 
   private static bool astRequired = true;
@@ -106,6 +71,7 @@ public class CompilerOptions : ICompilerOptions {
   private static bool objRequired = false;
 
   private static bool preserveComments = true;
+  private static bool useIdentifiersVerbatim = true;
 
 
 /* ---------------------------------------------------------------------------
@@ -118,6 +84,11 @@ public class CompilerOptions : ICompilerOptions {
 public static void SetDialect (Dialect dialect) {
   Capability cap;
   bool value;
+
+  /* clear mutually exclusive capabilities */
+  Capabilities.SetCapability(Capability.VariantRecords, false);
+  Capabilities.SetCapability(Capability.ExtensibleRecords, false);
+  Capabilities.SetCapability(Capability.IndeterminateRecords, false);
 
   for (cap = Capability.First; cap <= Capability.Last; cap++) {
 
@@ -163,6 +134,10 @@ public static void SetOption (Option option, bool value) {
       parserDebug = value;
       break;
 
+    case Option.ShowSettings :
+      showSettings = value;
+      break;
+
     case Option.ErrantSemicolons :
       errantSemicolons = value;
       break;
@@ -187,13 +162,65 @@ public static void SetOption (Option option, bool value) {
       preserveComments = value;
       break;
 
+    case Option.UseIdentifiersVerbatim :
+      useIdentifiersVerbatim = value;
+      break;
+
     default :
       SetCapability(option, value);
       break;
 
   } /* end switch */
 
-} /* end SetOpt */
+} /* end SetOption */
+
+
+/* ---------------------------------------------------------------------------
+ * method IsMutableOption(option)
+ * ---------------------------------------------------------------------------
+ * Returns true if option is mutable for the current dialect, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool IsMutableOption (Option option) {
+  Capability capability;
+
+  switch (option) {
+
+    case Option.Synonyms :
+      capability = Capability.Synonyms;
+      break;
+
+    case Option.OctalLiterals :
+      capability = Capability.OctalLiterals;
+      break;
+
+    case Option.LowlineIdentifiers :
+      capability = Capability.LowlineIdentifiers;
+      break;
+
+    case Option.ExplicitCast :
+      capability = Capability.ExplicitCast;
+      break;
+
+    case Option.VariantRecords :
+      capability = Capability.VariantRecords;
+      break;
+
+    case Option.LocalModules :
+      capability = Capability.LocalModules;
+      break;
+
+    case Option.ToDoStatement :
+      capability = Capability.ToDoStatement;
+      break;
+
+    default :
+      return true;
+
+  } /* end switch */
+  
+  return Dialects.IsMutableCapability(dialect, capability);
+} /* end SetCapability */
 
 
 /* ---------------------------------------------------------------------------
@@ -227,6 +254,17 @@ public static bool LexerDebug () {
 public static bool ParserDebug () {
   return parserDebug;
 } /* end ParserDebug */
+
+
+/* ---------------------------------------------------------------------------
+ * method ShowSettings()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --show-settings is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool ShowSettings () {
+  return showSettings;
+} /* end ShowSettings */
 
 
 /* ---------------------------------------------------------------------------
@@ -282,6 +320,17 @@ public static bool XlatRequired () {
 public static bool ObjRequired () {
   return objRequired;
 } /* end ObjRequired */
+
+
+/* ---------------------------------------------------------------------------
+ * method UseIdentifiersVerbatim()
+ * ---------------------------------------------------------------------------
+ * Returns true if option --use-identifiers-verbatim is turned on, else false.
+ * ------------------------------------------------------------------------ */
+
+public static bool UseIdentifiersVerbatim () {
+  return useIdentifiersVerbatim;
+} /* end UseIdentifiersVerbatim */
 
 
 /* ---------------------------------------------------------------------------
@@ -384,6 +433,53 @@ public static bool ToDoStatement () {
 
 
 /* ---------------------------------------------------------------------------
+ * method PrintSettings()
+ * ---------------------------------------------------------------------------
+ * Prints the current settings to the console.
+ * ------------------------------------------------------------------------ */
+
+public static void PrintSettings () {
+
+  Console.WriteLine("dialect: {0}\n", dialect);
+
+  Console.WriteLine("verbose: {0}", verbose);
+  Console.WriteLine("lexer debug: {0}", lexerDebug);
+  Console.WriteLine("parser debug: {0}", parserDebug);
+  Console.WriteLine("show settings: {0}", showSettings);
+  Console.WriteLine("errant semicolons: {0}\n", errantSemicolons);
+
+  Console.WriteLine(".ast file output: {0}", astRequired);
+  Console.WriteLine(".dot file output: {0}", graphRequired);
+  Console.WriteLine(".cs file output: {0}", xlatRequired);
+  Console.WriteLine(".obj and .sym file output: {0}\n", objRequired);
+
+  if (xlatRequired || objRequired) {
+    Console.WriteLine("verbatim identifiers: {0}", useIdentifiersVerbatim);
+  } /* end if */
+
+  if (xlatRequired) {
+    Console.WriteLine("preserve comments: {0}", preserveComments);
+  } /* end if */
+
+  if ((dialect == Dialect.PIM3) || (dialect == Dialect.PIM4)) {
+    Console.WriteLine("synonyms: {0}", Capabilities.Synonyms());
+    Console.WriteLine("octal literals: {0}", Capabilities.OctalLiterals());
+    Console.WriteLine("explicit cast: {0}", Capabilities.ExplicitCast());
+    Console.WriteLine("coroutines: {0}", Capabilities.Coroutines());
+    Console.WriteLine("variant records: {0}", Capabilities.VariantRecords());
+    Console.WriteLine("local modules: {0}", Capabilities.LocalModules());
+  } /* end if */
+
+  if (dialect == Dialect.Extended) {
+    Console.WriteLine("lowline identifiers: {0}",
+      Capabilities.LowlineIdentifiers());
+    Console.WriteLine("TO DO statement: {0}", Capabilities.ToDoStatement());
+  } /* end if */
+
+} /* end PrintSettings */
+
+
+/* ---------------------------------------------------------------------------
  * private method SetCapability(option, value)
  * ---------------------------------------------------------------------------
  * Sets the capability associated with option to the given value.
@@ -410,6 +506,10 @@ private static void SetCapability (Option option, bool value) {
       capability = Capability.ExplicitCast;
       break;
 
+    case Option.Coroutines :
+      capability = Capability.Coroutines;
+      break;
+
     case Option.VariantRecords :
       capability = Capability.VariantRecords;
       break;
@@ -423,16 +523,13 @@ private static void SetCapability (Option option, bool value) {
       break;
 
     default :
-      // error : not a capability option
+      // not a capability option
       return;
 
   } /* end switch */
   
   if (Dialects.IsMutableCapability(dialect, capability)) {
     Capabilities.SetCapability(capability, value);
-  }
-  else /* immutable capability */ {
-    // error : not a mutable option
   } /* end if */
   
 } /* end SetCapability */
