@@ -82,12 +82,50 @@ const string HelpText =
   " --license       print license info\n\n" +
 
   "compilation:\n" +
-  " [dialect] [diagnostics] [products] [capabilities] sourcefile\n\n" +
+  " [dialect] [products] [capabilities] sourcefile [diagnostics]\n\n" +
 
   "dialect:\n" +
-  " --pim3   follow PIM, third edition\n" +
-  " --pim4   follow PIM, fourth edition\n" +
-  " --ext    use extended dialect mode (default)\n\n" +
+  " --pim3 [--safer (D) | --compliant]   follow PIM, third edition\n" +
+  " --pim4 [--safer (D) | --compliant]   follow PIM, fourth edition\n" +
+  " --ext (D)   use extended dialect mode\n\n" +
+
+  "products:\n" +
+  " --ast, --no-ast         .ast file output\n" +
+  " --graph, --no-graph     .dot file output\n" +
+  " --xlat (D), --no-xlat   .cs file output\n" +
+  " --obj (D), --no-obj     .obj and .sym file output\n\n" +
+
+  " --syntax-only   syntax check only\n" +
+  " --ast-only      .ast file only output\n" +
+  " --graph-only    .dot file only output\n" +
+  " --xlat-only     .cs file only output\n" +
+  " --obj-only      .obj and .sym file only output\n\n" +
+
+  " --use-identifiers-verbatim (D)   use original identifiers\n" +
+  " --transliterate-identifiers      transliterate identifiers\n\n" +
+
+  " in combination with --xlat:\n" +
+  " --preserve-comments (D)   preserve comments in .cs files\n" +
+  " --strip-comments          strip comments from .cs files\n\n" +
+
+  "capabilities:\n\n" +
+
+  " in combination with --pim3 or --pim4:\n" +
+  " --synonyms, --no-synonyms (D)\n" +
+  " --octal-literals, --no-octal-literals (D)\n" +
+  " --explicit-cast, --no-explicit-cast (D)\n" +
+  " --coroutines, --no-coroutines (D)\n" +
+  " --variant-records, --no-variant-records (D)\n" +
+  " --local-modules, --no-local-modules (D)\n\n" +
+
+  " in combination with --ext:\n" +
+  " --lowline-identifiers, --no-lowline-identifiers (D)\n" +
+  " --to-do-statement (D), --no-to-do-statement\n\n" +
+
+  "sourcefile:\n" +
+  " may have directory path prepended\n" +
+  " must match module identifier\n" +
+  " must have suffix .def or .mod\n\n" +
 
   "diagnostics:\n" +
   " --verbose, -v         verbose mode\n" +
@@ -96,40 +134,7 @@ const string HelpText =
   " --print-settings      print all settings\n" +
   " --errant-semicolons   tolerate errant semicolons\n\n" +
 
-  "products:\n" +
-  " --ast, --no-ast       .ast file output\n" +
-  " --graph, --no-graph   .dot file output\n" +
-  " --xlat, --no-xlat     .cs file output\n" +
-  " --obj, --no-obj       .obj and .sym file output\n\n" +
-
-  " --syntax-only   syntax check only\n" +
-  " --ast-only      .ast file only output\n" +
-  " --graph-only    .dot file only output\n" +
-  " --xlat-only     .cs file only output\n" +
-  " --obj-only      .obj and .sym file only output\n\n" +
-
-  " in combination with --xlat:\n" +
-  " --preserve-comments   preserve comments in .cs files\n" +
-  " --strip-comments      strip comments from .cs files\n\n" +
-
-  "capabilities:\n\n" +
-
-  " in combination with --pim3 or --pim4:\n" +
-  " --compliant, --safer\n" +
-  " --synonyms, --no-synonyms\n" +
-  " --octal-literals, --no-octal-literals\n" +
-  " --explicit-cast, --no-explicit-cast\n" +
-  " --coroutines, --no-coroutines\n" +
-  " --variant-records, --no-variant-records\n" +
-  " --local-modules, --no-local-modules\n\n" +
-
-  " in combination with --ext:\n" +
-  " --lowline-identifiers, --no-lowline-identifiers\n" +
-  " --to-do-statement, --no-to-do-statement\n\n" +
-
-  "sourcefile:\n" +
-  " may include directory path\n" +
-  " must have suffix .def or .mod";
+  "Default settings are marked with (D)";
 
 
 /* ---------------------------------------------------------------------------
@@ -246,6 +251,10 @@ public static void Main (string[] args) {
   } /* end switch */
 
   // TO DO : call parser on input file
+
+  if (CompilerOptions.ShowSettings()) {
+    CompilerOptions.PrintSettings();
+  } /* end if */
 
 } /* end Main */
 
