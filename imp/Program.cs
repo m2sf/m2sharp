@@ -85,9 +85,13 @@ const string HelpText =
   " [dialect] [products] [capabilities] sourcefile [diagnostics]\n\n" +
 
   "dialect:\n" +
-  " --pim3 [--safer (D) | --compliant]   follow PIM, third edition\n" +
-  " --pim4 [--safer (D) | --compliant]   follow PIM, fourth edition\n" +
-  " --ext (D)   use extended dialect mode\n\n" +
+  " --pim3 [qualifier]   follow PIM, third edition\n" +
+  " --pim4 [qualifier]   follow PIM, fourth edition\n" +
+  " --ext (D)            use extended dialect mode\n\n" +
+
+  " dialect qualifiers:\n" +
+  " --safer (D)   restricted mode\n" +
+  " --compliant   strict compliance mode\n\n" +
 
   "products:\n" +
   " --ast, --no-ast         .ast file output\n" +
@@ -101,6 +105,7 @@ const string HelpText =
   " --xlat-only     .cs file only output\n" +
   " --obj-only      .obj and .sym file only output\n\n" +
 
+  " in combination with --xlat or --obj:\n" +
   " --use-identifiers-verbatim (D)   use original identifiers\n" +
   " --transliterate-identifiers      transliterate identifiers\n\n" +
 
@@ -131,7 +136,7 @@ const string HelpText =
   " --verbose, -v         verbose mode\n" +
   " --lexer-debug         lexer debug mode\n" +
   " --parser-debug        parser debug mode\n" +
-  " --print-settings      print all settings\n" +
+  " --show-settings       print compiler settings\n" +
   " --errant-semicolons   tolerate errant semicolons\n\n" +
 
   "Default settings are marked with (D)";
