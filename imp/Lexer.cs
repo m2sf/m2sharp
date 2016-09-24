@@ -675,11 +675,6 @@ private void GetNewLookaheadSym () {
 } /* end GetNewLookaheadSym */
 
 
-private static bool IsCtrlChar (char ch) {
-  return (ch >= '\u0000') && (ch <= '\u0020');
-} /* end IsCtrlChar */
-
-
 /* ---------------------------------------------------------------------------
  * private method SkipLineComment()
  * ------------------------------------------------------------------------ */
@@ -693,7 +688,7 @@ private char SkipLineComment () {
   while ((nextChar != ASCII.LF) && (!infile.EOF())) {
 
     /* check for illegal characters */
-    if (IsCtrlChar(nextChar) && (nextChar != ASCII.TAB)) {
+    if (ASCII.IsCtrl(nextChar) && (nextChar != ASCII.TAB)) {
       /* invalid input character */
 
       // TO DO : report error with offending char
@@ -740,7 +735,7 @@ private char SkipBlockComment () {
     }
 
     /* other characters permitted within block comments */
-    else if ((!IsCtrlChar(nextChar)) ||
+    else if ((!ASCII.IsCtrl(nextChar)) ||
              (nextChar == ASCII.TAB) ||
              (nextChar == ASCII.LF)) {
       nextChar = infile.ConsumeChar();
@@ -799,7 +794,7 @@ private char SkipCodeSection () {
     } /* end if */
 
     /* check for illegal control characters */
-    if ((IsCtrlChar(nextChar)) &&
+    if ((ASCII.IsCtrl(nextChar)) &&
         (nextChar != ASCII.TAB) &&
         (nextChar != ASCII.LF)) {
       /* invalid input character */
@@ -847,7 +842,7 @@ private char GetPragma () {
     }
 
     /* other non-control characters */
-    else if (!IsCtrlChar(nextChar)) {
+    else if (!ASCII.IsCtrl(nextChar)) {
       nextChar = infile.ConsumeChar();
     }
     
