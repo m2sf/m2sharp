@@ -73,6 +73,45 @@ public static class ASCII {
 
   public const char BACKSLASH = '\\';
 
+  /* IsCtrl(ch) -- returns true if ch is control character */
+
+  public static bool IsCtrl (char ch) {
+    return (ch >= NUL) && (ch < SPACE);
+  } /* end IsCtrl */
+
+  /* IsUpper(ch) -- returns true if ch is uppercase letter */
+
+  public static bool IsUpper (char ch) {
+    return (ch >= 'A') && (ch <= 'Z');
+  } /* end IsUpper */
+
+  /* IsLower(ch) -- returns true if ch is lowercase letter */
+
+  public static bool IsLower (char ch) {
+    return (ch >= 'a') && (ch <= 'z');
+  } /* end IsLower */
+
+  /* IsUpper(ch) -- returns true if ch is digit */
+
+  public static bool IsDigit (char ch) {
+    return (ch >= '0') && (ch <= '9');
+  } /* end IsDigit */
+
+  /* IsAtoF(ch) -- returns true if ch is in 'A' .. 'F' */
+
+  public static bool IsAtoF (char ch) {
+    return (ch >= 'A') && (ch <= 'F');
+  } /* end IsAtoF */
+
+  /* IsAlnum(ch) -- returns true if ch is alpha-numeric */
+
+  public static bool IsAlnum (char ch) {
+    return
+      ((ch >= 'A') && (ch <= 'Z')) ||
+      ((ch >= 'a') && (ch <= 'z')) ||
+      ((ch >= '0') && (ch <= '9'));
+  } /* end IsAlnum */
+
 } /* ASCII */
 
 } /* namespace */
