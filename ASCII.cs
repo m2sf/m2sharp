@@ -91,7 +91,7 @@ public static class ASCII {
     return (ch >= 'a') && (ch <= 'z');
   } /* end IsLower */
 
-  /* IsUpper(ch) -- returns true if ch is digit */
+  /* IsDigit(ch) -- returns true if ch is digit */
 
   public static bool IsDigit (char ch) {
     return (ch >= '0') && (ch <= '9');
