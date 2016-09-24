@@ -1010,7 +1010,7 @@ private char GetStringLiteral (out Token token) {
         break;
       }
       /* end-of-file marker */
-      else if (EOF()) {
+      else if (infile.EOF()) {
         // report error with offending position
         // premature end of file within string literal
         break;
