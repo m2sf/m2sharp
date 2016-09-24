@@ -61,6 +61,8 @@ private struct Symbol {
 private Infile infile;
 private Symbol currentSym;
 private Symbol lookaheadSym;
+
+private uint errorCount;
 private LexerStatus status;
 
 
@@ -493,7 +495,7 @@ private void GetNewLookaheadSym () {
 
         /* not-equal, less-equal or less operator */
         nextChar = infile.ConsumeChar();
-        else if (Capabilities.Synonyms() && (nextChar == '>')) {
+        if (Capabilities.Synonyms() && (nextChar == '>')) {
           /* not-equal synonym */
           nextChar = infile.ConsumeChar();
           token = Token.NotEqual;
@@ -673,7 +675,394 @@ private void GetNewLookaheadSym () {
 } /* end GetNewLookaheadSym */
 
 
+private static bool IsCtrlChar (char ch) {
+  return (ch >= '\u0000') && (ch <= '\u0020');
+} /* end IsCtrlChar */
+
+
+/* ---------------------------------------------------------------------------
+ * private method SkipLineComment()
+ * ------------------------------------------------------------------------ */
+
+private char SkipLineComment () {
+  char nextChar;
+
+  /* consume opening '!' */
+  nextChar = infile.ConsumeChar();
+
+  while ((nextChar != ASCII.LF) && (!infile.EOF())) {
+
+    /* check for illegal characters */
+    if (IsCtrlChar(nextChar) && (nextChar != ASCII.TAB)) {
+      /* invalid input character */
+
+      // TO DO : report error with offending char
+
+    } /* end if */
+
+    nextChar = infile.ConsumeChar();
+  } /* end while */
+
+  return nextChar;
+} /* end SkipLineComment */
+
+
+/* ---------------------------------------------------------------------------
+ * private method SkipBlockComment()
+ * ------------------------------------------------------------------------ */
+
+private char SkipBlockComment () {
+  uint line, column, nestLevel = 1;
+  char nextChar;
+
+  /* consume opening '(' and '*' */
+  nextChar = infile.ConsumeChar();
+  nextChar = infile.ConsumeChar();
+
+  while (nestLevel > 0) {
+
+    /* check for opening block comment */
+    if (nextChar == '(') {
+      nextChar = infile.ConsumeChar();
+      if (nextChar == '*') {
+        nextChar = infile.ConsumeChar();
+        nestLevel++;
+      } /* end if */
+    }
+
+    /* check for closing block comment */
+    else if (nextChar == '*') {
+      nextChar = infile.ConsumeChar();
+      if (nextChar == ')') {
+        nextChar = infile.ConsumeChar();
+        nestLevel--;
+      } /* end if */
+    }
+
+    /* other characters permitted within block comments */
+    else if ((!IsCtrlChar(nextChar)) ||
+             (nextChar == ASCII.TAB) ||
+             (nextChar == ASCII.LF)) {
+      nextChar = infile.ConsumeChar();
+    }
+    
+    else /* error */ {
+      line = infile.CurrentLine();
+      column = infile.CurrentColumn();
+      
+      /* end-of-file reached */
+      if (infile.EOF()) {
+        // report error with offending position
+        // premature EOF within block comment
+      }
+      else /* illegal character */ {
+        // report error with offending char
+        // invalid input character
+        nextChar = infile.ConsumeChar();
+      } /* end if */
+    } /* end if */
+  } /* end while */
+
+  return nextChar;
+} /* end SkipBlockComment */
+
+
+/* ---------------------------------------------------------------------------
+ * private method SkipCodeSection()
+ * ------------------------------------------------------------------------ */
+
+private char SkipCodeSection () {
+  bool delimiterFound = false;
+  uint firstLine;
+  char nextChar;  
+
+  /* remember line number for warning */
+  firstLine = infile.CurrentLine();
+
+  /* consume opening '?' and '<' */
+  nextChar = infile.ConsumeChar();
+  nextChar = infile.ConsumeChar();
+
+  while ((!delimiterFound) && (!infile.EOF())) {
+
+    /* check for closing delimiter */
+    if ((nextChar == '>') && (infile.LA2Char() == '?') &&
+       /* first column */ (infile.CurrentColumn() == 1)) {
+      
+      /* closing delimiter */
+      delimiterFound = true;
+        
+      /* consume closing '>' and '?' */
+      nextChar = infile.ConsumeChar();
+      nextChar = infile.ConsumeChar();
+      break;
+    } /* end if */
+
+    /* check for illegal control characters */
+    if ((IsCtrlChar(nextChar)) &&
+        (nextChar != ASCII.TAB) &&
+        (nextChar != ASCII.LF)) {
+      /* invalid input character */
+      // report error with offending char
+    } /* end if */
+    
+    nextChar = infile.ConsumeChar();
+  } /* end while */
+
+  // TO DO : emit warning about disabled code section
+  //         with line numbers of first and last lines
+
+  return nextChar;
+} /* end SkipCodeSection */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetPragma()
+ * ------------------------------------------------------------------------ */
+
+private char GetPragma () {
+  bool delimiterFound = false;
+  uint line, column;
+  char nextChar;  
+
+  infile.MarkLexeme();
+
+  /* consume opening '<' and '*' */
+  nextChar = infile.ConsumeChar();
+  nextChar = infile.ConsumeChar();
+
+  while (!delimiterFound) {
+
+    if /* closing delimiter */
+      ((nextChar == '*') && (infile.LA2Char() == '>')) {
+      
+      delimiterFound = true;
+            
+      /* consume closing '*' and '>' */
+      nextChar = infile.ConsumeChar();
+      nextChar = infile.ConsumeChar();
+      
+      /* get lexeme */
+      lookaheadSym.lexeme = infile.ReadMarkedLexeme();
+    }
+
+    /* other non-control characters */
+    else if (!IsCtrlChar(nextChar)) {
+      nextChar = infile.ConsumeChar();
+    }
+    
+    else /* error */ {
+      line = infile.CurrentLine();
+      column = infile.CurrentLine();
+      
+      /* end-of-file reached */
+      if (infile.EOF()) {
+        // report error with offending position
+        // premature EOF within pragma at line and column
+      }
+      else /* illegal character */ {
+        // report error with offending character
+        // invalid input character at line and column
+        nextChar = infile.ConsumeChar();
+      } /* end if */
+      errorCount++;
+    } /* end if */
+  } /* end while */
+
+  return nextChar;
+} /* end GetPragma */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetIdent()
+ * ------------------------------------------------------------------------ */
+
+private char GetIdent () {
+  char nextChar;
+  
+  infile.MarkLexeme();
+  nextChar = infile.NextChar();
+
+  if (CompilerOptions.LowlineIdentifiers()) {
+
+   /* get alpha-numeric or foreign identifier */  
+    while (ASCII.IsAlnum(nextChar)) {
+      nextChar = infile.ConsumeChar();
+
+      /* check for lowline in between two alpha-numeric characters */
+      if ((nextChar == '_') && (ASCII.IsAlnum(infile.LA2Char()))) {
+        nextChar = infile.ConsumeChar();
+      } /* end if */
+
+    } /* end while */
+  }
+  else /* no lowline identifiers */ {
+
+   /* get alpha-numeric identifier */
+    while (ASCII.IsAlnum(nextChar)) {
+      nextChar = infile.ConsumeChar();
+    } /* end while */
+  } /* end if */
+  
+  /* get lexeme */
+  lookaheadSym.lexeme = infile.ReadMarkedLexeme();
+    
+  return nextChar;
+} /* end GetIdent */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetIdentOrResword()
+ * ------------------------------------------------------------------------ */
+
+private char GetIdentOrResword (out Token token) {
+  char nextChar;
+  Token intermediate;
+  bool possiblyResword = true;
+
+  infile.MarkLexeme();
+  nextChar = infile.NextChar();
+
+  if (CompilerOptions.LowlineIdentifiers()) {
+
+   /* get alpha-numeric or foreign identifier */  
+    while (ASCII.IsAlnum(nextChar)) {
+      /* check for uppercase */
+      if (ASCII.IsUpper(nextChar) == false) {
+        possiblyResword = false;
+      } /* end if */
+
+      nextChar = infile.ConsumeChar();
+
+      /* check for lowline in between two alpha-numeric characters */
+      if ((nextChar == '_') && (ASCII.IsAlnum(infile.LA2Char()))) {
+        nextChar = infile.ConsumeChar();
+        possiblyResword = false;
+      } /* end if */
+
+    } /* end while */
+  }
+  else /* no lowline identifiers */ {
+
+   /* get alpha-numeric identifier */
+    while (ASCII.IsAlnum(nextChar)) {
+
+      /* check for uppercase */
+      if (ASCII.IsUpper(nextChar) == false) {
+        possiblyResword = false;
+      } /* end if */
+
+      nextChar = infile.ConsumeChar();
+    } /* end while */
+  } /* end if */
+
+  lookaheadSym.lexeme = infile.ReadMarkedLexeme();
+
+  /* check for reserved word */
+  if (possiblyResword) {
+    intermediate = Terminals.TokenForResword(lookaheadSym.lexeme);
+
+    if (intermediate == Token.Unknown) {
+      token = Token.Identifier;
+    }
+    else {
+      token = intermediate;
+    } /* end if */
+  }
+  else {
+    token = Token.Identifier;
+  } /* end if */
+
+  return nextChar;
+} /* end GetIdentOrResword */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetStringLiteral()
+ * ------------------------------------------------------------------------ */
+
+private char GetStringLiteral (out Token token) {
+  uint line, column;
+  Token intermediate;
+  char nextChar, delimiter;
+  
+  intermediate = Token.StringLiteral;
+  
+  /* consume opening delimiter */
+  delimiter = infile.ReadChar();
+  
+  infile.MarkLexeme();
+  nextChar = infile.NextChar();
+  
+  while (nextChar != delimiter) {
+    
+    /* check for control character */
+    if (ASCII.IsCtrl(nextChar)) {
+      line = infile.CurrentLine();
+      column = infile.CurrentColumn();
+      
+      intermediate = Token.MalformedString;
+      
+      /* newline */
+      if (nextChar == ASCII.LF) {
+        // report error with offending position
+        // newline in string literal
+        break;
+      }
+      /* end-of-file marker */
+      else if (EOF()) {
+        // report error with offending position
+        // premature end of file within string literal
+        break;
+      }
+      else /* any other control character */ {
+        /* invalid input character */
+        // report error with offending character
+      } /* end if */
+    } /* end if */
+    
+    if (Capabilities.EscapeTabAndNewline() &&
+       (nextChar == ASCII.BACKSLASH)) {
+      line = infile.CurrentLine();
+      column = infile.CurrentColumn();
+      nextChar = infile.ConsumeChar();
+      
+      if ((nextChar != 'n') && (nextChar != 't') &&
+          (nextChar != ASCII.BACKSLASH)) {
+        /* invalid escape sequence */
+        // report error with offending character
+      } /* end if */
+    } /* end if */
+    
+    nextChar = infile.ConsumeChar();
+  } /* end while */
+  
+  /* get lexeme */
+  lookaheadSym.lexeme = infile.ReadMarkedLexeme();
+  
+  /* consume closing delimiter */
+  if (nextChar == delimiter) {
+    nextChar = infile.ConsumeChar();
+  } /* end if */
+  
+  /* pass back token */
+  token = intermediate;
+  
+  return nextChar;
+} /* end GetStringLiteral */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetNumberLiteral()
+ * ------------------------------------------------------------------------ */
+
+private char GetNumberLiteral (out Token token) {
+  token = Token.Unknown; return ASCII.NUL; // TO DO
+} /* end GetNumberLiteral */
+
+
 } /* Lexer */
+
 
 } /* namespace */
 
