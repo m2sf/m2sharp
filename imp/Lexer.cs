@@ -1052,8 +1052,194 @@ private char GetStringLiteral (out Token token) {
  * ------------------------------------------------------------------------ */
 
 private char GetNumberLiteral (out Token token) {
-  token = Token.Unknown; return ASCII.NUL; // TO DO
+  if (Capabilities.PrefixLiterals()) {
+    return GetPrefixedNumber(out token);
+  }
+  else {
+    return GetSuffixedNumber(out token);
+  } /* end if */
 } /* end GetNumberLiteral */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetPrefixedNumber()
+ * ------------------------------------------------------------------------ */
+
+private char GetPrefixedNumber (out Token token) {
+  Token intermediate;
+  char nextChar, la2Char;
+
+  infile.MarkLexeme();
+  nextChar = infile.NextChar();
+  la2Char = infile.LA2Char();
+
+  if /* prefix for base-16 integer or character code found */
+    ((nextChar == 0) && ((la2Char == 'x') || (la2Char == 'u'))) {
+
+    /* consume '0' */
+    nextChar = infile.ConsumeChar();
+    
+    if /* base-16 integer prefix */ (nextChar == 'x') {
+      intermediate = Token.IntLiteral;
+    }
+    else /* character code prefix */ {
+      intermediate = Token.CharLiteral;
+    } /* end if */
+   
+    /* consume prefix */
+    nextChar = infile.ConsumeChar();
+    
+    /* consume all digits */
+    while (ASCII.IsDigit(nextChar) || ASCII.IsAtoF(nextChar)) {
+      nextChar = infile.ConsumeChar();
+    } /* end while */
+  }
+  else /* decimal integer or real number */ {
+    
+    /* consume all digits */
+    while (ASCII.IsDigit(nextChar)) {
+      nextChar = infile.ConsumeChar();
+    } /* end while */
+    
+    if /* real number literal found */ 
+      ((nextChar == '.') && (infile.LA2Char() != '.')) {
+      
+      nextChar = GetNumberLiteralFractionalPart(out intermediate);
+    }
+    else {
+      intermediate = Token.IntLiteral;
+    } /* end if */
+  } /* end if */
+  
+  /* get lexeme */
+  lookaheadSym.lexeme = infile.ReadMarkedLexeme();
+  
+  /* pass back token */
+  token = intermediate;
+
+  return nextChar;
+} /* end GetPrefixedNumber */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetSuffixedNumber()
+ * ------------------------------------------------------------------------ */
+
+private char GetSuffixedNumber (out Token token) {
+  Token intermediate;
+  uint charCount0to7 = 0;
+  uint charCount8to9 = 0;
+  uint charCountAtoF = 0;
+  char nextChar, lastChar;
+
+  infile.MarkLexeme();
+  lastChar = ASCII.NUL;
+  nextChar = infile.NextChar();
+
+  /* consume any characters '0' to '9' and 'A' to 'F' */
+  while (ASCII.IsDigit(nextChar) || ASCII.IsAtoF(nextChar)) {
+    
+    if ((nextChar >= '0') && (nextChar <= '7')) {
+      charCount0to7++;
+    }
+    else if ((nextChar == '8') || (nextChar == '9')) {
+      charCount8to9++;
+    }
+    else {
+      charCountAtoF++;
+    } /* end if */
+    
+    lastChar = nextChar;
+    nextChar = infile.ConsumeChar();
+  } /* end while */
+
+  if /* base-16 integer found */ (nextChar == 'H') {
+    
+    nextChar = infile.ConsumeChar();
+    intermediate = Token.IntLiteral;
+  }
+  else if /* base-10 integer or real number found */
+    (charCountAtoF == 0) {
+    
+    if /* real number literal found */ 
+      ((nextChar == '.') && (infile.LA2Char() != '.')) {
+      
+      nextChar = GetNumberLiteralFractionalPart(out intermediate);
+    }
+    else /* decimal integer found */ {
+      intermediate = Token.IntLiteral;
+    } /* end if */
+  }
+  else if /* base-8 integer found */
+    (CompilerOptions.OctalLiterals() &&
+     (charCount8to9 == 0) && (charCountAtoF == 1) && 
+     ((lastChar == 'B') || (lastChar == 'C'))) {
+    
+    if (lastChar == 'B') {
+      intermediate = Token.IntLiteral;
+    }
+    else /* last_char == 'C' */ {
+      intermediate = Token.CharLiteral;
+    } /* end if */    
+  }
+  else /* malformed base-16 integer */ {
+    intermediate = Token.MalformedInteger;
+  } /* end if */
+
+  lookaheadSym.lexeme = infile.ReadMarkedLexeme();
+
+  token = intermediate;
+
+  return nextChar;
+} /* end GetSuffixedNumber */
+
+
+/* ---------------------------------------------------------------------------
+ * private method GetNumberLiteralFractionalPart()
+ * ------------------------------------------------------------------------ */
+
+private char GetNumberLiteralFractionalPart (out Token token) {
+  Token intermediate;
+  char nextChar;
+
+  intermediate = Token.RealLiteral;
+
+  /* consume the decimal point */
+  nextChar = infile.ConsumeChar();
+
+  /* consume any fractional digits */
+  while (ASCII.IsDigit(nextChar)) {
+    nextChar = infile.ConsumeChar();
+  } /* end if */
+  
+  if /* exponent prefix found */ (nextChar == 'E') {
+  
+    /* consume exponent prefix */
+    nextChar = infile.ConsumeChar();
+    
+    if /* exponent sign found*/
+      ((nextChar == '+') || (nextChar == '-')) {
+      
+      /* consume exponent sign */
+      nextChar = infile.ConsumeChar();
+    } /* end if */
+    
+    if /* exponent digits found */ (ASCII.IsDigit(nextChar)) {
+    
+      /* consume exponent digits */
+      while (ASCII.IsDigit(nextChar)) {
+        nextChar = infile.ConsumeChar();
+      } /* end while */
+    }
+    else /* exponent digits missing */ {
+      intermediate = Token.MalformedReal;
+    } /* end if */
+  } /* end if */
+
+  token = intermediate;
+
+  return nextChar;
+} /* end GetNumberLiteralFractionalPart */
 
 
 } /* Lexer */
