@@ -283,7 +283,7 @@ formalType :=
 /* Simple Formal Type */
 
 simpleFormalType :=
-  ( ARRAY OF )? typeIdent
+  ( ( ARGLIST | ARRAY ) OF )? typeIdent
   ;
 
 
