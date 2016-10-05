@@ -140,447 +140,337 @@ public static Token TokenForResword (string lexeme) {
     case /* length = 2 */ 2 :
       switch (lexeme[0]) {
       
-	    case 'B' :
-	      /* BY */
-	      if (lexeme[1] == 'Y') {
-	        return Token.BY;
-	      }
-
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'B' :
+	        /* BY */
+	        if (lexeme[1] == 'Y') {
+	          return Token.BY;
+	        } /* end if */
+          break;
 	
-	    case 'D' :
-	      /* DO */
-	      if (lexeme[1] == 'O') {
-	        return Token.DO;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'D' :
+	        /* DO */
+	        if (lexeme[1] == 'O') {
+	          return Token.DO;
+	        } /* end if */
+          break;
 	
-	    case 'I' :
-	      /* IF */
-	      if (lexeme[1] == 'F') {
-	        return Token.IF;
-	      }
+	      case 'I' :
+	        /* IF */
+	        if (lexeme[1] == 'F') {
+	          return Token.IF;
+	        }
 	  	    
-	      /* IN */
-	      else if (lexeme[1] == 'N') {
-	        return Token.IN;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	        /* IN */
+	        else if (lexeme[1] == 'N') {
+	          return Token.IN;
+	        } /* end if */
+          break;
 	    
-	    case 'O' :
-	      /* OF */
-	      if (lexeme[1] == 'F') {
-	        return Token.OF;
-	      }
+	      case 'O' :
+	        /* OF */
+	        if (lexeme[1] == 'F') {
+	          return Token.OF;
+	        }
 	      
-	      /* OR */
-	      else if (lexeme[1] == 'R') {
-	        return Token.OR;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	        /* OR */
+	        else if (lexeme[1] == 'R') {
+	          return Token.OR;
+	        } /* end if */
+          break;
 	    
-	    case 'T' :
-	      /* TO */
-	      if (lexeme[1] == 'O') {
-	        return Token.TO;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	    
-	    default :
-	      return Token.Unknown;
-	  } /* end switch */
+	      case 'T' :
+	        /* TO */
+	        if (lexeme[1] == 'O') {
+	          return Token.TO;
+	        } /* end if */
+          break;
+
+	    } /* end switch */
+      break;
 	
     case /* length = 3 */ 3 :
       switch (lexeme[0]) {
       
-	    case 'A' :
-	      /* AND */
-        if (string.CompareOrdinal(lexeme, "AND") == 0) {
-	        return Token.AND;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'A' :
+	        /* AND */
+          if (string.CompareOrdinal(lexeme, "AND") == 0) {
+	          return Token.AND;
+	        } /* end if */
+          break;
         	
-	    case 'D' :
-	      /* DIV */
-        if (string.CompareOrdinal(lexeme, "DIV") == 0) {
-	        return Token.DIV;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'D' :
+	        /* DIV */
+          if (string.CompareOrdinal(lexeme, "DIV") == 0) {
+	          return Token.DIV;
+	        } /* end if */
+          break;
 	
-	    case 'E' :
-	      /* END */
-        if (string.CompareOrdinal(lexeme, "END") == 0) {
-	        return Token.END;
-	      }
+	      case 'E' :
+	        /* END */
+          if (string.CompareOrdinal(lexeme, "END") == 0) {
+	          return Token.END;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'F' :
+	        /* FOR */
+          if (string.CompareOrdinal(lexeme, "FOR") == 0) {
+	          return Token.FOR;
+	        } /* end if */
+          break;
 	      
-	    case 'F' :
-	      /* FOR */
-        if (string.CompareOrdinal(lexeme, "FOR") == 0) {
-	        return Token.FOR;
-	      }
+	      case 'M' :
+	        /* MOD */
+          if (string.CompareOrdinal(lexeme, "MOD") == 0) {
+	          return Token.MOD;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'N' :
+	        /* NOT */
+          if (string.CompareOrdinal(lexeme, "NOT") == 0) {
+	          return Token.NOT;
+	        } /* end if */
+          break;
 	      
-	    case 'M' :
-	      /* MOD */
-        if (string.CompareOrdinal(lexeme, "MOD") == 0) {
-	        return Token.MOD;
-	      }
+	      case 'S' :
+	        /* SET */
+          if (string.CompareOrdinal(lexeme, "SET") == 0) {
+	          return Token.SET;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'V' :
+	        /* VAR */
+          if (string.CompareOrdinal(lexeme, "VAR") == 0) {
+	          return Token.VAR;
+	        } /* end if */
+          break;
 	      
-	    case 'N' :
-	      /* NOT */
-        if (string.CompareOrdinal(lexeme, "NOT") == 0) {
-	        return Token.NOT;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'S' :
-	      /* SET */
-        if (string.CompareOrdinal(lexeme, "SET") == 0) {
-	        return Token.SET;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'V' :
-	      /* VAR */
-        if (string.CompareOrdinal(lexeme, "VAR") == 0) {
-	        return Token.VAR;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    default :
-	      return Token.Unknown;
-	  } /* end switch */
+	    } /* end switch */
+      break;
 	
     case /* length = 4 */ 4 :
       switch (lexeme[1]) {
       
-	    case 'A' :
-	      /* CASE */
-        if (string.CompareOrdinal(lexeme, "CASE") == 0) {
-	        return Token.CASE;
-	      }
+	      case 'A' :
+	        /* CASE */
+          if (string.CompareOrdinal(lexeme, "CASE") == 0) {
+	          return Token.CASE;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'H' :
+	        /* THEN */
+          if (string.CompareOrdinal(lexeme, "THEN") == 0) {
+	          return Token.THEN;
+	        } /* end if */
+          break;
 	      
-	    case 'H' :
-	      /* THEN */
-        if (string.CompareOrdinal(lexeme, "THEN") == 0) {
-	        return Token.THEN;
-	      }
+	      case 'I' :
+	        /* WITH */
+          if (string.CompareOrdinal(lexeme, "WITH") == 0) {
+	          return Token.WITH;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'L' :
+	        /* ELSE */
+          if (string.CompareOrdinal(lexeme, "ELSE") == 0) {
+	          return Token.ELSE;
+	        } /* end if */
+          break;
 	      
-	    case 'I' :
-	      /* WITH */
-        if (string.CompareOrdinal(lexeme, "WITH") == 0) {
-	        return Token.WITH;
-	      }
+	      case 'O' :
+	        /* LOOP */
+          if (string.CompareOrdinal(lexeme, "LOOP") == 0) {
+	          return Token.LOOP;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'R' :
+	        /* FROM */
+          if (string.CompareOrdinal(lexeme, "FROM") == 0) {
+	          return Token.FROM;
+	        } /* end if */
+          break;
 	      
-	    case 'L' :
-	      /* ELSE */
-        if (string.CompareOrdinal(lexeme, "ELSE") == 0) {
-	        return Token.ELSE;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'O' :
-	      /* LOOP */
-        if (string.CompareOrdinal(lexeme, "LOOP") == 0) {
-	        return Token.LOOP;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'R' :
-	      /* FROM */
-        if (string.CompareOrdinal(lexeme, "FROM") == 0) {
-	        return Token.FROM;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'X' :
-	      /* EXIT */
-        if (string.CompareOrdinal(lexeme, "EXIT") == 0) {
-	        return Token.EXIT;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'X' :
+	        /* EXIT */
+          if (string.CompareOrdinal(lexeme, "EXIT") == 0) {
+	          return Token.EXIT;
+	        } /* end if */
+          break;
 	      
         case 'Y' :
           /* TYPE */
-        if (string.CompareOrdinal(lexeme, "TYPE") == 0) {
-	        return Token.TYPE;
-	      }
+          if (string.CompareOrdinal(lexeme, "TYPE") == 0) {
+	          return Token.TYPE;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    default :
-	      return Token.Unknown;
-	  } /* end switch */
+	    } /* end switch */
+      break;
 	
     case /* length = 5 */ 5 :
       switch (lexeme[0]) {
       
-	    case 'A' :
-	      /* ARRAY */
-        if (string.CompareOrdinal(lexeme, "ARRAY") == 0) {
-	        return Token.ARRAY;
-	      }
+	      case 'A' :
+	        /* ARRAY */
+          if (string.CompareOrdinal(lexeme, "ARRAY") == 0) {
+	          return Token.ARRAY;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'B' :
+	        /* BEGIN */
+          if (string.CompareOrdinal(lexeme, "BEGIN") == 0) {
+	          return Token.BEGIN;
+	        } /* end if */
+          break;
 	      
-	    case 'B' :
-	      /* BEGIN */
-        if (string.CompareOrdinal(lexeme, "BEGIN") == 0) {
-	        return Token.BEGIN;
-	      }
+	      case 'C' :
+	        /* CONST */
+          if (string.CompareOrdinal(lexeme, "CONST") == 0) {
+	          return Token.CONST;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'E' :
+	        /* ELSIF */
+          if (string.CompareOrdinal(lexeme, "ELSIF") == 0) {
+	          return Token.ELSIF;
+	        } /* end if */
+          break;
+
+	      case 'U' :
+	        /* UNTIL */
+          if (string.CompareOrdinal(lexeme, "UNTIL") == 0) {
+	          return Token.UNTIL;
+	        } /* end if */
+          break;
 	      
-	    case 'C' :
-	      /* CONST */
-        if (string.CompareOrdinal(lexeme, "CONST") == 0) {
-	        return Token.CONST;
-	      }
+	      case 'W' :
+	        /* WHILE */
+          if (string.CompareOrdinal(lexeme, "WHILE") == 0) {
+	          return Token.WHILE;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'E' :
-	      /* ELSIF */
-        if (string.CompareOrdinal(lexeme, "ELSIF") == 0) {
-	        return Token.ELSIF;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'U' :
-	      /* UNTIL */
-        if (string.CompareOrdinal(lexeme, "UNTIL") == 0) {
-	        return Token.UNTIL;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'W' :
-	      /* WHILE */
-        if (string.CompareOrdinal(lexeme, "WHILE") == 0) {
-	        return Token.WHILE;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    default :
-	      return Token.Unknown;
-	  } /* end switch */
+	    } /* end switch */
+      break;
 	
     case /* length 6 */ 6 :
       switch (lexeme[5]) {
       
-	    case 'E' :
-	      /* MODULE */
-        if (string.CompareOrdinal(lexeme, "MODULE") == 0) {
-	        return Token.MODULE;
-	      }
+	      case 'E' :
+	        /* MODULE */
+          if (string.CompareOrdinal(lexeme, "MODULE") == 0) {
+	          return Token.MODULE;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'D' :
+	        /* RECORD */
+          if (string.CompareOrdinal(lexeme, "RECORD") == 0) {
+	          return Token.RECORD;
+	        } /* end if */
+          break;
 	      
-	    case 'D' :
-	      /* RECORD */
-        if (string.CompareOrdinal(lexeme, "RECORD") == 0) {
-	        return Token.RECORD;
-	      }
+	      case 'N' :
+	        /* RETURN */
+          if (string.CompareOrdinal(lexeme, "RETURN") == 0) {
+	          return Token.RETURN;
+	        } /* end if */
+          break;
 	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
+	      case 'T' :
+	        switch (lexeme[0]) {
 	      
-	    case 'N' :
-	      /* RETURN */
-        if (string.CompareOrdinal(lexeme, "RETURN") == 0) {
-	        return Token.RETURN;
-	      }
-	      
-	      else {
-	        return Token.Unknown;
-	      } /* end if */
-	      
-	    case 'T' :
-	      switch (lexeme[0]) {
-	      
-	        case 'E' :
+	          case 'E' :
 	          /* EXPORT */
-        if (string.CompareOrdinal(lexeme, "EXPORT") == 0) {
+            if (string.CompareOrdinal(lexeme, "EXPORT") == 0) {
 	            return Token.EXPORT;
-	          }
-	          
-	          else {
-	            return Token.Unknown;
 	          } /* end if */
+            break;
 	        
-	        case 'I' :
-	          /* IMPORT */
-        if (string.CompareOrdinal(lexeme, "IMPORT") == 0) {
-	            return Token.IMPORT;
-	          }
-	          
-	          else {
-	            return Token.Unknown;
-	          } /* end if */
+	          case 'I' :
+	            /* IMPORT */
+              if (string.CompareOrdinal(lexeme, "IMPORT") == 0) {
+	              return Token.IMPORT;
+	            } /* end if */
+              break;
 	        
-	        case 'R' :
-	          /* REPEAT */
-        if (string.CompareOrdinal(lexeme, "REPEAT") == 0) {
-	            return Token.REPEAT;
-	          }
+	          case 'R' :
+	            /* REPEAT */
+              if (string.CompareOrdinal(lexeme, "REPEAT") == 0) {
+	              return Token.REPEAT;
+	            } /* end if */
+              break;
 	          
-	          else {
-	            return Token.Unknown;
-	          } /* end if */
-	          
-	        default :
-	          return Token.Unknown;
-	      } /* end switch */
+	        } /* end switch */
+          break;
 	      
-	    default :
-	      return Token.Unknown;
-	  } /* end switch */
+	    } /* end switch */
+      break;
 	
     case /* length = 7 */ 7 :
-      /* POINTER */
-        if (string.CompareOrdinal(lexeme, "POINTER") == 0) {
-	    return Token.POINTER;
-      }
+      switch (lexeme[0]) {
       
-      else {
-	    return Token.Unknown;
-      } /* end if */
+        case 'A' :
+          /* ARGLIST */
+          if (string.CompareOrdinal(lexeme, "ARGLIST") == 0) {
+            return Token.ARGLIST;
+          } /* end if */
+          break;
+
+        case 'P' :
+          /* POINTER */
+          if (string.CompareOrdinal(lexeme, "POINTER") == 0) {
+	          return Token.POINTER;
+          } /* end if */
+          break;
+
+      } /* end switch */
+      break;
       
     case /* length = 9 */ 9 :
       switch (lexeme[0]) {
       
         case 'P' :
           /* PROCEDURE */
-        if (string.CompareOrdinal(lexeme, "PROCEDURE") == 0) {
-	        return Token.PROCEDURE;
-          }
-          
-          else {
-	        return Token.Unknown;
+          if (string.CompareOrdinal(lexeme, "PROCEDURE") == 0) {
+	          return Token.PROCEDURE;
           } /* end if */
+          break;
         
         case 'Q' :
           /* QUALIFIED */
-        if (string.CompareOrdinal(lexeme, "QUALIFIED") == 0) {
-	        return Token.QUALIFIED;
-          }
-          
-          else {
-	        return Token.Unknown;
+          if (string.CompareOrdinal(lexeme, "QUALIFIED") == 0) {
+	          return Token.QUALIFIED;
           } /* end if */
+          break;
         
-        default :
-	      return Token.Unknown;
       } /* end switch */
+      break;
 	
     case /* length = 10 */ 10 :
       /* DEFINITION */
-        if (string.CompareOrdinal(lexeme, "DEFINITION") == 0) {
-	    return Token.DEFINITION;
-      }
-      
-      else {
-	      return Token.Unknown;
+      if (string.CompareOrdinal(lexeme, "DEFINITION") == 0) {
+	      return Token.DEFINITION;
       } /* end if */
+      break;
     
     case /* length = 14 */ 14 :
       /* IMPLEMENTATION */
-        if (string.CompareOrdinal(lexeme, "IMPLEMENTATION") == 0) {
+      if (string.CompareOrdinal(lexeme, "IMPLEMENTATION") == 0) {
 	      return Token.IMPLEMENTATION;
-      }
-      
-      else {
-	      return Token.Unknown;
       } /* end if */
+      break;
     
-    default :
-      return Token.Unknown;
   } /* end switch (length) */
 
-
+  return Token.Unknown;
 } /* end TokenForResword */
 
 
@@ -626,7 +516,7 @@ public static string NameForToken (Token token) {
 } /* NameForToken */
 
 
-} /* ITerminals */
+} /* Terminals */
 
 } /* namespace */
 
