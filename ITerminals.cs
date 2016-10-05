@@ -1,4 +1,4 @@
-/* M2Sharp -- Modula-2 to C# Translator & Compiler
+﻿/* M2Sharp -- Modula-2 to C# Translator & Compiler
  *
  * Copyright (c) 2016 The Modula-2 Software Foundation
  *
@@ -58,10 +58,10 @@ public enum Token {
 
   /* Reserved Words */
 
-  AND, ARRAY, BEGIN, BY, CASE, CONST, DEFINITION, DIV, DO, ELSE, ELSIF, END,
-  EXIT, EXPORT, FOR, FROM, IF, IMPLEMENTATION, IMPORT, IN, LOOP, MOD, MODULE,
-  NOT, OF, OR, POINTER, PROCEDURE, QUALIFIED, RECORD, REPEAT, RETURN, SET,
-  THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
+  AND, ARGLIST, ARRAY, BEGIN, BY, CASE, CONST, DEFINITION, DIV, DO, ELSE,
+  ELSIF, END, EXIT, EXPORT, FOR, FROM, IF, IMPLEMENTATION, IMPORT, IN, LOOP,
+  MOD, MODULE, NOT, OF, OR, POINTER, PROCEDURE, QUALIFIED, RECORD, REPEAT,
+  RETURN, SET, THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
 
   /* Identifiers */
 
