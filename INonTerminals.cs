@@ -24,7 +24,7 @@
  *
  * INonTerminals.cs
  *
- * Public interface for non-terminal symbols' FIRST and FOLLOW set lookup.
+ * Public interface for Non-Terminal's FIRST and FOLLOW set lookup.
  *
  * @license
  *
@@ -43,9 +43,7 @@
  * NB: Components in the domain part of email addresses are in reverse order.
  */
 
-namespace org.m2sf.m2sharp {
-
-using System.Collections.Generic;
+namespace M2SF.M2Sharp {
 
 /* --------------------------------------------------------------------------
  * type Production
@@ -56,7 +54,7 @@ using System.Collections.Generic;
 public enum Production {
   /* Productions with unique FIRST and FOLLOW sets */
 
-  Definition_Module,        /* definitionModule */
+  DefinitionModule,         /* definitionModule */
   Import,                   /* import */
   QualifiedImport,          /* qualifiedImport */
   UnqualifiedImport,        /* unqualifiedImport */
@@ -122,18 +120,18 @@ public enum Production {
   DesignatorOrFuncCall,     /* designatorOrFuncCall */
   SetValue,                 /* setValue */
   Element,                  /* element */
-
+  
   /* Productions with alternative FIRST or FOLLOW sets */
-
+  
   /* Dependent on option --const-parameters */
   FormalType,               /* formalType */
   AttributedFormalType,     /* attributedFormalType */
   FormalParamList,          /* formalParamList */
   FormalParams,             /* formalParams */
   AttribFormalParams,       /* attribFormalParams */
-
+  
   /* Dependent on option --no-variant-records */
-  TypeDeclarationTail      /* typeDeclarationTail */
+  TypeDeclarationTail;      /* typeDeclarationTail */
 
 } /* Production */
 
@@ -144,7 +142,7 @@ interface INonTerminals {
  * method Count() -- Returns the number of productions
  * ----------------------------------------------------------------------- */
 
-uint Count ();
+public uint Count ();
 
 
 /* --------------------------------------------------------------------------
@@ -153,7 +151,7 @@ uint Count ();
  * Returns true if p is dependent on any compiler option, else false.
  * ----------------------------------------------------------------------- */
 
-bool IsOptionDependent (Production p);
+public bool IsOptionDependent (Production p);
 
 
 /* --------------------------------------------------------------------------
@@ -162,7 +160,7 @@ bool IsOptionDependent (Production p);
  * Returns true if p is dependent on CONST parameter option, else false.
  * ----------------------------------------------------------------------- */
 
-bool IsConstParamDependent (Production p);
+public bool IsConstParamDependent (Production p);
 
 
 /* --------------------------------------------------------------------------
@@ -171,7 +169,7 @@ bool IsConstParamDependent (Production p);
  * Returns true if p is dependent on variant record type option, else false.
  * ----------------------------------------------------------------------- */
 
-bool IsVariantRecordDependent (Production p);
+public bool IsVariantRecordDependent (Production p);
 
 
 /* --------------------------------------------------------------------------
@@ -180,7 +178,7 @@ bool IsVariantRecordDependent (Production p);
  * Returns a tokenset with the FIRST set of production p.
  * ----------------------------------------------------------------------- */
 
-SortedSet<Token> FIRST (Production p);
+public EnumSet<ITerminals.Token> FIRST (Production p);
 
 
 /* --------------------------------------------------------------------------
@@ -189,7 +187,7 @@ SortedSet<Token> FIRST (Production p);
  * Returns a tokenset with the FOLLOW set of production p.
  * ----------------------------------------------------------------------- */
 
-SortedSet<Token> FOLLOW (Production p);
+public EnumSet<ITerminals.Token> FOLLOW (Production p);
 
 
 /* --------------------------------------------------------------------------
@@ -198,11 +196,11 @@ SortedSet<Token> FOLLOW (Production p);
  * Returns a string with a human readable name for production p.
  * ----------------------------------------------------------------------- */
 
-string NameForProduction (Production p);
+public string NameForProduction (Production p);
 
 
 } /* INonTerminals */
 
-} /* namespace */
+} /* M2SF.M2Sharp */
 
 /* END OF FILE */
