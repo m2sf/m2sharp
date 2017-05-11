@@ -124,14 +124,14 @@ public enum Production {
   
   /* Productions with alternative FIRST or FOLLOW sets */
   
-  /* Dependent on option --const-parameters */
+  /* Dependent on capability: CONST parameters */
   FormalType,               /* formalType */
   AttributedFormalType,     /* attributedFormalType */
   FormalParamList,          /* formalParamList */
   FormalParams,             /* formalParams */
   AttribFormalParams,       /* attribFormalParams */
   
-  /* Dependent on option --no-variant-records */
+  /* Dependent on capability: Extensible records */
   TypeDeclarationTail;      /* typeDeclarationTail */
   
 } /* Production */
