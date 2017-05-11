@@ -185,7 +185,7 @@ public static TokenSet FOLLOW (Production p);
 public static string NameForProduction (Production p);
 
 
-} /* ITProductions */
+} /* IProductions */
 
 } /* M2SF.M2Sharp */
 
