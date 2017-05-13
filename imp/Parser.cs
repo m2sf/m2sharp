@@ -2724,7 +2724,7 @@ private Token typeDeclaration () {
  * ----------------------------------------------------------------------- */
 
 private Token varSizeRecordType () {
-  Astnode flseq, vsfield, vsfieldid, sizeid, typeid;
+  AstNode flseq, vsfield, vsfieldid, sizeid, typeid;
   string ident;
   uint lineOfSemicolon, columnOfSemicolon;
   Token lookahead;
@@ -2845,7 +2845,7 @@ private Token varSizeRecordType () {
     } /* end if */
   } /* end if */
   
-  /* build AST node and pass it back in p->ast */
+  /* build AST node and pass it back in ast */
   vsfield = AstNode.NewNode(AST.VSFIELD, vsfieldid, sizeid, typeid);
   ast = AstNode.NewNode(AST.VSREC, flseq, vsfield);
   
@@ -2864,7 +2864,32 @@ private Token varSizeRecordType () {
  * ----------------------------------------------------------------------- */
 
 private Token variableDeclaration () {
-  // TO DO
+  AstNode idlist, tc;
+  Token lookahead;
+
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("variableDeclaration");
+  } /* end if */
+  
+  /* IdentList */
+  lookahead = identList();
+  idlist = ast;
+  
+  /* ':' */
+  if (matchToken(Token.Colon, FOLLOW(VariableDeclaration))) {
+    lookahead = lexer.ConsumeSym();
+    
+    /* type */
+    if (matchSet(FIRST(Type), FOLLOW(VariableDeclaration))) {
+      lookahead = type();
+      tc = ast;
+    } /* end if */
+  } /* end if */
+  
+  /* build AST node and pass it back in ast */
+  ast = AstNode.NewNode(AST.VARDECL, idlist, tc);
+  
+  return lookahead;
 } /* variableDeclaration */
 
 
@@ -2879,7 +2904,41 @@ private Token variableDeclaration () {
  * ----------------------------------------------------------------------- */
 
 private Token procedureDeclaration () {
-  // TO DO
+  AstNode procdef, body;
+  string ident;
+  Token lookahead;
+
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("procedureDeclaration");
+  } /* end if */
+  
+  /* procedureHeader */
+  lookahead = procedureHeader();
+  procdef = ast;
+  
+  /* ';' */
+  if (matchToken(Token.Semicolon, FOLLOW(ProcedureDeclaration))) {
+    lookahead = lexer.ConsumeSym();
+    
+    /* block */
+    if (matchSet(FIRST(Block), FOLLOW(ProcedureDeclaration))) {
+      lookahead = block();
+      body = ast;
+      
+      /* Ident */
+      if (matchToken(Token.Identifier, FOLLOW(ProcedureDeclaration))) {
+        lookahead = lexer.ConsumeSym();
+        ident = lexer.CurrentLexeme();
+        
+        /* TO DO: check if procedure identifiers match */
+      } /* end if */
+    } /* end if */
+  } /* end if */
+  
+  /* build AST node and pass it back in ast */
+  ast = AstNode.NewNode(AST.PROC, procdef, body);
+  
+  return lookahead;
 } /* procedureDeclaration */
 
 
@@ -2896,12 +2955,95 @@ private Token procedureDeclaration () {
  * ----------------------------------------------------------------------- */
 
 private Token moduleDeclaration () {
+  AstNode id, prio, implist, exp, body;
+  Fifo tmplist;
+  string ident1, ident2;
+  Token lookahead;
+
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("moduleDeclaration");
+  } /* end if */
 
   if (Capabilities.LocalModules() == false) {
     // MODULE declaration not supported -- report error and skip
   } /* end if */
   
-  // TO DO
+  /* MODULE */
+  lookahead = lexer.ConsumeSym();
+  
+  /* moduleIdent */
+  if (matchToken(Token.Identifier, RESYNC(IMPORT_OR_BLOCK))) {
+    lookahead = lexer.ConsumeSym();
+    ident1 = lexer.CurrentLexeme();
+    
+    /* modulePriority? */
+    if (lookahead == Token.LeftBracket) {
+      lookahead = modulePriority();
+      prio = ast;
+    }
+    else /* no module priority */ {
+      prio = AstNode.EmptyNode();
+    } /* end while */
+    
+    /* ';' */
+    if (matchToken(Token.Semicolon, RESYNC(IMPORT_OR_BLOCK))) {
+      lookahead = lexer.ConsumeSym();
+    }
+    else /* resync */ {
+      lookahead = lexer.NextSym();
+    } /* end if */
+  }
+  else /* resync */ {
+    lookahead = lexer.NextSym();
+  } /* end if */
+  
+  tmplist = Fifo.NewQueue();
+  
+  /* import* */
+  while ((lookahead == Token.Import) ||
+         (lookahead == Token.From)) {
+    lookahead = import();
+    tmplist.Enqueue(ast);
+  } /* end while */
+  
+  if (tmplist.EntryCount() > 0) {
+    implist = AstNode.NewListNode(AST.IMPLIST, tmplist);
+  }
+  else /* no import list */ {
+    implist = AstNode.EmptyNode();
+  } /* end if */
+  
+  tmplist.Release();
+  
+  /* export? */
+  if (lookahead == Token.Export) {
+    lookahead = export();
+    exp = ast;
+  }
+  else /* no export list */ {
+    exp = AstNode.EmptyNode();
+  } /* end while */
+  
+  /* block */
+  if (matchSet(FIRST(Block), FOLLOW(ModuleDeclaration))) {
+    lookahead = block();
+    body = ast;
+    
+    /* moduleIdent */
+    if (matchToken(Token.Identifier, FOLLOW(ModuleDeclaration))) {
+      lookahead = lexer.ConsumeSym();
+      ident2 = lexer.CurrentLexeme();
+      
+      if (ident1 != ident2) {
+        /* TO DO: report error -- module identifiers don't match */ 
+      } /* end if */
+    } /* end if */
+  } /* end if */  
+  
+  /* build AST node and pass it back in ast */
+  ast = AstNode.NewNode(AST.MODDECL, id, prio, implist, exp, body);
+  
+  return lookahead;
 } /* moduleDeclaration */
 
 
@@ -2916,7 +3058,46 @@ private Token moduleDeclaration () {
  * ----------------------------------------------------------------------- */
 
 private Token export () {
-  // TO DO
+  AstNode idlist;
+  bool qualified;
+  Token lookahead;
+
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("export");
+  } /* end if */
+    
+  /* EXPORT */
+  lookahead = lexer.ConsumeSym();
+    
+  /* QUALIFIED? */
+  if (lookahead == Token.Qualified) {
+    lookahead = ConsumeSym();
+    qualified = true;
+  }
+  else {
+    qualified = false;
+  } /* end if */
+  
+  /* identList */
+  if (matchToken(Token.Identifier, FOLLOW(Export))) {
+    lookahead = identList();
+    idlist = ast;
+    
+    /* ';' */
+    if (matchToken(Token.Semicolon, FOLLOW(Export))) {
+      lookahead = lexer.ConsumeSym();
+    } /* end if */
+  } /* end if */
+  
+  /* build AST node and pass it back in p->ast */
+  if (qualified) {
+    ast = AstNode.NewNode(AST.QUALEXP, idlist);
+  }
+  else /* unqualified */ {
+    ast = AstNode.NewNode(AST.EXPORT, idlist);
+  } /* end if */
+  
+  return lookahead;
 } /* export */
 
 
@@ -2931,7 +3112,64 @@ private Token export () {
  * ----------------------------------------------------------------------- */
 
 private Token statementSequence () {
-  // TO DO
+  Fifo tmplist; 
+  Token lookahead;
+
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("statementSequence");
+  } /* end if */
+  
+  /* statement */
+  lookahead = statement();
+  tmplist = Fifo.NewQueue(ast);
+  
+  /* ( ';' statement )* */
+  while (lookahead == Token.Semicolon) {
+    /* ';' */
+    lineOfSemicolon = lexer.LookaheadLine();
+    columnOfSemicolon = lexer.LookaheadColumn();
+    lookahead = lexer.ConsumeSym();
+    
+    /* check if semicolon occurred at the end of a statement sequence */
+    if (FOLLOW(STATEMENT_SEQUENCE).IsElement(lookahead)) {
+    
+      if (CompilerOptions.ErrantSemicolon()) {
+        /* treat as warning */
+        // m2c_emit_warning_w_pos
+        //   (M2C_SEMICOLON_AFTER_STMT_SEQ,
+        //    lineOfSemicolon, columnOfSemicolon);
+        // warningCount++;
+      }
+      else /* treat as error */ {
+        // m2c_emit_error_w_pos
+        //   (M2C_SEMICOLON_AFTER_STMT_SEQ,
+        //    lineOfSemicolon, columnOfSemicolon);
+        // errorCount++;
+      } /* end if */
+      
+      /* print source line */
+      if (m2c_option_verbose()) {
+        m2c_print_line_and_mark_column(p->lexer,
+          line_of_semicolon, column_of_semicolon);
+      } /* end if */
+    
+      /* leave statement sequence loop to continue */
+      break;
+    } /* end if */
+    
+    /* statement */
+    if (matchSet(FIRST(Statement),
+        RESYNC(FIRST_OR_FOLLOW_OF_STATEMENT))) {
+      lookahead = statement();
+      tmplist.Enqueue(ast);
+    } /* end if */
+  } /* end while */
+  
+  /* build AST node and pass it back in p->ast */
+  ast = AstNode.NewListNode(AST.STMTSEQ, tmplist);
+  tmplist.Release();
+  
+  return lookahead;
 } /* statementSequence */
 
 
@@ -2946,7 +3184,11 @@ private Token statementSequence () {
  * ----------------------------------------------------------------------- */
 
 private Token statement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* statement */
 
 
@@ -2962,7 +3204,11 @@ private Token statement () {
  * ----------------------------------------------------------------------- */
 
 private Token assignmentOrProcCall () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* assignmentOrProcCall */
 
 
@@ -2977,7 +3223,11 @@ private Token assignmentOrProcCall () {
  * ----------------------------------------------------------------------- */
 
 private Token actualParameters () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* actualParameters */
 
 
@@ -2992,7 +3242,11 @@ private Token actualParameters () {
  * ----------------------------------------------------------------------- */
 
 private Token returnStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* returnStatement */
 
 
@@ -3007,12 +3261,15 @@ private Token returnStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token withStatement () {
+  Token lookahead;
 
   if (Capabilities.WithStatement() == false) {
     // WITH statement not supported -- report error and skip
   } /* end if */
   
   // TO DO
+  
+  return lookahead;
 } /* withStatement */
 
 
@@ -3032,7 +3289,11 @@ private Token withStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token ifStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* ifStatement */
 
 
@@ -3045,13 +3306,17 @@ private Token ifStatement () {
  *   END
  *   ;
  *
- * NB: 'case' is a reserved word in C, we use case_branch() here instead
+ * NB: 'case' is a reserved word in C#, we use caseBranch() here instead
  *
  * astnode: (SWITCH exprNode (CASELIST caseBranchNode+) elseBranchNode)
  * ----------------------------------------------------------------------- */
 
 private Token caseStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* caseStatement */
 
 
@@ -3068,7 +3333,11 @@ private Token caseStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token caseBranch () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* caseBranch */
 
 
@@ -3083,7 +3352,11 @@ private Token caseBranch () {
  * ----------------------------------------------------------------------- */
 
 private Token loopStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* loopStatement */
 
 
@@ -3100,7 +3373,11 @@ private Token loopStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token whileStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* whileStatement */
 
 
@@ -3117,7 +3394,11 @@ private Token whileStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token repeatStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* repeatStatement */
 
 
@@ -3141,7 +3422,11 @@ private Token repeatStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token forStatement () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* forStatement */
 
 
@@ -3156,7 +3441,11 @@ private Token forStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token designator () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* designator */
 
 
@@ -3171,7 +3460,11 @@ private Token designator () {
  * ----------------------------------------------------------------------- */
 
 private Token selector () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* selector */
 
 
@@ -3186,7 +3479,11 @@ private Token selector () {
  * ----------------------------------------------------------------------- */
 
 private Token indexList () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* indexList */
 
 
@@ -3205,7 +3502,11 @@ private Token indexList () {
  * ----------------------------------------------------------------------- */
 
 private Token expression () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* expression */
 
 
@@ -3224,7 +3525,11 @@ private Token expression () {
  * ----------------------------------------------------------------------- */
 
 private Token simpleExpression () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* simpleExpression */
 
 
@@ -3243,7 +3548,11 @@ private Token simpleExpression () {
  * ----------------------------------------------------------------------- */
 
 private Token term () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* term */
 
 
@@ -3258,7 +3567,11 @@ private Token term () {
  * ----------------------------------------------------------------------- */
 
 private Token simpleTerm () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* simpleTerm */
 
 
@@ -3276,7 +3589,11 @@ private Token simpleTerm () {
  * ----------------------------------------------------------------------- */
 
 private Token factor () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* factor */
 
 
@@ -3292,7 +3609,11 @@ private Token factor () {
  * ----------------------------------------------------------------------- */
 
 private Token designatorOrFuncCall () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* designatorOrFuncCall */
 
 
@@ -3307,7 +3628,11 @@ private Token designatorOrFuncCall () {
  * ----------------------------------------------------------------------- */
 
 private Token setValue () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* setValue */
 
 
@@ -3322,7 +3647,11 @@ private Token setValue () {
  * ----------------------------------------------------------------------- */
 
 private Token element () {
+  Token lookahead;
+
   // TO DO
+  
+  return lookahead;
 } /* element */
 
 
