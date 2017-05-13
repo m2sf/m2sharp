@@ -3131,7 +3131,7 @@ private Token statementSequence () {
     lookahead = lexer.ConsumeSym();
     
     /* check if semicolon occurred at the end of a statement sequence */
-    if (FOLLOW(STATEMENT_SEQUENCE).IsElement(lookahead)) {
+    if (FOLLOW(StatementSequence).IsElement(lookahead)) {
     
       if (CompilerOptions.ErrantSemicolon()) {
         /* treat as warning */
@@ -3148,11 +3148,10 @@ private Token statementSequence () {
       } /* end if */
       
       /* print source line */
-      if (m2c_option_verbose()) {
-        m2c_print_line_and_mark_column(p->lexer,
-          line_of_semicolon, column_of_semicolon);
+      if (CompilerOptions.Verbose()) {
+        lexer.PrintLineAndMarkColumn(lineOfSemicolon, columnOfSemicolon);
       } /* end if */
-    
+      
       /* leave statement sequence loop to continue */
       break;
     } /* end if */
