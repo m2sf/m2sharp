@@ -3185,7 +3185,69 @@ private Token statementSequence () {
 private Token statement () {
   Token lookahead;
 
-  // TO DO
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("statement");
+  } /* end if */
+  
+  lookahead = lexer.NextSym();
+  
+  switch (lookahead) {
+  
+    /* assignmentOrProcCall */
+    case Token.Identifier :
+      lookahead = assignmentOrProcCall();
+      break;
+      
+    /* | returnStatement */
+    case Token.Return :
+      lookahead = returnStatement();
+      break;
+      
+    /* | withStatement */
+    case Token.WITH :
+      lookahead = withStatement();
+      break;
+      
+    /* | ifStatement */
+    case Token.IF :
+      lookahead = ifStatement();
+      break;
+      
+    /* | caseStatement */
+    case Token.CASE :
+      lookahead = caseStatement();
+      break;
+      
+    /* | loopStatement */
+    case Token.LOOP :
+      lookahead = loopStatement();
+      break;
+      
+    /* | whileStatement */
+    case Token.WHILE :
+      lookahead = whileStatement();
+      break;
+      
+    /* | repeatStatement */
+    case Token.REPEAT :
+      lookahead = repeatStatement();
+      break;
+      
+    /* | forStatement */
+    case Token.FOR :
+      lookahead = forStatement();
+      break;
+      
+    /* | EXIT */
+    case Token.EXIT :
+      lookahead = ConsumeSym();
+      ast = AstNode.NewNode(AST.EXIT);
+      break;
+      
+    default : /* unreachable code */
+      /* fatal error -- abort */
+      Environment.Exit(-1);
+    } /* end switch */
   
   return lookahead;
 } /* statement */
@@ -3203,9 +3265,34 @@ private Token statement () {
  * ----------------------------------------------------------------------- */
 
 private Token assignmentOrProcCall () {
+  AstNode desig;
   Token lookahead;
 
-  // TO DO
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("assignmentOrProcCall");
+  } /* end if */
+  
+  /* designator */
+  lookahead = designator();
+  desig = ast;
+  
+  /* ( ':=' expression | actualParameters )? */
+  if (lookahead == TOKEN_ASSIGN) {
+    lookahead = lexer.ConsumeSym();
+    
+    /* expression */
+    if (matchSet(FIRST(expression), FOLLOW(ASSIGNMENT_OR_PROC_CALL))) {
+      lookahead = expression();
+      ast = AstNode.NewNode(AST.ASSIGN, desig, ast);
+      /* astnode: (ASSIGN designatorNode exprNode) */
+    } /* end if */
+  }
+  /* | actualParameters */
+  else if (lookahead == Token.LeftParen) {
+    lookahead = actualParameters();
+    ast = AstNode.NewNode(AST.PCALL, desig, ast);
+    /* astnode: (PCALL designatorNode argsNode) */
+  } /* end if */
   
   return lookahead;
 } /* assignmentOrProcCall */
@@ -3222,9 +3309,45 @@ private Token assignmentOrProcCall () {
  * ----------------------------------------------------------------------- */
 
 private Token actualParameters () {
+  Fifo tmplist;
   Token lookahead;
 
-  // TO DO
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("actualParameters");
+  } /* end if */
+  
+  /* '(' */
+  lookahead = lexer.ConsumeSym();
+  
+  /* ( expression ( ',' expression )* )? */
+  if (FIRST(expression).IsMember(lookahead)) {
+    /* expression */
+    lookahead = expression();
+    tmplist = Fifo.NewQueue(ast);
+  
+    /* ( ',' expression )* */
+    while (lookahead == Token.Comma) {
+      /* ',' */
+      lookahead = lexer.ConsumeSym();
+    
+      /* expression */
+      if (matchSet(FIRST(expression), FOLLOW(expression))) {
+        lookahead = expression();
+        tmplist.Enqueue(ast);
+      } /* end if */
+    } /* end while */
+    
+    ast = AstNode.NewListNode(AST.ARGS, tmplist);
+    tmplist.Release();
+  }
+  else /* no arguments */ {
+    ast = AstNode.EmptyNode();
+  } /* end if */
+  
+  /* ')' */
+  if (matchToken(Token.RightParen, FOLLOW(actualParameters))) {
+    lookahead = lexer.ConsumeSym();
+  } /* end if */
   
   return lookahead;
 } /* actualParameters */
@@ -3241,9 +3364,27 @@ private Token actualParameters () {
  * ----------------------------------------------------------------------- */
 
 private Token returnStatement () {
+  AstNode expr;
   Token lookahead;
 
-  // TO DO
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("returnStatement");
+  } /* end if */
+  
+  /* RETURN */
+  lookahead = lexer.ConsumeSym();
+  
+  /* expression? */
+  if (FIRST(expression).IsElement(lookahead)) {
+    lookahead = expression();
+    expr = ast;
+  }
+  else {
+    expr = AstNode.EmptyNode();
+  } /* end if */
+  
+  /* build AST node and pass it back in ast */
+  ast = AstNode.NewNode(AST.RETURN, expr);
   
   return lookahead;
 } /* returnStatement */
@@ -3260,13 +3401,57 @@ private Token returnStatement () {
  * ----------------------------------------------------------------------- */
 
 private Token withStatement () {
+  AstNode desig, stmtseq;
   Token lookahead;
 
   if (Capabilities.WithStatement() == false) {
     // WITH statement not supported -- report error and skip
   } /* end if */
   
-  // TO DO
+  if (CompilerOptions.ParserDebug()) {
+    PARSER_DEBUG_INFO("withStatement");
+  } /* end if */
+  
+  /* WITH */
+  lookahead = lexer.ConsumeSym();
+  
+  /* designator */
+  if (matchToken(Token.Identifier, FOLLOW(withStatement))) {
+    lookahead = designator();
+    desig = ast;
+    
+    /* DO */
+    if (matchToken(Token.DO, FOLLOW(withStatement))) {
+      lookahead = lexer.ConsumeSym();
+      
+      /* check for empty statement sequence */
+      if (lookahead == Token.END) {
+    
+        /* empty statement sequence warning */
+        // m2c_emit_warning_w_pos
+        //   (M2C_EMPTY_STMT_SEQ,
+        //    lexer.LookaheadLine(),
+        //    lexer.LookaheadColumn());
+        // warning_count++;
+             
+        /* END */
+        lookahead = lexer.ConsumeSym();
+      }
+      /* statementSequence */
+      else if (matchSet(FIRST(statementSequence), FOLLOW(withStatement))) {
+        lookahead = statementSequence();
+        stmtseq = ast;
+        
+        /* END */
+        if (matchToken(Token.END, FOLLOW(withStatement))) {
+          lookahead = lexer.ConsumeSym();
+        } /* end if */
+      } /* end if */
+    } /* end if */
+  } /* end if */
+  
+  /* build AST node and pass it back in ast */
+  ast = AstNode.NewNode(AST.WITH, desig, stmtseq);
   
   return lookahead;
 } /* withStatement */
