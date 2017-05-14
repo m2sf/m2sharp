@@ -138,7 +138,7 @@ private Token compilationUnit () {
 
 
 /* --------------------------------------------------------------------------
- * private method definition_module()
+ * private method definitionModule()
  * --------------------------------------------------------------------------
  * definitionModule :=
  *   DEFINITION MODULE moduleIdent ';'
@@ -168,12 +168,12 @@ private Token definitionModule () {
     lookahead = lexer.ConsumeSym();
     
     /* moduleIdent */
-    if (matchToken(Token.IDENTIFIER, RESYNC(IMPORT_OR_DEFINITON_OR_END))) {
+    if (matchToken(Token.Identifier, RESYNC(IMPORT_OR_DEFINITON_OR_END))) {
       lookahead = lexer.ConsumeSym();
       ident1 = lexer.CurrentLexeme();
       
       /* ';' */
-      if (matchToken(Token.SEMICOLON, RESYNC(IMPORT_OR_DEFINITON_OR_END))) {
+      if (matchToken(Token.Semicolon, RESYNC(IMPORT_OR_DEFINITON_OR_END))) {
         lookahead = lexer.ConsumeSym();
       }
       else /* resync */ {
@@ -212,11 +212,11 @@ private Token definitionModule () {
   tmplist.ReleaseQueue();
   
   /* END */
-  if (matchToken(Token.END, FOLLOW(DEFINITION_MODULE))) {
+  if (matchToken(Token.END, FOLLOW(DefinitionModule))) {
     lookahead = lexer.ConsumeSym();
     
     /* moduleIdent */
-    if (matchToken(Token.IDENTIFIER, FOLLOW(DEFINITION_MODULE))) {
+    if (matchToken(Token.IDENTIFIER, FOLLOW(DefinitionModule))) {
       lookahead = lexer.ConsumeSym();
       ident2 = lexer.CurrentLexeme();
     
@@ -225,7 +225,7 @@ private Token definitionModule () {
       } /* end if */
     
       /* '.' */
-      if (matchToken(Token.PERIOD, FOLLOW(DEFINITION_MODULE))) {
+      if (matchToken(Token.PERIOD, FOLLOW(DefinitionModule))) {
         lookahead = lexer.ConsumeSym();
       } /* end if */
     } /* end if */
@@ -270,7 +270,7 @@ private Token import () {
   } /* end if */
   
   /* ';' */
-  if (matchToken(Token.SEMICOLON, RESYNC(IMPORT_OR_DEFINITON_OR_END))) {
+  if (matchToken(Token.Semicolon, RESYNC(IMPORT_OR_DEFINITON_OR_END))) {
     lookahead = lexer.ConsumeSym();
   } /* end if */
   
@@ -304,7 +304,7 @@ private Token qualifiedImport () {
   lookahead = lexer.ConsumeSym();
   
   /* moduleList */
-  if (matchToken(Token.IDENTIFIER, FOLLOW(QUALIFIED_IMPORT))) {
+  if (matchToken(Token.Identifier, FOLLOW(QualifiedImport))) {
     lookahead = identList();
     idlist = ast;
   } /* end if */
@@ -345,7 +345,7 @@ private Token unqualifiedImport () {
   lookahead = lexer.ConsumeSym();
   
   /* moduleIdent */
-  if (matchToken(Token.IDENTIFIER, RESYNC(IMPORT_OR_IDENT_OR_SEMICOLON))) {
+  if (matchToken(Token.Identifier, RESYNC(IMPORT_OR_IDENT_OR_SEMICOLON))) {
     lookahead = lexer.ConsumeSym();
     ident = lexer.CurrentLexeme();
 
@@ -354,7 +354,7 @@ private Token unqualifiedImport () {
       lookahead = lexer.ConsumeSym();
       
       /* moduleList */
-      if (matchToken(Token.IDENTIFIER, FOLLOW(UNQUALIFIED_IMPORT))) {
+      if (matchToken(Token.IDENTIFIER, FOLLOW(UnqualifiedImport))) {
         lookahead = identList();
         idlist = ast;
       } /* end if */
@@ -397,12 +397,12 @@ private Token identList () {
   tmplist = Fifo.NewQueue(ident);
   
   /* ( ',' Ident )* */
-  while (lookahead == Token.COMMA) {
+  while (lookahead == Token.Comma) {
     /* ',' */
     lookahead = lexer.ConsumeSym();
     
     /* Ident */
-    if (matchToken(Token.IDENTIFIER, RESYNC(COMMA_OR_SEMICOLON))) {
+    if (matchToken(Token.Identifier, RESYNC(COMMA_OR_SEMICOLON))) {
       lookahead = lexer.ConsumeSym();
       ident = lexer.CurrentLexeme();
       
@@ -458,11 +458,11 @@ private Token definition () {
       lookahead = lexer.ConsumeSym();
       
       /* ( constDefinition ';' )* */
-      while (lookahead == Token.IDENTIFIER) {
+      while (lookahead == Token.Identifier) {
         lookahead = constDefinition(); /* ast holds ast-node */
         
         /* ';' */
-        if (matchToken(Token.SEMICOLON,
+        if (matchToken(Token.Semicolon,
             RESYNC(DEFINITION_OR_IDENT_OR_SEMICOLON))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
@@ -474,11 +474,11 @@ private Token definition () {
       lookahead = lexer.ConsumeSym();
       
       /* ( typeDefinition ';' )* */
-      while (lookahead == Token.IDENTIFIER) {
+      while (lookahead == Token.Identifier) {
         lookahead = typeDefinition(); /* ast holds ast-node */
         
         /* ';' */
-        if (matchToken(Token.SEMICOLON,
+        if (matchToken(Token.Semicolon,
             RESYNC(DEFINITION_OR_IDENT_OR_SEMICOLON))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
@@ -490,11 +490,11 @@ private Token definition () {
       lookahead = lexer.ConsumeSym();
       
       /* ( varDefinition ';' )* */
-      while (lookahead == Token.IDENTIFIER) {
+      while (lookahead == Token.Identifier) {
         lookahead = variableDeclaration(); /* ast holds ast-node */
         
         /* ';' */
-        if (match_token(Token.SEMICOLON,
+        if (match_token(Token.Semicolon,
             RESYNC(DEFINITION_OR_IDENT_OR_SEMICOLON))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
@@ -506,7 +506,7 @@ private Token definition () {
       lookahead = procedureHeader(); /* ast holds ast-node */
       
       /* ';' */
-      if (matchToken(Token.SEMICOLON,
+      if (matchToken(Token.Semicolon,
           RESYNC(DEFINITION_OR_SEMICOLON))) {
         lookahead = lexer.ConsumeSym();
       } /* end if */
@@ -547,18 +547,18 @@ private Token constDefinition () {
   ident = lexer.CurrentLexeme();
   
   /* '=' */
-  if (matchToken(Token.EQUAL, FOLLOW(CONST_DEFINITION))) {
+  if (matchToken(Token.Equal, FOLLOW(ConstDefinition))) {
     lookahead = lexer.ConsumeSym();
     
     /* constExpression */
-    if (matchSet(FIRST(EXPRESSION), FOLLOW(CONST_DEFINITION))) {
+    if (matchSet(FIRST(Expression), FOLLOW(ConstDefinition))) {
       lookahead = constExpression();
       expr = ast;
     } /* end if */
   } /* end if */
   
   /* build AST node and pass it back in ast */
-  id = AstNode.NewTerminalNode(AST_IDENT, ident);
+  id = AstNode.NewTerminalNode(AST.IDENT, ident);
   ast = AstNode.NewNode(AST.CONSTDEF, id, expr);
   
   return lookahead;
@@ -589,11 +589,11 @@ private Token typeDefinition () {
   ident = lexer.CurrentLexeme();
   
   /* ( '=' type )? */
-  if (lookahead == Token.EQUAL) {
+  if (lookahead == Token.Equal) {
     lookahead = lexer.ConsumeSym();
     
     /* type */
-    if (matchSet(FIRST(TYPE), FOLLOW(TYPE_DEFINITION))) {
+    if (matchSet(FIRST(Type), FOLLOW(TypeDefinition))) {
       lookahead = type();
       tc = ast;
     } /* end if */
@@ -631,13 +631,13 @@ private Token type () {
   switch (lookahead) {
   
     /* derivedOrSubrangeType */
-    case Token.IDENTIFIER :
-    case Token.LEFT_BRACKET :
+    case Token.Identifier :
+    case Token.LetBracket :
       lookahead = derivedOrSubrangeType(); /* ast holds ast-node */
       break;
       
     /* | enumType */
-    case Token.LEFT_PAREN :
+    case Token.LeftParen :
       lookahead = enumType(); /* ast holds ast-node */
       break;
       
@@ -697,11 +697,11 @@ private Token derivedOrSubrangeType () {
   
   lookahead = lexer.NextSym();
   
-  if (matchSet(FIRST(DERIVED_OR_SUBRANGE_TYPE),
-      FOLLOW(DERIVED_OR_SUBRANGE_TYPE))) {
+  if (matchSet(FIRST(DerivedOrSubrangeType),
+      FOLLOW(DerivedOrSubrangeType))) {
     
     /* typeIdent range? */
-    if (lookahead == Token.IDENTIFIER) {
+    if (lookahead == Token.Identifier) {
       
       /* typeIdent */
       lookahead = qualident();
@@ -717,7 +717,7 @@ private Token derivedOrSubrangeType () {
     }
     /* | range */
     else if (lookahead == Token.LeftBracket) {
-      lookahead = range(p);
+      lookahead = range();
       /* astnode: (SUBR lower upper (EMPTY)) */
     }
     else /* unreachable code */ {
@@ -764,7 +764,7 @@ private Token qualident () {
     lookahead = lexer.ConsumeSym();
     
     /* Ident */
-    if (matchToken(Token.IDENTIFIER, FOLLOW(QUALIDENT))) {
+    if (matchToken(Token.Identifier, FOLLOW(Qualident))) {
       lookahead = lexer.ConsumeSym();
       qident = lexer.CurrentLexeme();
       tmplist.Enqueue(qident);
@@ -807,21 +807,21 @@ private Token range () {
   lookahead = lexer.ConsumeSym();
   
   /* constExpression */
-  if (matchSet(FIRST(EXPRESSION), FOLLOW(RANGE))) {
+  if (matchSet(FIRST(Expression), FOLLOW(Range))) {
     lookahead = constExpression();
     lower = ast;
     
     /* '..' */
-    if (matchToken(Token.RANGE, FOLLOW(RANGE))) {
+    if (matchToken(Token.Range, FOLLOW(Range))) {
       lookahead = lexer.ConsumeSym();
       
       /* constExpression */
-      if (matchSet(FIRST(EXPRESSION), FOLLOW(RANGE))) {
+      if (matchSet(FIRST(Expression), FOLLOW(Range))) {
         lookahead = constExpression();
         upper = ast;
         
         /* ']' */
-        if (matchToken(Token.RightBracket, FOLLOW(RANGE))) {
+        if (matchToken(Token.RightBracket, FOLLOW(Range))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
       } /* end if */
@@ -858,12 +858,12 @@ private Token enumType () {
   lookahead = lexer.ConsumeSym();
   
   /* identList */
-  if (matchToken(Token.Identifier, FOLLOW(ENUM_TYPE))) {
+  if (matchToken(Token.Identifier, FOLLOW(EnumType))) {
     lookahead = identList();
     idlist = ast;
     
     /* ')' */
-    if (matchToken(Token.RightParen, FOLLOW(ENUM_TYPE))) {
+    if (matchToken(Token.RightParen, FOLLOW(EnumType))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
@@ -897,11 +897,11 @@ private Token setType () {
   lookahead = lexer.ConsumeSym();
   
   /* OF */
-  if (matchToken(Token.OF, FOLLOW(SET_TYPE))) {
+  if (matchToken(Token.OF, FOLLOW(SetType))) {
     lookahead = lexer.ConsumeSym();
     
     /* countableType */
-    if (matchToken(Token.Identifier, FOLLOW(SET_TYPE))) {
+    if (matchToken(Token.Identifier, FOLLOW(SetType))) {
       lookahead = countableType();
       tc = ast;
     } /* end if */
@@ -1001,7 +1001,7 @@ private Token arrayType () {
   lookahead = lexer.ConsumeSym();
   
   /* countableType */
-  if (matchSet(FIRST(COUNTABLE_TYPE), FOLLOW(ARRAY_TYPE))) {
+  if (matchSet(FIRST(CountableType), FOLLOW(ArrayType))) {
     lookahead = countableType();
     tmplist = Fifo.NewQueue(ast);
     
@@ -1010,7 +1010,7 @@ private Token arrayType () {
       /* ',' */
       lookahead = lexer.ConsumeSym();
       
-      if (matchSet(FIRST(COUNTABLE_TYPE), RESYNC(TYPE_OR_COMMA_OR_OF))) {
+      if (matchSet(FIRST(CountableType), RESYNC(TYPE_OR_COMMA_OR_OF))) {
         lookahead = countableType();
         tmplist.Enqueue(ast);
       }
@@ -1020,11 +1020,11 @@ private Token arrayType () {
     } /* end while */
 
     /* OF */
-    if (matchToken(Token.OF, FOLLOW(ARRAY_TYPE))) {
+    if (matchToken(Token.OF, FOLLOW(ArrayType))) {
       lookahead = lexer.ConsumeSym();
   
       /* type */
-      if (matchSet(FIRST(TYPE), FOLLOW(ARRAY_TYPE))) {
+      if (matchSet(FIRST(Type), FOLLOW(ArrayType))) {
         lookahead = type();
         basetype = ast;
       } /* end if */
@@ -1074,12 +1074,12 @@ private Token extensibleRecordType () {
     lookahead = lexer.ConsumeSym();
     
     /* baseType */
-    if (matchToken(Token.Identifier, FIRST(FIELD_LIST_SEQUENCE))) {
+    if (matchToken(Token.Identifier, FIRST(FieldListSequence))) {
       lookahead = qualident();
       basetype = ast;
       
       /* ')' */
-      if (matchToken(Token.RightParen, FIRST(FIELD_LIST_SEQUENCE))) {
+      if (matchToken(Token.RightParen, FIRST(FieldListSequence))) {
         lookahead = lexer.ConsumeSym();
       }
       else /* resync */ {
@@ -1109,13 +1109,13 @@ private Token extensibleRecordType () {
   }
   
   /* fieldListSequence */
-  else if (matchSet(FIRST(FIELD_LIST_SEQUENCE),
-           FOLLOW(EXTENSIBLE_RECORD_TYPE))) {
+  else if (matchSet(FIRST(FieldListSequence),
+           FOLLOW(ExtensibleRecordType))) {
     lookahead = fieldListSequence();
     flseq = ast;
     
     /* END */
-    if (matchToken(Token.END, FOLLOW(EXTENSIBLE_RECORD_TYPE))) {
+    if (matchToken(Token.END, FOLLOW(ExtensibleRecordType))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
@@ -1165,20 +1165,20 @@ private Token fieldListSequence () {
     lookahead = lexer.ConsumeSym();
     
     /* check if semicolon occurred at the end of a field list sequence */
-    if (IsElement(FOLLOW(FIELD_LIST_SEQUENCE), lookahead)) {
+    if (IsElement(FOLLOW(FieldListSequence), lookahead)) {
     
       if (CompilerOptions.ErrantSemicolons()) {
         /* treat as warning */
-        //m2c_emit_warning_w_pos
-        //  (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
-        //   lineOfSemicolon, columnOfSemicolon);
-        //warning_count++;
+        // m2c_emit_warning_w_pos
+        //   (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
+        //    lineOfSemicolon, columnOfSemicolon);
+        // warningCount++;
       }
       else /* treat as error */ {
-        //m2c_emit_error_w_pos
-        //  (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
-        //   lineOfSemicolon, columnOfSemicolon);
-        //error_count++;
+        // m2c_emit_error_w_pos
+        //   (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
+        //    lineOfSemicolon, columnOfSemicolon);
+        // errorCount++;
       } /* end if */
       
       /* print source line */
@@ -1191,13 +1191,13 @@ private Token fieldListSequence () {
     } /* end if */
     
     /* fieldList */
-    if (matchSet(FIRST(VARIABLE_DECLARATION), RESYNC(SEMICOLON_OR_END))) {
+    if (matchSet(FIRST(VariableDeclaration), RESYNC(SEMICOLON_OR_END))) {
       lookahead = fieldList();
       tmplist.Enqueue(ast);
     } /* end if */
   } /* end while */
   
-  /* build AST node and pass it back in p->ast */
+  /* build AST node and pass it back in ast */
   ast = AstNode.NewListNode(AST.FIELDLISTSEQ, tmplist);
   tmplist.ReleaseQueue();
   
@@ -1230,11 +1230,11 @@ private Token fieldList () {
   idlist = ast;
   
   /* ':' */
-  if (matchToken(Token.Colon, FOLLOW(VARIABLE_DECLARATION))) {
+  if (matchToken(Token.Colon, FOLLOW(VariableDeclaration))) {
     lookahead = lexer.ConsumeSym();
     
     /* type */
-    if (matchSet(FIRST(TYPE), FOLLOW(VARIABLE_DECLARATION))) {
+    if (matchSet(FIRST(Type), FOLLOW(VariableDeclaration))) {
       lookahead = type();
       tc = ast;
     } /* end if */
@@ -1286,20 +1286,20 @@ private Token variantRecordType () {
       lookahead = lexer.ConsumeSym();
   }
   /* variantFieldListSeq */
-  else if(matchSet(FIRST(VARIANT_FIELD_LIST_SEQ),
-          FOLLOW(VARIANT_RECORD_TYPE))) {
+  else if(matchSet(FIRST(VariantFieldListSeq),
+          FOLLOW(VariantRecordType))) {
     lookahead = variantFieldListSeq();
     flseq = ast;
     
     /* END */
-    if (matchToken(Token.END, FOLLOW(VARIANT_RECORD_TYPE))) {
+    if (matchToken(Token.END, FOLLOW(VariantRecordType))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
   
   /* build AST node and pass it back in p->ast */
-  if (flseq.NodeType() == AST_VFLISTSEQ) {
-    ast = AstNode.NewNode(AST_VRNTREC, flseq);
+  if (flseq.NodeType() == AST.VFLISTSEQ) {
+    ast = AstNode.NewNode(AST.VRNTREC, flseq);
   }
   else /* not variant field list sequence */ {
     ast = AstNode.NewNode(AST.RECORD, flseq);
@@ -1329,7 +1329,7 @@ private Token variantFieldListSeq () {
   bool variantFieldListFound = false;
   
   if (CompilerOptions.ParserDebug()) {
-    PARSER_DEBUG_INFO("variantRecordType");
+    PARSER_DEBUG_INFO("variantFieldListSeq");
   } /* end if */
   
   /* variantFieldList */
@@ -1348,20 +1348,20 @@ private Token variantFieldListSeq () {
     lookahead = lexer.ConsumeSym();
     
     /* check if semicolon occurred at the end of a field list sequence */
-    if (IsElement(FOLLOW(VARIANT_FIELD_LIST_SEQ), lookahead)) {
+    if (FOLLOW(VariantFieldListSeq).IsElement(lookahead)) {
     
       if (CompilerOptions.ErrantSemicolons()) {
         /* treat as warning */
-        //m2c_emit_warning_w_pos
-        //  (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
-        //   lineOfSemicolon, columnOfSemicolon);
-        //warning_count++;
+        // m2c_emit_warning_w_pos
+        //   (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
+        //    lineOfSemicolon, columnOfSemicolon);
+        // warningCount++;
       }
       else /* treat as error */ {
-        //m2c_emit_error_w_pos
-        //  (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
-        //   lineOfSemicolon, columnOfSemicolon);
-        //error_count++;
+        // m2c_emit_error_w_pos
+        //   (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
+        //    lineOfSemicolon, columnOfSemicolon);
+        // errorCount++;
       } /* end if */
       
       /* print source line */
@@ -1374,8 +1374,7 @@ private Token variantFieldListSeq () {
     } /* end if */
     
     /* variantFieldList */
-    if (matchSet(FIRST(VARIANT_FIELD_LIST),
-        FOLLOW(VARIANT_FIELD_LIST))) {
+    if (matchSet(FIRST(VariantFieldList), FOLLOW(VariantFieldList))) {
       lookahead = variantFieldList();
       tmplist.Enqueue(ast);
       
@@ -1491,7 +1490,7 @@ private Token variantFields () {
         lookahead = lexer.ConsumeSym();
       
         /* variant */
-        if (matchSet(FIRST(VARIANT), RESYNC(ELSE_OR_END))) {
+        if (matchSet(FIRST(Variant), RESYNC(ELSE_OR_END))) {
           lookahead = variant();
           tmplist = Fifo.NewQueue(ast);
         
@@ -1502,7 +1501,7 @@ private Token variantFields () {
             lookahead = lexer.ConsumeSym();
           
             /* variant */
-            if (matchSet(FIRST(VARIANT), RESYNC(ELSE_OR_END))) {
+            if (matchSet(FIRST(Variant), RESYNC(ELSE_OR_END))) {
               lookahead = variant();
               tmplist.Enqueue(ast);
             } /* end if */
@@ -1532,8 +1531,7 @@ private Token variantFields () {
         //warning_count++;
     }
     /* fieldListSequence */
-    else if (matchSet(
-             FIRST(FIELD_LIST_SEQUENCE), FOLLOW(VARIANT_FIELDS))) {
+    else if (matchSet(FIRST(FieldListSequence), FOLLOW(VariantFields))) {
       lookahead = fieldListSequence();
       flseq = ast;
     }
@@ -1546,7 +1544,7 @@ private Token variantFields () {
   } /* end if */
   
   /* END */
-  if (matchToken(Token.END, FOLLOW(VARIANT_FIELDS))) {
+  if (matchToken(Token.END, FOLLOW(VariantFields))) {
     lookahead = lexer.ConsumeSym();
   } /* end if */
   
@@ -1584,21 +1582,21 @@ private Token variant () {
   cllist = ast;
   
   /* ':' */
-  if (matchToken(Token.Colon, FOLLOW(VARIANT))) {
+  if (matchToken(Token.Colon, FOLLOW(Variant))) {
     lookahead = lexer.ConsumeSym();
     
     /* check for empty field list sequence */
-    if (IsElement(FOLLOW(VARIANT), lookahead)) {
+    if (IsElement(FOLLOW(Variant), lookahead)) {
 
         /* empty field list sequence warning */
-        //m2c_emit_warning_w_pos
-        //  (M2C_EMPTY_FIELD_LIST_SEQ,
-        //   m2c_lexer_lookahead_line(p->lexer),
-        //   m2c_lexer_lookahead_column(p->lexer));
-        //warning_count++;
+        // m2c_emit_warning_w_pos
+        //   (M2C_EMPTY_FIELD_LIST_SEQ,
+        //    lexer.LookaheadLine(),
+        //    lexer.LookaheadColumn());
+        // warningCount++;
     }
     /* variantFieldListSeq */
-    else if (matchSet(FIRST(VARIANT_FIELD_LIST_SEQ), FOLLOW(VARIANT))) {
+    else if (matchSet(FIRST(VariantFieldListSeq), FOLLOW(Variant))) {
       lookahead = variantFieldListSeq();
       flseq = ast;
     } /* end if */
@@ -1639,7 +1637,7 @@ private Token caseLabelList () {
     lookahead = lexer.ConsumeSym();
     
     /* caseLabels */
-    if (matchSet(FIRST(CASE_LABELS), FOLLOW(CASE_LABEL_LIST))) {
+    if (matchSet(FIRST(CaseLabels), FOLLOW(CaseLabelList))) {
       lookahead = caseLabels();
       tmplist.Enqueue(ast);
     } /* end if */
@@ -1680,7 +1678,7 @@ private Token caseLabels () {
     lookahead = lexer.ConsumeSym();
     
     /* constExpression */
-    if (matchSet(FIRST(EXPRESSION), FOLLOW(CASE_LABELS))) {
+    if (matchSet(FIRST(Expression), FOLLOW(CaseLabels))) {
       lookahead = constExpression();
       upper = ast;
     } /* end if */
@@ -1706,7 +1704,7 @@ private Token caseLabels () {
  * astnode: (POINTER typeConstructorNode)
  * ----------------------------------------------------------------------- */
 
-m2c_token_t pointerType (m2c_parser_context_t p) {
+private Token pointerType () {
   AstNode tc;
   Token lookahead;
   
@@ -1718,11 +1716,11 @@ m2c_token_t pointerType (m2c_parser_context_t p) {
   lookahead = lexer.ConsumeSym();
   
   /* TO */
-  if (matchToken(Token.TO, FOLLOW(POINTER_TYPE))) {
+  if (matchToken(Token.TO, FOLLOW(PointerType))) {
     lookahead = lexer.ConsumeSym();
     
     /* type */
-    if (matchSet(FIRST(TYPE), FOLLOW(POINTER_TYPE))) {
+    if (matchSet(FIRST(Type), FOLLOW(PointerType))) {
       lookahead = type();
       tc = ast;
     } /* end if */
@@ -1769,7 +1767,7 @@ private Token procedureType () {
     
     /* formalType */
     if (lookahead != Token.RightParen) {
-      if (matchSet(FIRST(FORMAL_TYPE), RESYNC(COMMA_OR_RIGHT_PAREN))) {
+      if (matchSet(FIRST(FormalType), RESYNC(COMMA_OR_RIGHT_PAREN))) {
         lookahead = formalType();
         tmplist.Enqueue(ast);
       }
@@ -1783,7 +1781,7 @@ private Token procedureType () {
         lookahead = lexer.ConsumeSym();
       
         /* formalType */
-        if (matchSet(FIRST(FORMAL_TYPE), RESYNC(COMMA_OR_RIGHT_PAREN))) {
+        if (matchSet(FIRST(FormalType), RESYNC(COMMA_OR_RIGHT_PAREN))) {
           lookahead = formalType();
           tmplist.Enqueue(ast);
         }
@@ -1808,7 +1806,7 @@ private Token procedureType () {
     lookahead = lexer.ConsumeSym();
     
     /* returnedType */
-    if (matchToken(Token.Identifier, FOLLOW(PROCEDURE_TYPE))) {
+    if (matchToken(Token.Identifier, FOLLOW(ProcedureType))) {
       lookahead = qualident();
       rtype = ast;
     }
@@ -1849,7 +1847,7 @@ private Token formalType () {
   Token lookahead;
   
   if (CompilerOptions.ParserDebug()) {
-    PARSER_DEBUG_INFO("procedureType");
+    PARSER_DEBUG_INFO("formalType");
   } /* end if */
   
   lookahead = lexer.NextSym();
@@ -1905,11 +1903,11 @@ private Token simpleFormalType () {
     isArglist = true;
 
     /* OF */
-    if (matchToken(Token.OF, FOLLOW(SIMPLE_FORMAL_TYPE))) {
+    if (matchToken(Token.OF, FOLLOW(SimpleFormalType))) {
       lookahead = lexer.ConsumeSym();
     }
     else /* resync */ {
-      lookahead = m2c_next_sym(p->lexer);
+      lookahead = lexer.NextSym();
     } /* end if */
   }
   /* | ARRAY OF )? */
@@ -1918,16 +1916,16 @@ private Token simpleFormalType () {
     isOpenArray = true;
 
     /* OF */
-    if (matchToken(Token.OF, FOLLOW(SIMPLE_FORMAL_TYPE))) {
+    if (matchToken(Token.OF, FOLLOW(SimpleFormalType))) {
       lookahead = lexer.ConsumeSym();
     }
     else /* resync */ {
-      lookahead = m2c_next_sym(p->lexer);
+      lookahead = lexer.NextSym();
     } /* end if */
   } /* end if */
 
   /* typeIdent */
-  if (matchToken(p, Token.Identifier, FOLLOW(SIMPLE_FORMAL_TYPE))) {
+  if (matchToken(p, Token.Identifier, FOLLOW(SimpleFormalType))) {
     lookahead = qualident();
     id = ast;
     /* astnode: (IDENT ident) | (QUALIDENT q0 q1 q2 ... qN ident) */
@@ -1984,8 +1982,7 @@ private Token attributedFormalType () {
   } /* end if */
   
   /* simpleFormalType */
-  if (matchSet(FIRST(SIMPLE_FORMAL_TYPE),
-      FOLLOW(ATTRIBUTED_FORMAL_TYPE))) {
+  if (matchSet(FIRST(SimpleFormalType), FOLLOW(AttributedFormalType))) {
     lookahead = simpleFormalType();
     sftype = ast;
   } /* end if */
@@ -2021,7 +2018,7 @@ private Token procedureHeader () {
   lookahead = lexer.ConsumeSym();
   
   /* procedureSignature */
-  if (matchToken(Token.Identifier, FOLLOW(PROCEDURE_HEADER))) {
+  if (matchToken(Token.Identifier, FOLLOW(ProcedureHeader))) {
     lookahead = procedureSignature();
   } /* end if */
   
@@ -2072,7 +2069,7 @@ private Token procedureSignature () {
     } /* end if */
     
     /* ')' */
-    if (matchToken(Token.RightParen, FOLLOW(PROCEDURE_TYPE))) {
+    if (matchToken(Token.RightParen, FOLLOW(ProcedureType))) {
       lookahead = lexer.ConsumeSym();
     }
     else /* resync */ {
@@ -2085,7 +2082,7 @@ private Token procedureSignature () {
       lookahead = lexer.ConsumeSym();
     
       /* returnedType */
-      if (matchToken(Token.Identifier, FOLLOW(PROCEDURE_TYPE))) {
+      if (matchToken(Token.Identifier, FOLLOW(ProcedureType))) {
         lookahead = qualident();
         rtype = ast;
       } /* end if */
@@ -2137,9 +2134,9 @@ private Token formalParamList () {
     
       if (CompilerOptions.ErrantSemicolons()) {
         /* treat as warning */
-        //m2c_emit_warning_w_pos
-        //  (M2C_SEMICOLON_AFTER_FORMAL_PARAM_LIST,
-        //   lineOfSemicolon, columnOfSemicolon);
+        // m2c_emit_warning_w_pos
+        //   (M2C_SEMICOLON_AFTER_FORMAL_PARAM_LIST,
+        //    lineOfSemicolon, columnOfSemicolon);
         warningCount++;
       }
       else /* treat as error */ {
@@ -2160,15 +2157,15 @@ private Token formalParamList () {
     } /* end if */
     
     /* formalParams */
-    if (matchSet(FIRST(FORMAL_PARAMS), FOLLOW(FORMAL_PARAMS))) {
+    if (matchSet(FIRST(FormalParams), FOLLOW(FormalParams))) {
       lookahead = formalParams();
-      Fifo.Enqueue(tmplist, ast);
+      tmplist.Enqueue(ast);
     } /* end if */
   } /* end while */
   
   /* build AST node and pass it back in ast */
   ast = AstNode.NewListNode(AST.FPARAMLIST, tmplist);
-  Fifo.Release(tmplist);
+  tmplist.Release();
   
   return lookahead;
 } /* end formalParamList */
@@ -2233,17 +2230,17 @@ private Token simpleFormalParams () {
   idlist = ast;
   
   /* ':' */
-  if (matchToken(Token.Colon, FOLLOW(SIMPLE_FORMAL_PARAMS))) {
+  if (matchToken(Token.Colon, FOLLOW(SimpleFormalParams))) {
     lookahead = lexer.ConsumeSym();
     
     /* formalType */
-    if (matchSet(FIRST(FORMAL_TYPE), FOLLOW(SIMPLE_FORMAL_PARAMS))) {
+    if (matchSet(FIRST(FormalType), FOLLOW(SimpleFormalParams))) {
       lookahead = simpleFormalType();
       sftype = ast;
     } /* end if */
   } /* end if */
   
-  /* build AST node and pass it back in p->ast */
+  /* build AST node and pass it back in ast */
   ast = AstNode.NewNode(AST.FPARAMS, idlist, sftype, NULL);
   
   return lookahead;
@@ -2286,8 +2283,8 @@ private Token attribFormalParams () {
   } /* end if */
   
   /* simpleFormalParams */
-  if (matchSet(FIRST(SIMPLE_FORMAL_PARAMS),
-      FOLLOW(ATTRIB_FORMAL_PARAMS))) {
+  if (matchSet(FIRST(SimpleFormalParams),
+      FOLLOW(AttribFormalParams))) {
     lookahead = simpleFormalParams();
   } /* end if */
   
@@ -2301,7 +2298,7 @@ private Token attribFormalParams () {
     aftype = AstNode.NewNode(AST.VARP, sftype);
   } /* end if */
   
-  AstNode.ReplaceSubnode(ast, 1, aftype);
+  ast.ReplaceSubnode(1, aftype);
   
   return lookahead;
 } /* end attribFormalParams */
@@ -2331,7 +2328,7 @@ private Token implementationModule () {
   lookahead = lexer.ConsumeSym();
   
   /* programModule */
-  if (matchToken(Token.MODULE, FOLLOW(PROGRAM_MODULE))) {
+  if (matchToken(Token.MODULE, FOLLOW(ProgramModule))) {
     lookahead = programModule();
   } /* end if */
   
@@ -2398,25 +2395,25 @@ private Token programModule () {
   while ((lookahead == Token.IMPORT) ||
          (lookahead == Token.FROM)) {
     lookahead = import();
-    Fifo.Enqueue(tmplist, ast);
+    tmplist.Enqueue(ast);
   } /* end while */
   
-  if (Fifo.EntryCount(tmplist) > 0) {
+  if (tmplist.EntryCount() > 0) {
     implist = AstNode.NewListNode(AST.IMPLIST, tmplist);
   }
   else /* no import list */ {
     implist = AstNode.EmptyNode();
   } /* end if */
   
-  Fifo.ReleaseQueue(tmplist);
+  tmplist.ReleaseQueue();
   
   /* block */
-  if (matchSet(FIRST(BLOCK), FOLLOW(PROGRAM_MODULE))) {
+  if (matchSet(FIRST(Block), FOLLOW(ProgramModule))) {
     lookahead = block();
     body = ast;
     
     /* moduleIdent */
-    if (matchToken(Token.Identifier, FOLLOW(PROGRAM_MODULE))) {
+    if (matchToken(Token.Identifier, FOLLOW(ProgramModule))) {
       lookahead = lexer.ConsumeSym();
       ident2 = lexer.CurrentLexeme();
       
@@ -2424,7 +2421,7 @@ private Token programModule () {
         /* TO DO: report error -- module identifiers don't match */ 
       } /* end if */
       
-      if (matchToken(Token.Period, FOLLOW(PROGRAM_MODULE))) {
+      if (matchToken(Token.Period, FOLLOW(ProgramModule))) {
         lookahead = lexer.ConsumeSym();
       } /* end if */
     } /* end if */
@@ -2445,7 +2442,7 @@ private Token programModule () {
  *   ;
  * ----------------------------------------------------------------------- */
 
-private Token modulePriority (m2c_parser_context_t p) {
+private Token modulePriority () {
   m2c_token_t lookahead;
   
   if (CompilerOptions.ParserDebug()) {
@@ -2456,11 +2453,11 @@ private Token modulePriority (m2c_parser_context_t p) {
   lookahead = lexer.ConsumeSym();
   
   /* constExpression */
-  if (matchSet(FIRST(EXPRESSION), FOLLOW(MODULE_PRIORITY))) {
+  if (matchSet(FIRST(Expression), FOLLOW(ModulePriority))) {
     lookahead = constExpression();
     
     /* ']' */
-    if (matchToken(Token.RightBracket, FOLLOW(MODULE_PRIORITY))) {
+    if (matchToken(Token.RightBracket, FOLLOW(ModulePriority))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
@@ -2501,34 +2498,34 @@ private Token block () {
          (lookahead == Token.PROCEDURE) ||
          (lookahead == Token.MODULE)) {
     lookahead = declaration();
-    Fifo.Enqueue(tmplist, ast);
+    tmplist.Enqueue(ast);
   } /* end while */
   
-  if (Fifo.EntryCount(tmplist) > 0) {
+  if (tmplist.EntryCount() > 0) {
     decllist = AstNode.NewListNode(AST.DECLLIST, tmplist);
   }
   else /* no declarations */ {
     decllist = AstNode.EmptyNode();
   } /* end if */
   
-  Fifo.Release(tmplist);
+  tmplist.Release();
   
   /* ( BEGIN statementSequence )? */
   if (lookahead == TOKEN.BEGIN) {
     lookahead = lexer.ConsumeSym();
     
     /* check for empty statement sequence */
-    if ((isElement(FOLLOW(STATEMENT_SEQUENCE), lookahead))) {
+    if ((FOLLOW(StatementSequence).IsElement(lookahead)) {
     
         /* print warning */
-        //m2c_emit_warning_w_pos
-        //  (M2C_EMPTY_STMT_SEQ,
-        //   lexer.LookaheadLine(),
-        //   lexer.LookaheadColumn());
-        //warning_count++;
+        // m2c_emit_warning_w_pos
+        //   (M2C_EMPTY_STMT_SEQ,
+        //    lexer.LookaheadLine(),
+        //    lexer.LookaheadColumn());
+        warningCount++;
     }
     /* statementSequence */
-    else if (matchSet(FIRST(STATEMENT_SEQUENCE), FOLLOW(STATEMENT))) {
+    else if (matchSet(FIRST(StatementSequence), FOLLOW(Statement))) {
       lookahead = statementSequence();
       stmtseq = ast;
     }
@@ -2541,12 +2538,12 @@ private Token block () {
   } /* end if */
   
   /* END */
-  if (matchToken(Token.END, FOLLOW(BLOCK))) {
+  if (matchToken(Token.END, FOLLOW(Block))) {
     lookahead = lexer.ConsumeSym();
   } /* end if */
   
   /* build AST node and pass it back in p->ast */
-  ast = AstNode.NewNode(AST.BLOCK, decllist_node, stmtseq);
+  ast = AstNode.NewNode(AST.BLOCK, decllist, stmtseq);
   
   return lookahead;
 } /* end block */
@@ -2683,12 +2680,11 @@ private Token typeDeclaration () {
   id = AstNode.NewTerminalNode(AST.IDENT, ident);
   
   /* '=' */
-  if (matchToken(Token.Equal, FOLLOW(TYPE_DECLARATION))) {
+  if (matchToken(Token.Equal, FOLLOW(TypeDeclaration))) {
     lookahead = lexer.ConsumeSym();
     
     /* type | varSizeRecordType */
-    if (matchSet(FIRST(TYPE_DECLARATION_TAIL),
-        FOLLOW(TYPE_DECLARATION))) {
+    if (matchSet(FIRST(TypeDeclarationTail), FOLLOW(TypeDeclaration))) {
       
       /* type */
       if (lookahead != Token.VAR) {
@@ -2737,22 +2733,21 @@ private Token varSizeRecordType () {
   lookahead = lexer.ConsumeSym();
   
   /* RECORD */
-  if (matchToken(Token.RECORD, FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+  if (matchToken(Token.RECORD, FOLLOW(VarSizeRecordType))) {
     lookahead = lexer.ConsumeSym();
     
     /* check for empty field list sequence */
     if (lookahead == Token.VAR) {
 
         /* empty field list sequence warning */
-        //m2c_emit_warning_w_pos
-        //  (M2C_EMPTY_FIELD_LIST_SEQ,
-        //   lexer.LookaheadLine(),
-        //   lexer.LookaheadColumn());
-        //warningCount++;
+        // m2c_emit_warning_w_pos
+        //   (M2C_EMPTY_FIELD_LIST_SEQ,
+        //    lexer.LookaheadLine(),
+        //    lexer.LookaheadColumn());
+        warningCount++;
     }
     /* fieldListSequence */
-    else if (matchSet(FIRST(FIELD_LIST_SEQUENCE),
-             FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+    else if (matchSet(FIRST(FieldListSequence), FOLLOW(VarSizeRecordType))) {
       lookahead = fieldListSequence();
       flseq = ast;
     }
@@ -2761,46 +2756,44 @@ private Token varSizeRecordType () {
     } /* end if */
     
     /* VAR */
-    if (matchToken(Token.VAR, FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+    if (matchToken(Token.VAR, FOLLOW(VarSizeRecordType))) {
       lookahead = lexer.ConsumeSym();
       
       if (lookahead == Token.END) {
-        //m2c_emit_warning_w_pos
-        //  (M2C_EMPTY_FIELD_LIST_SEQ,
-        //   lexer.LookaheadLine(),
-        //   lexer.LookaheadColumn());
-        //   lexer.ConsumeSym();
-        //warning_count++;
+        // m2c_emit_warning_w_pos
+        //   (M2C_EMPTY_FIELD_LIST_SEQ,
+        //    lexer.LookaheadLine(),
+        //    lexer.LookaheadColumn());
+        lexer.ConsumeSym();
+        warningCount++;
       }
       /* varSizeFieldIdent */
       else if (matchToken(Token.Identifier,
-               FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+               FOLLOW(VarSizeRecordType))) {
         lookahead = lexer.ConsumeSym();
         ident = lexer.CurrentLexeme();
         vsfieldid = AstNode.NewTerminalNode(AST.IDENT, ident);
       
         /* ':' */
-        if (matchToken(Token.Colon, FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+        if (matchToken(Token.Colon, FOLLOW(VarSizeRecordType))) {
           lookahead = lexer.ConsumeSym();
         
           /* ARRAY */
-          if (match_token(Token.ARRAY, FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+          if (match_token(Token.ARRAY, FOLLOW(VarSizeRecordType))) {
             lookahead = lexer.ConsumeSym();
           
             /* sizeFieldIdent */
-            if (matchToken(Token.Identifier,
-                FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+            if (matchToken(Token.Identifier, FOLLOW(VarSizeRecordType))) {
               lookahead = lexer.ConsumeSym();
               ident = lexer.CurrentLexeme();
               sizeid = AstNode.NewTerminalNode(AST.IDENT, ident);
             
               /* OF */
-              if (matchToken(Token.OF, FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+              if (matchToken(Token.OF, FOLLOW(VarSizeRecordType))) {
                 lookahead = lexer.ConsumeSym();
               
                 /* typeIdent */
-                if (matchToken(Token.Identifier,
-                    FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+                if (matchToken(Token.Identifier, FOLLOW(VarSizeRecordType))) {
                   lookahead = qualident();
                   typeid = ast;
                   
@@ -2811,16 +2804,16 @@ private Token varSizeRecordType () {
                   
                     if (CompilerOptions.ErrantSemicolons()) {
                       /* treat as warning */
-                      //m2c_emit_warning_w_pos
-                      //  (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
-                      //   lineOfSemicolon, columnOfSemicolon);
-                      //warningCount++;
+                      // m2c_emit_warning_w_pos
+                      //   (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
+                      //    lineOfSemicolon, columnOfSemicolon);
+                      warningCount++;
                     }
                     else /* treat as error */ {
-                      //m2c_emit_error_w_pos
-                      //  (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
-                      //   lineOfSemicolon, columnOfSemicolon);
-                      //errorCount++;
+                      // m2c_emit_error_w_pos
+                      //   (M2C_SEMICOLON_AFTER_FIELD_LIST_SEQ,
+                      //    lineOfSemicolon, columnOfSemicolon);
+                      errorCount++;
                     } /* end if */
                     
                     lexer.ConsumeSym();
@@ -2832,8 +2825,7 @@ private Token varSizeRecordType () {
                     } /* end if */
                   } /* end if */
                   
-                  if (matchToken(Token.END,
-                      FOLLOW(VAR_SIZE_RECORD_TYPE))) {
+                  if (matchToken(Token.END, FOLLOW(VarSizeRecordType))) {
                     lookahead = lexer.ConsumeSym();
                   } /* end if */
                 } /* end if */
@@ -3138,13 +3130,13 @@ private Token statementSequence () {
         // m2c_emit_warning_w_pos
         //   (M2C_SEMICOLON_AFTER_STMT_SEQ,
         //    lineOfSemicolon, columnOfSemicolon);
-        // warningCount++;
+        warningCount++;
       }
       else /* treat as error */ {
         // m2c_emit_error_w_pos
         //   (M2C_SEMICOLON_AFTER_STMT_SEQ,
         //    lineOfSemicolon, columnOfSemicolon);
-        // errorCount++;
+        errorCount++;
       } /* end if */
       
       /* print source line */
@@ -3277,11 +3269,11 @@ private Token assignmentOrProcCall () {
   desig = ast;
   
   /* ( ':=' expression | actualParameters )? */
-  if (lookahead == TOKEN_ASSIGN) {
+  if (lookahead == Token.Assign) {
     lookahead = lexer.ConsumeSym();
     
     /* expression */
-    if (matchSet(FIRST(expression), FOLLOW(ASSIGNMENT_OR_PROC_CALL))) {
+    if (matchSet(FIRST(Expression), FOLLOW(AssignmentOrProcCall))) {
       lookahead = expression();
       ast = AstNode.NewNode(AST.ASSIGN, desig, ast);
       /* astnode: (ASSIGN designatorNode exprNode) */
@@ -3320,7 +3312,7 @@ private Token actualParameters () {
   lookahead = lexer.ConsumeSym();
   
   /* ( expression ( ',' expression )* )? */
-  if (FIRST(expression).IsMember(lookahead)) {
+  if (FIRST(Expression).IsMember(lookahead)) {
     /* expression */
     lookahead = expression();
     tmplist = Fifo.NewQueue(ast);
@@ -3331,7 +3323,7 @@ private Token actualParameters () {
       lookahead = lexer.ConsumeSym();
     
       /* expression */
-      if (matchSet(FIRST(expression), FOLLOW(expression))) {
+      if (matchSet(FIRST(Expression), FOLLOW(Expression))) {
         lookahead = expression();
         tmplist.Enqueue(ast);
       } /* end if */
@@ -3345,7 +3337,7 @@ private Token actualParameters () {
   } /* end if */
   
   /* ')' */
-  if (matchToken(Token.RightParen, FOLLOW(actualParameters))) {
+  if (matchToken(Token.RightParen, FOLLOW(ActualParameters))) {
     lookahead = lexer.ConsumeSym();
   } /* end if */
   
@@ -3375,7 +3367,7 @@ private Token returnStatement () {
   lookahead = lexer.ConsumeSym();
   
   /* expression? */
-  if (FIRST(expression).IsElement(lookahead)) {
+  if (FIRST(Expression).IsElement(lookahead)) {
     lookahead = expression();
     expr = ast;
   }
@@ -3416,12 +3408,12 @@ private Token withStatement () {
   lookahead = lexer.ConsumeSym();
   
   /* designator */
-  if (matchToken(Token.Identifier, FOLLOW(withStatement))) {
+  if (matchToken(Token.Identifier, FOLLOW(WithStatement))) {
     lookahead = designator();
     desig = ast;
     
     /* DO */
-    if (matchToken(Token.DO, FOLLOW(withStatement))) {
+    if (matchToken(Token.DO, FOLLOW(WithStatement))) {
       lookahead = lexer.ConsumeSym();
       
       /* check for empty statement sequence */
@@ -3432,18 +3424,18 @@ private Token withStatement () {
         //   (M2C_EMPTY_STMT_SEQ,
         //    lexer.LookaheadLine(),
         //    lexer.LookaheadColumn());
-        // warning_count++;
+        warningCount++;
              
         /* END */
         lookahead = lexer.ConsumeSym();
       }
       /* statementSequence */
-      else if (matchSet(FIRST(statementSequence), FOLLOW(withStatement))) {
+      else if (matchSet(FIRST(StatementSequence), FOLLOW(WithStatement))) {
         lookahead = statementSequence();
         stmtseq = ast;
         
         /* END */
-        if (matchToken(Token.END, FOLLOW(withStatement))) {
+        if (matchToken(Token.END, FOLLOW(WithStatement))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
       } /* end if */
@@ -3485,7 +3477,7 @@ private Token ifStatement () {
   lookahead = lexer.ConsumeSym();
   
   /* boolExpression */
-  if (matchSet(FIRST(expression), RESYNC(ELSIF_OR_ELSE_OR_END))) {
+  if (matchSet(FIRST(Expression), RESYNC(ELSIF_OR_ELSE_OR_END))) {
     lookahead = expression();
     ifexpr = ast;
     
@@ -3501,11 +3493,11 @@ private Token ifStatement () {
           //   (M2C_EMPTY_STMT_SEQ,
           //    lexer.LookaheadLine(),
           //    lexer.LookaheadColumn());
-          // warningCount++;
+          warningCount++;
       }
       /* statementSequence */
-      else if (matchSet(FIRST(statementSequence),
-               RESYNC(ELSIF_OR_ELSE_OR_END))) {
+      else if (matchSet(FIRST(StatementSequence),
+          RESYNC(ELSIF_OR_ELSE_OR_END))) {
         lookahead = statementSequence();
         ifseq = ast;
       }
@@ -3525,7 +3517,7 @@ private Token ifStatement () {
     lookahead = lexer.ConsumeSym();
     
     /* boolExpression */
-    if (matchSet(FIRST(expression), RESYNC(ELSIF_OR_ELSE_OR_END))) {
+    if (matchSet(FIRST(Expression), RESYNC(ELSIF_OR_ELSE_OR_END))) {
       lookahead = expression();
       expr = ast;
     
@@ -3541,10 +3533,10 @@ private Token ifStatement () {
             //  (M2C_EMPTY_STMT_SEQ,
             //   lexer.LookaheadLine(),
             //   lexer.LookaheadColumn());
-            // warningCount++;
+            warningCount++;
         }
         /* statementSequence */
-        else if (matchSet(FIRST(statementSequence),
+        else if (matchSet(FIRST(StatementSequence),
             RESYNC(ELSIF_OR_ELSE_OR_END))) {
           lookahead = statementSequence();
           stmtseq = ast;
@@ -3588,10 +3580,10 @@ private Token ifStatement () {
         //   (M2C_EMPTY_STMT_SEQ,
         //    lexer.LookaheadLine(),
         //    lexer.LookaheadColumn());
-        // warningCount++;
+        warningCount++;
     }
     /* statementSequence */
-    else if (matchSet(FIRST(statementSequence), FOLLOW(ifStatement))) {
+    else if (matchSet(FIRST(StatementSequence), FOLLOW(IfStatement))) {
       lookahead = statementSequence();
       elseseq = ast;
     }
@@ -3604,7 +3596,7 @@ private Token ifStatement () {
   } /* end if */
   
   /* END */
-  if (matchToken(Token.END, FOLLOW(ifStatement))) {
+  if (matchToken(Token.END, FOLLOW(IfStatement))) {
     lookahead = lexer.ConsumeSym();
   } /* end if */
   
@@ -3641,7 +3633,7 @@ private Token caseStatement () {
   lookahead = lexer.ConsumeSym();
   
   /* expression */
-  if (matchSet(FIRST(expression), RESYNC(ELSE_OR_END))) {
+  if (matchSet(FIRST(Expression), RESYNC(ELSE_OR_END))) {
     lookahead = expression();
     expr = ast;
     
@@ -3650,7 +3642,7 @@ private Token caseStatement () {
       lookahead = lexer.ConsumeSym();
       
       /* case */
-      if (matchSet(FIRST(caseBranch), RESYNC(ELSE_OR_END))) {
+      if (matchSet(FIRST(Case), RESYNC(ELSE_OR_END))) {
         lookahead = caseBranch();
         tmplist = Fifo.NewQueue(ast);
         
@@ -3660,7 +3652,7 @@ private Token caseStatement () {
           lookahead = lexer.ConsumeSym();
           
           /* case */
-          if (matchSet(FIRST(caseBranch), RESYNC(ELSE_OR_END))) {
+          if (matchSet(FIRST(Case), RESYNC(ELSE_OR_END))) {
             lookahead = caseBranch();
             tmplist.Enqueue(ast);
           }
@@ -3695,11 +3687,11 @@ private Token caseStatement () {
         //   (M2C_EMPTY_STMT_SEQ,
         //    lexer.LookaheadLine(),
         //    lexer.LookaheadColumn());
-        // warningCount++;
+        warningCount++;
     }
     /* statementSequence */
     else if
-      (matchSet(FIRST(statementSequence), FOLLOW(caseStatement))) {
+      (matchSet(FIRST(StatementSequence), FOLLOW(CaseStatement))) {
       lookahead = statementSequence();
       elseseq = ast;
     }
@@ -3712,7 +3704,7 @@ private Token caseStatement () {
   } /* end if */
   
   /* END */
-  if (matchToken(Token.END, FOLLOW(caseStatement))) {
+  if (matchToken(Token.END, FOLLOW(CaseStatement))) {
     lookahead = lexer.consumeSym();
   } /* end if */
   
@@ -3748,21 +3740,21 @@ private Token caseBranch () {
   cllist = ast;
   
   /* ':' */
-  if (matchToken(Token.COLON, FOLLOW(caseBranch))) {
+  if (matchToken(Token.COLON, FOLLOW(Case))) {
     lookahead = lexer.ConsumeSym();
     
     /* check for empty statement sequence */
-    if (FOLLOW(caseBranch).IsElement(lookahead)) {
+    if (FOLLOW(Case).IsElement(lookahead)) {
   
         /* empty statement sequence warning */
         // m2c_emit_warning_w_pos
         //   (M2C_EMPTY_STMT_SEQ,
         //    lexer.LookaheadLine(),
         //    lexer.LookaheadColumn());
-        // warningCount++;
+        warningCount++;
     }
     /* statementSequence */
-    else if (matchSet(FIRST(statementSequence), FOLLOW(caseBranch))) {
+    else if (matchSet(FIRST(StatementSequence), FOLLOW(Case))) {
       lookahead = statementSequence();
       stmtseq = ast;
     } /* end if */
@@ -3804,18 +3796,18 @@ private Token loopStatement () {
     //   (M2C_EMPTY_STMT_SEQ,
     //    lexerLookaheadLine(),
     //    lexerLookaheadColumn());
-    // warningCount++;
+    warningCount++;
          
     /* END */
     lookahead = lexer.ConsumeSym();
   }
   /* statementSequence */
-  else if (matchSet(FIRST(statementSequence), FOLLOW(loopStatement))) {
+  else if (matchSet(FIRST(StatementSequence), FOLLOW(LoopStatement))) {
     lookahead = statementSequence();
     stmtseq = ast;
     
     /* END */
-    if (matchToken(Token.END, FOLLOW(loopStatement))) {
+    if (matchToken(Token.END, FOLLOW(LoopStatement))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
@@ -3851,12 +3843,12 @@ private Token whileStatement () {
   lookahead = lexer.ConsumeSym();
   
   /* boolExpression */
-  if (matchSet(FIRST(expression), FOLLOW(whileStatement))) {
+  if (matchSet(FIRST(Expression), FOLLOW(WhileStatement))) {
     lookahead = expression();
     expr = ast;
     
     /* DO */
-    if (matchToken(Token.DO, FOLLOW(whileStatement))) {
+    if (matchToken(Token.DO, FOLLOW(WhileStatement))) {
       lookahead = lexer.ConsumeSym();
       
       /* check for empty statement sequence */
@@ -3867,19 +3859,19 @@ private Token whileStatement () {
         //   (M2C_EMPTY_STMT_SEQ,
         //    lexer.LookaheadLine(),
         //    lexer.LookaheadColumn());
-        // warningCount++;
+        warningCount++;
          
         /* END */
         lookahead = lexer.ConsumeSym();
       }
       /* statementSequence */
       else if
-        (matchSet(FIRST(statementSequence), FOLLOW(whileStatement))) {
+        (matchSet(FIRST(StatementSequence), FOLLOW(WhileStatement))) {
         lookahead = statementSequence();
         stmtseq = ast;
     
         /* END */
-        if (matchToken(Token.END, FOLLOW(whileStatement))) {
+        if (matchToken(Token.END, FOLLOW(WhileStatement))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
       } /* end if */
@@ -3924,10 +3916,10 @@ private Token repeatStatement () {
     //   (M2C_EMPTY_STMT_SEQ,
     //    lexer.LookaheadLine(),
     //    lexer.LookaheadColumn());
-    // warningCount++;
+    warningCount++;
   }
   /* statementSequence */
-  else if (matchSet(FIRST(statementSequence), FOLLOW(statementSequence))) {
+  else if (matchSet(FIRST(StatementSequence), FOLLOW(StatementSequence))) {
     lookahead = statementSequence();
     stmtseq = ast;
   }
@@ -3936,11 +3928,11 @@ private Token repeatStatement () {
   } /* end if */
     
   /* UNTIL */
-  if (matchToken(Token.UNTIL, FOLLOW(repeatStatement))) {
+  if (matchToken(Token.UNTIL, FOLLOW(RepeatStatement))) {
     lookahead = lexer.ConsumeSym();
     
     /* boolExpression */
-    if (matchSet(FIRST(expression), FOLLOW(repeatStatement))) {
+    if (matchSet(FIRST(Expression), FOLLOW(RepeatStatement))) {
       lookahead = expression();
       expr = ast;
     } /* end if */
@@ -3978,24 +3970,24 @@ private Token forStatement () {
   Token lookahead;
 
   if (CompilerOptions.ParserDebug()) {
-    PARSER_DEBUG_INFO("repeatStatement");
+    PARSER_DEBUG_INFO("forStatement");
   } /* end if */
   
   /* FOR */
   lookahead = lexer.ConsumeSym();
   
   /* forLoopVariant */
-  if (matchToken(Token.IDENTIFIER, RESYNC(FOR_LOOP_BODY))) {
+  if (matchToken(Token.Identifier, RESYNC(FOR_LOOP_BODY))) {
     lookahead = lexer.ConsumeSym();
     ident = lexer.CurrentLexeme();
     id = AstNode.NewTerminalNode(AST.IDENT, ident);
     
     /* ':=' */
-    if (matchToken(Token.ASSIGN, RESYNC(FOR_LOOP_BODY))) {
+    if (matchToken(Token.Assign, RESYNC(FOR_LOOP_BODY))) {
       lookahead = lexer.ConsumeSym();
       
       /* startValue */
-      if (matchSet(FIRST(expression), RESYNC(FOR_LOOP_BODY))) {
+      if (matchSet(FIRST(Expression), RESYNC(FOR_LOOP_BODY))) {
         lookahead = expression();
         start = ast;
         
@@ -4004,7 +3996,7 @@ private Token forStatement () {
           lookahead = lexer.ConsumeSym();
           
           /* endValue */
-          if (matchSet(FIRST(expression), RESYNC(FOR_LOOP_BODY))) {
+          if (matchSet(FIRST(Expression), RESYNC(FOR_LOOP_BODY))) {
             lookahead = expression();
             end = ast;
             
@@ -4012,7 +4004,7 @@ private Token forStatement () {
             if (lookahead == Token.BY) {
               lookahead = lexer.ConsumeSym();
               
-              if (matchSet(FIRST(expression), RESYNC(FOR_LOOP_BODY))) {
+              if (matchSet(FIRST(Expression), RESYNC(FOR_LOOP_BODY))) {
                 lookahead = constExpression();
                 step = ast;
               } /* end if */
@@ -4030,7 +4022,7 @@ private Token forStatement () {
   lookahead = lexer.NextSym();
   
   /* DO -- The FOR loop body */
-  if (matchToken(Token.DO, FOLLOW(forStatement))) {
+  if (matchToken(Token.DO, FOLLOW(ForStatement))) {
     lookahead = lexer.ConsumeSym();
     
     /* check for empty statement sequence */
@@ -4041,19 +4033,19 @@ private Token forStatement () {
       //   (M2C_EMPTY_STMT_SEQ,
       //    lexer.LookaheadLine(),
       //    lexer.LookaheadColumn());
-      // warningCount++;
+      warningCount++;
        
       /* END */
       lookahead = lexer.ConsumeSym();
     }
     /* statementSequence */
     else if
-      (matchSet(FIRST(statementSequence), FOLLOW(forStatement))) {
+      (matchSet(FIRST(StatementSequence), FOLLOW(ForStatement))) {
       lookahead = statementSequence();
       stmtseq = ast;
   
       /* END */
-      if (matchToken(Token.END, FOLLOW(forStatement))) {
+      if (matchToken(Token.END, FOLLOW(ForStatement))) {
         lookahead = lexer.ConsumeSym();
       } /* end if */
     } /* end if */
@@ -4089,12 +4081,12 @@ private Token designator () {
   /* astnode: (IDENT ident) | (QUALIDENT q0 q1 q2 ... qN ident) */
   
   /* ( '^' | selector )* */
-  while ((lookahead == Token.DEREF) ||
-         (lookahead == Token.PERIOD) ||
+  while ((lookahead == Token.Deref) ||
+         (lookahead == Token.Period) ||
          (lookahead == Token.LeftBracket)) {
     head = ast;
     
-    if /* '^' */ (lookahead == Token.DEREF) {
+    if /* '^' */ (lookahead == Token.Deref) {
       lookahead = lexer.ConsumeSym();
       ast = AstNode.NewNode(AST.DEREF, head);
       /* astnode: (DEREF expr) */
@@ -4134,12 +4126,12 @@ private Token selector () {
   switch (lookahead) {
     
     /* '.' Ident */
-    case Token.PERIOD :
+    case Token.Period :
       /* '.' */
       lookahead = lexer.ConsumeSym();
       
       /* Ident */
-      if (matchToken(Token.IDENTIFIER, FOLLOW(selector))) {
+      if (matchToken(Token.Identifier, FOLLOW(Selector))) {
         lookahead = lexer.ConsumeSym();
         ident = lexer.CurrentLexeme();
         id = AstNode.NewTerminalNode(AST.IDENT, ident);
@@ -4154,14 +4146,14 @@ private Token selector () {
       lookahead = lexer.ConsumeSym();
       
       /* indexList ']' */
-      if (matchSet(FIRST(expression), FOLLOW(selector))) {
+      if (matchSet(FIRST(Expression), FOLLOW(Selector))) {
       
         /* indexList */
         lookahead = indexList();
         /* astnode: (INDEX exprNode+) */
         
         /* ']' */
-        if (matchToken(Token.RightBracket, FOLLOW(selector))) {
+        if (matchToken(Token.RightBracket, FOLLOW(Selector))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
       } /* end if */
@@ -4199,12 +4191,12 @@ private Token indexList () {
   tmplist = Fifo.NewQueue(ast);
   
   /* ( ',' expression )* */
-  while (lookahead == Token.COMMA) {
+  while (lookahead == Token.Comma) {
     /* ',' */
     lookahead = lexer.ConsumeSym();
     
     /* expression */
-    if (matchSet(FIRST(expression), FOLLOW(expression))) {
+    if (matchSet(FIRST(Expression), FOLLOW(Expression))) {
       lookahead = expression();
       tmplist.Enqueue(ast);
     } /* end if */
@@ -4281,7 +4273,7 @@ private Token expression () {
     lookahead = lexer.ConsumeSym();
     
     /* simpleExpression */
-    if (matchSet(FIRST(expression), FOLLOW(simpleExpression))) {
+    if (matchSet(FIRST(Expression), FOLLOW(SimpleExpression))) {
       lookahead = simpleExpression();
       ast = AstNode.NewNode(nodetype, left, ast);
     } /* end if */
@@ -4356,7 +4348,7 @@ private Token simpleExpression () {
       lookahead = lexer.ConsumeSym();
     
       /* term */
-      if (matchSet(FIRST(term), FOLLOW(term))) {
+      if (matchSet(FIRST(Term), FOLLOW(Term))) {
         lookahead = term();        
         ast = AstNode.NewNode(nodetype, left, ast);
       } /* end if */
@@ -4424,7 +4416,7 @@ private Token term () {
     lookahead = lexer.ConsumeSym();
     
     /* simpleTerm */
-    if (matchSet(FIRST(simpleTerm), FOLLOW(simpleTerm))) {
+    if (matchSet(FIRST(SimpleTerm), FOLLOW(SimpleTerm))) {
       lookahead = simpleTerm();      
       ast = AstNode.NewNode(operation, left, ast);
     } /* end if */
@@ -4461,7 +4453,7 @@ private Token simpleTerm () {
   } /* end if */
   
   /* factor */
-  if (matchSet(FIRST(factor), FOLLOW(factor))) {
+  if (matchSet(FIRST(Factor), FOLLOW(Factor))) {
     lookahead = factor();
     
     if (negation) {
@@ -4539,11 +4531,11 @@ private Token factor () {
       lookahead = lexer.ConsumeSym();
       
       /* expression */
-      if (matchSet(FIRST(expression), FOLLOW(factor))) {
+      if (matchSet(FIRST(Expression), FOLLOW(Factor))) {
         lookahead = expression();
         
         /* ')' */
-        if (matchToken(Token.RightParen, FOLLOW(factor))) {
+        if (matchToken(Token.RightParen, FOLLOW(Factor))) {
           lookahead = lexer.ConsumeSym();
         } /* end if */
       } /* end if */
@@ -4585,7 +4577,7 @@ private Token designatorOrFuncCall () {
   if (lookahead == Token.LeftBrace) {
     lookahead = setValue();
     /* TO DO: check designator for IDENT or QUALIDENT */
-    ast = ast.ReplaceSubnode(0, desig);
+    ast.ReplaceSubnode(0, desig);
     /* astnode: (SETVAL designatorNode elemListNode) */
   }
   /* actualParameters */
@@ -4594,7 +4586,7 @@ private Token designatorOrFuncCall () {
     ast = AstNode.NewNode(AST.FCALL, desig, ast);
     /* astnode: (FCALL designatorNode argsNode) */
     
-    if (matchToken(Token.RightParen, FOLLOW(designatorOrFuncCall))) {
+    if (matchToken(Token.RightParen, FOLLOW(DesignatorOrFuncCall))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
@@ -4626,7 +4618,7 @@ private Token setValue () {
   lookahead = lexer.ConsumeSym();
   
   /* element */
-  if (matchSet(FIRST(element), FOLLOW(setValue))) {
+  if (matchSet(FIRST(Element), FOLLOW(SetValue))) {
     lookahead = element();
     tmplist = Fifo.NewQueue(ast);
     
@@ -4636,7 +4628,7 @@ private Token setValue () {
       lookahead = lexer.ConsumeSym();
     
       /* element */
-      if (matchSet(FIRST(element), FOLLOW(setValue))) {
+      if (matchSet(FIRST(Element), FOLLOW(SetValue))) {
         lookahead = element();
         tmplist.Enqueue(ast);
       }
@@ -4646,7 +4638,7 @@ private Token setValue () {
     } /* end while */
     
     /* '}' */
-    if (matchToken(Token.RightBrace, FOLLOW(setValue))) {
+    if (matchToken(Token.RightBrace, FOLLOW(SetValue))) {
       lookahead = lexer.ConsumeSym();
     } /* end if */
   } /* end if */
@@ -4695,7 +4687,7 @@ private Token element () {
     lookahead = lexer.ConsumeSym();
     
     /* expression */
-    if (matchSet(FIRST(expression), FOLLOW(element))) {
+    if (matchSet(FIRST(Expression), FOLLOW(Element))) {
       lookahead = expression();
       ast = AstNode.NewNode(AST.RANGE, lower, ast);
     } /* end if */
