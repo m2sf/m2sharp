@@ -7,4 +7,7 @@ In translator mode, M2Sharp translates Modula-2 source to C# source files. In co
 
 PIM dialects are supported to allow compilation of program examples from Modula-2 literature which is largely based on PIM. Extended mode is supported to facilitate bootstrapping of a full implementation of M2R10 targeting the CLR.
 
+For more details please visit the project wiki at the URL:
+https://github.com/m2sf/m2sharp/wiki
+
 +++
