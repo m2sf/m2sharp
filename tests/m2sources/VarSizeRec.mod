@@ -4,7 +4,7 @@ TYPE VLA = VAR RECORD
   size : CARDINAL;
   foo : INTEGER;
   bar : REAL
-VAR
+IN
   buffer : ARRAY size OF CHAR
 END;
 
