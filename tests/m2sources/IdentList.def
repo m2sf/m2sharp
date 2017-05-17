@@ -1,0 +1,15 @@
+DEFINITION MODULE IdentList;
+
+(* duplicate identifier in import list *)
+IMPORT Foo, Bar, Baz, Bar, Bam;
+
+(* duplicate identifier in import list *)
+FROM Foo IMPORT foo, bar, baz, bar, bam;
+
+(* duplicate identifier in enumeration *)
+TYPE Enum = ( red, green, blue, cyan, magenta, blue, orange );
+
+(* duplicate identifier in variable declaration *)
+VAR foo, bar, baz, bar, bam, baz : REAL;
+
+END IdentList.
