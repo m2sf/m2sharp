@@ -11,7 +11,7 @@ END;
 (* Variable Size Record Type *)
 TYPE VLA = VAR RECORD
   (* empty field list sequence *)
-VAR
+IN
   (* empty field list sequence *)
 END;
 
