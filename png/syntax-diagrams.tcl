@@ -1,6 +1,6 @@
 #!/usr/bin/wish
 #
-# Syntax diagram generator for the M2Sharp Compiler, status May 15, 2017
+# Syntax diagram generator for M2C, M2Sharp and M2J, status May 17, 2017
 #
 # This script is derived from the SQLite project's bubble-generator script.
 # It is quite possibly the only such tool that can wrap-around diagrams so
@@ -139,7 +139,7 @@ wm withdraw .
 #
 
 # ===========================================================================
-# Modula-2 grammar
+# M2C/M2Sharp/M2J Modula-2 grammar
 # ===========================================================================
 #  To reuse this diagram generator for other languages, replace the following
 #  section with a definition of the grammar of the target language.
@@ -179,11 +179,16 @@ lappend non_terminals moduleIdent {
   line Ident
 }
 
-# (3) Import
-lappend non_terminals import {
+# (3a) Import (PIM)
+lappend non_terminals importPIM {
   or
     qualifiedImport
     unqualifiedImport
+}
+
+# (3b) Import (Ext)
+lappend non_terminals import {
+  line qualifiedImport
 }
 
 # (3.1) Qualified Import
@@ -232,10 +237,16 @@ lappend non_terminals constExpression {
   line expression
 }
 
-# (8) Type Definition
-lappend non_terminals typeDefinition {
+# (8a) Type Definition (PIM)
+lappend non_terminals typeDefinitionPIM {
   line Ident {optx = type}
 }
+
+# (8b) Type Definition (Ext)
+lappend non_terminals typeDefinition {
+  line Ident = {or type OPAQUE}
+}
+
 
 # (9) Type
 lappend non_terminals type {
@@ -293,67 +304,76 @@ lappend non_terminals countableType {
 
 # (14) Array Type
 lappend non_terminals arrayType {
-  line ARRAY OF {loop countableType ,} OF type
+  line ARRAY {loop countableType ,} OF type
 }
 
-# (15a) Extensible Record Type
-lappend non_terminals extensibleRecordType {
-  line RECORD {optx ( baseType )} fieldListSequence END
+# (15a) Record Type (PIM)
+lappend non_terminals recordTypePIM {
+  line variantRecordType
 }
 
-# (15a.1) Base Type
-lappend non_terminals baseType {
-  line typeIdent
+# (15b) Record Type (Extended)
+lappend non_terminals recordType {
+  line extensibleRecordType
 }
 
-# (15a.2) Field List Sequence
-lappend non_terminals fieldListSequence {
-  loop fieldList ;
-}
-
-# (15a.3) Field List
-lappend non_terminals fieldList {
-  line variableDeclaration
-}
-
-# (15b) Variant Record Type
+# (15a.1) Variant Record Type
 lappend non_terminals variantRecordType {
   line RECORD variantfieldListSeq END
 }
 
-# (15b.1) Variant Record Field List Sequence
+# (15a.2) Variant Record Field List Sequence
 lappend non_terminals variantFieldListSeq {
   loop variantFieldList ;
 }
 
-# (15b.2) Variant Record Field List
+# (15a.3) Variant Record Field List
 lappend non_terminals variantFieldList {
   or
     fieldList
     variantFields
 }
 
-# (15b.3) Variant Fields
+# (15a.4) Variant Fields
 lappend non_terminals variantFields {
-  line CASE {optx Ident} : typeIdent OF
-    {loop variant |}
-    {optx ELSE fieldListSequence}
-    END
+  stack
+    {line CASE {optx Ident} : typeIdent OF {loop variant |}}
+    {line {optx ELSE fieldListSequence} END}
 }
 
-# (15b.4) Variant
+# (15a.5) Variant
 lappend non_terminals variant {
   line caseLabelList : variantFieldListSeq
 }
 
-# (15b.5) Case Label List
+# (15.1) Case Label List
 lappend non_terminals caseLabelList {
   loop caseLabels ,
 }
 
-# (15b.6) Case Labels
+# (15.2) Case Labels
 lappend non_terminals caseLabels {
   line constExpression {optx .. constExpression}
+}
+
+# (15b.1) Extensible Record Type
+lappend non_terminals extensibleRecordType {
+  line RECORD {optx ( baseType )} fieldListSequence END
+}
+
+# (15b.2) Base Type
+lappend non_terminals baseType {
+  line typeIdent
+}
+
+# (15.3) Field List Sequence
+lappend non_terminals fieldListSequence {
+  loop fieldList ;
+}
+
+# (15.4) Field List
+lappend non_terminals fieldList {
+  line variableDeclaration
 }
 
 # (16) Pointer Type
@@ -373,12 +393,22 @@ lappend non_terminals formalType {
     attributedFormalType
 }
 
-# (18.1) Simple Formal Type
+# (18.1a) Simple Formal Type (PIM)
+lappend non_terminals simpleFormalTypePIM {
+  line {optx ARRAY OF} typeIdent
+}
+
+# (18.1b) Simple Formal Type (Ext)
 lappend non_terminals simpleFormalType {
   line {optx {or ARGLIST ARRAY} OF} typeIdent
 }
 
-# (18.2) Attributed Formal Type
+# (18.2a) Attributed Formal Type (PIM)
+lappend non_terminals attributedFormalTypePIM {
+  line VAR simpleFormalType
+}
+
+# (18.2b) Attributed Formal Type (Ext)
 lappend non_terminals attributedFormalType {
   line {or CONST VAR} simpleFormalType
 }
@@ -410,7 +440,12 @@ lappend non_terminals simpleFormalParams {
   line identList : formalType
 }
 
-# (23) Attributed Formal Parameters
+# (23a) Attributed Formal Parameters (PIM)
+lappend non_terminals attribFormalParamsPIM {
+  line VAR simpleFormalParams
+}
+
+# (23b) Attributed Formal Parameters (Ext)
 lappend non_terminals attribFormalParams {
   line {or CONST VAR} simpleFormalParams
 }
@@ -425,14 +460,21 @@ lappend non_terminals implementationModule {
   line IMPLEMENTATION programModule
 }
 
-# (25) Program Module
-lappend non_terminals programModule {
+# (25a) Program Module (PIM)
+lappend non_terminals programModulePIM {
   stack
-    {line MODULE moduleIdent {optx modulePriority}}
+    {line MODULE moduleIdent {optx modulePriority} ;}
     {line {loop nil {nil import nil}} block moduleIdent .}
 }
 
-# (25) Module Priority
+# (25b) Program Module (Ext)
+lappend non_terminals programModule {
+  stack
+    {line MODULE moduleIdent ;}
+    {line {loop nil {nil import nil}} block moduleIdent .}
+}
+
+# (26) Module Priority
 lappend non_terminals modulePriority {
   line [ constExpression ]
 }
@@ -443,8 +485,8 @@ lappend non_terminals block {
   {optx BEGIN statementSequence} END
 }
 
-# (28) Declaration
-lappend non_terminals declaration {
+# (28a) Declaration (PIM)
+lappend non_terminals declarationPIM {
   line {
     or
       {line CONST {loop {line constDeclaration ;} nil} }
@@ -455,19 +497,38 @@ lappend non_terminals declaration {
   }
 }
 
-# (29) Type Declaration
+# (28b) Declaration (Ext)
+lappend non_terminals declaration {
+  line {
+    or
+      {line CONST {loop {line constDeclaration ;} nil} }
+      {line TYPE {loop {line typeDeclaration ;} nil} }
+      {line VAR {loop {line variableDeclaration ;} nil} }
+      {line procedureDeclaration ;}
+  }
+}
+
+# (29a) Type Declaration (PIM)
+lappend non_terminals typeDeclarationPIM {
+  line Ident = type
+}
+
+# (29b) Type Declaration (Ext)
 lappend non_terminals typeDeclaration {
   line Ident = {or type varSizeRecordType}
 }
 
 # (29.1) Variable Size Record Type
 lappend non_terminals varSizeRecordType {
-  line IN RECORD fieldListSequence
-  VAR Ident : ARRAY sizeFieldIdent OF typeIdent
-  END
+  line VAR RECORD fieldListSequence IN indeterminateField END
 }
 
-# (29.2) Size Field Identifier
+# (29.2) Indeterminate Field
+lappend non_terminals indeterminateField {
+  line Ident : ARRAY sizeFieldIdent OF typeIdent
+}
+
+# (29.3) Size Field Identifier
 lappend non_terminals sizeFieldIdent {
   line Ident
 }
@@ -489,18 +550,18 @@ lappend non_terminals moduleDeclaration {
     {line {loop nil {nil import nil}} {optx export} block moduleIdent}
 }
 
-# (34) Export
+# (33) Export
 lappend non_terminals export {
   line EXPORT {optx QUALIFIED} identList ;
 }
 
-# (35) Statement Sequence
+# (34) Statement Sequence
 lappend non_terminals statementSequence {
   loop statement ;
 }
 
-# (36) Statement
-lappend non_terminals statement {
+# (35a) Statement (PIM)
+lappend non_terminals statementPIM {
   line {
     or
       assignmentOrProcCall
@@ -516,32 +577,69 @@ lappend non_terminals statement {
   }
 }
 
-# (37) Assignment or Procedure Call
-lappend non_terminals assignmentOrProcCall {
-  line designator {optx := {or expression actualParameters}}
+# (35b) Statement (Ext)
+lappend non_terminals statement {
+  line {
+    or
+      assignmentOrProcCall
+      returnStatement
+      ifStatement
+      caseStatement
+      loopStatement
+      whileStatement
+      repeatStatement
+      forStatement
+      EXIT
+  }
 }
 
-# (38) Actual Parameters
+# (36a) Assignment or Procedure Call (PIM)
+lappend non_terminals assignmentOrProcCallPIM {
+  line designator {
+    or
+      {line := expression}
+      actualParameters
+      nil
+  }
+}
+
+# (36b) Assignment or Procedure Call (Ext)
+lappend non_terminals assignmentOrProcCall {
+  line designator {
+    or
+      incOrDecSuffix
+      {line := expression}
+      actualParameters
+      nil
+  }
+}
+
+# (36.1) Increment Or Decrement Suffix
+lappend non_terminals incOrDecSuffix {
+  or ++ --
+}
+
+# (37) Actual Parameters
 lappend non_terminals actualParameters {
   line ( {optx expressionList} )
 }
 
-# (39) Expression List
+# (38) Expression List
 lappend non_terminals expressionList {
   loop expression ,
 }
 
-# (40) RETURN Statement
+# (39) RETURN Statement
 lappend non_terminals returnStatement {
   line RETURN {optx expression}
 }
 
-# (41) WITH Statement
+# (40) WITH Statement
 lappend non_terminals withStatement {
   line WITH designator DO statementSequence END
 }
 
-# (42) IF Statement
+# (41) IF Statement
 lappend non_terminals ifStatement {
   stack
     {line IF boolExpression THEN statementSequence}
@@ -549,70 +647,78 @@ lappend non_terminals ifStatement {
     {line {optx ELSE statementSequence} END}
 }
 
-# (42.1) Boolean Expression
+# (41.1) Boolean Expression
 lappend non_terminals boolExpression {
   line expression
 }
 
-# (43) CASE Statement
-lappend non_terminals caseStatement {
-  line CASE expression OF
-    {loop {line | case} nil} {optx ELSE statementSequence} END
+# (42a) CASE Statement (PIM)
+lappend non_terminals caseStatementPIM {
+  stack
+    {line CASE expression OF {loop {line case |} nil}}
+    {line {optx ELSE statementSequence} END}
 }
 
-# (43.1) Case
+# (42b) CASE Statement (Ext)
+lappend non_terminals caseStatement {
+  stack
+    {line CASE expression OF {loop {line | case} nil}}
+    {line {optx ELSE statementSequence} END}
+}
+
+# (42.1) Case
 lappend non_terminals case {
   line caseLabelList : statementSequence
 }
 
-# (44) LOOP Statement
+# (43) LOOP Statement
 lappend non_terminals loopStatement {
   line LOOP statementSequence END
 }
 
-# (45) WHILE Statement
+# (44) WHILE Statement
 lappend non_terminals whileStatement {
   line WHILE boolExpression DO statementSequence END
 }
 
-# (46) REPEAT Statement
+# (45) REPEAT Statement
 lappend non_terminals repeatStatement {
   line REPEAT statementSequence UNTIL boolExpression
 }
 
-# (47) FOR Statement
+# (46) FOR Statement
 lappend non_terminals forStatement {
   stack
-    {line FOR forLoopVariant := startValue To endValue {optx BY stepValue}}
-    {line DO statementSequence END}
+    {line FOR forLoopVariant := startValue TO endValue}
+    {line {optx BY stepValue} DO statementSequence END}
 }
 
-# (47.1) FOR Loop Variant
+# (46.1) FOR Loop Variant
 lappend non_terminals forLoopVariant {
   line Ident
 }
 
-# (47.2) Start Value, End Value
+# (46.2) Start Value, End Value
 lappend non_terminals startValue {
   line ordinalExpression
 }
 
-# (47.3) Ordinal Expression
+# (46.3) Ordinal Expression
 lappend non_terminals ordinalExpression {
   line expression
 }
 
-# (47.4) Step Value
+# (46.4) Step Value
 lappend non_terminals stepValue {
   line constExpression
 }
 
-# (48) Designator
+# (47) Designator
 lappend non_terminals designator {
   line qualident {loop nil {nil selector nil}}
 }
 
-# (49) Selector
+# (48) Selector
 lappend non_terminals selector {
   or
     ^
@@ -620,43 +726,53 @@ lappend non_terminals selector {
     {line [ expressionList ]}
 }
 
-# (50) Expression
+# (49) Expression
 lappend non_terminals expression {
   line simpleExpression {optx operL1 simpleExpression}
 }
 
-# (50.1) Level-1 Operator
+# (49.1) Level-1 Operator
 lappend non_terminals operL1 {
   or
     = # < <= > >= IN
 }
 
-# (51) Simple Expression
+# (50) Simple Expression
 lappend non_terminals simpleExpression {
-  line {optx + -} {loop term operL2}
+  line {or + -} {loop term operL2}
 }
 
-# (51.1) Level-2 Operator
-lappend non_terminals operL2 {
+# (50.1a) Level-2 Operator (PIM)
+lappend non_terminals operL2PIM {
   or + - OR
 }
 
-# (52) Term
+# (50.1b) Level-2 Operator (Ext)
+lappend non_terminals operL2 {
+  or + - OR setDiffOp
+}
+
+# (50.2) Set Difference Operator
+lappend non_terminals setDiffOp {
+  line BACKSLASH
+}
+
+# (51) Term
 lappend non_terminals term {
   loop simpleTerm operL3
 }
 
-# (52.1) Level-3 Operator
+# (51.1) Level-3 Operator
 lappend non_terminals operL3 {
   or * / DIV MOD AND
 }
 
-# (53) Simple Term
+# (52) Simple Term
 lappend non_terminals simpleTerm {
   line {optx NOT} factor
 }
 
-# (54) Factor
+# (53) Factor
 lappend non_terminals factor {
   or
     NumberLiteral
@@ -666,24 +782,24 @@ lappend non_terminals factor {
     {line ( expression )}
 }
 
-# (54.1) Designator Or Function Call
+# (54) Designator Or Function Call
 lappend non_terminals designatorOrFuncCall {
-  line designator {optx {or setValue {line ( {optx expressionList} )}}}
+  line designator {or setValue {line ( {optx expressionList} )} nil}
 }
 
-# (55.2) Set Value
+# (55) Set Value
 lappend non_terminals setValue {
   line LBRACE {loop element ,} RBRACE
 }
 
-# (55.3) Element
+# (56) Element
 lappend non_terminals element {
   or
     {line constExpression {optx .. constExpression}}
     {line runtimeExpression}
 }
 
-# (55.4) Runtime Expression
+# (56.1) Runtime Expression
 lappend non_terminals runtimeExpression {
   line expression
 }
