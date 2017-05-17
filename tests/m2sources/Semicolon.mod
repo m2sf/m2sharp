@@ -1,4 +1,4 @@
-MODULE Semicolon; (* M2C version *)
+MODULE Semicolon; (* Extended version *)
 
 (* Ordinary Record Type *)
 TYPE R = RECORD i : INTEGER; (* errant semicolon *) END;
@@ -11,7 +11,7 @@ END;
 (* Variable Size Record Type *)
 TYPE VLA = VAR RECORD
   size : CARDINAL; (* errant semicolon *)
-VAR
+IN
   buffer : ARRAY size OF CHAR; (* errant semicolon *)
 END;
 
@@ -32,7 +32,7 @@ BEGIN
   IF foo THEN bar ELSE baz; (* errant semicolon *) END;
   
   CASE foo OF
-    bar : bam; (* errant semicolon *)
+  | bar : bam; (* errant semicolon *)
   | baz : boo; (* errant semicolon *)
   ELSE
     dodo; (* errant semicolon *)
