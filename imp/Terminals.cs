@@ -361,30 +361,37 @@ public static Token TokenForResword (string lexeme) {
       break;
 
     case /* length 6 */ 6 :
-      switch (lexeme[5]) {
+      switch (lexeme[2]) {
 
-        case 'E' :
+        case 'D' :
           /* MODULE */
           if (string.CompareOrdinal(lexeme, "MODULE") == 0) {
             return Token.MODULE;
           } /* end if */
           break;
 
-        case 'D' :
+        case 'A' :
+          /* OPAQUE */
+          if (string.CompareOrdinal(lexeme, "OPAQUE") == 0) {
+            return Token.OPAQUE;
+          } /* end if */
+          break;
+
+        case 'C' :
           /* RECORD */
           if (string.CompareOrdinal(lexeme, "RECORD") == 0) {
             return Token.RECORD;
           } /* end if */
           break;
 
-        case 'N' :
+        case 'T' :
           /* RETURN */
           if (string.CompareOrdinal(lexeme, "RETURN") == 0) {
             return Token.RETURN;
           } /* end if */
           break;
 
-        case 'T' :
+        case 'P' :
           switch (lexeme[0]) {
 
             case 'E' :
