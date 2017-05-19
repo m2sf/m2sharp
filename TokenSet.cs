@@ -150,23 +150,19 @@ namespace org.m2sf.m2sharp
   "RIGHT-BRACKET",
   "LEFT-BRACE",
   "RIGHT-BRACE",
-  "END-OF-FILE",
-  
-  /* out-of-range guard */
-  
-  "\0"
+  "END-OF-FILE"
 
 }; /* end m2c_token_name_table */
 
-        public static int segmentCount = (Enum.GetNames(typeof(Token)).Length / 32) + 1;
+        public static const int segmentCount = (Enum.GetNames(typeof(Token)).Length / 32) + 1;
 
-        public struct opaque
+        public struct TokenSetBits
         {
-            public uint[] segments;
+            public uint[] segments = new uint[segmentCount];
             public uint elemCount;
         } /* end struct */
 
-        opaque dataStored;
+        TokenSetBits dataStored;
 
         /* ---------------------------------------------------------------------------
          * private constructor TokenSet ()

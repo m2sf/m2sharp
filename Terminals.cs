@@ -487,7 +487,7 @@ public static string LexemeForResword (Token token) {
   if (IsResword(token) == false) {
     return null;
   } /* end if */
-  return token.ToString();
+  return TokenSet.lexemeTable[(uint)token];
 } /* end LexemeForResword */
 
 

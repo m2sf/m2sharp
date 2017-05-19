@@ -57,18 +57,17 @@ public class NonTerminals : INonTerminals {
                              lastNoVariantRecDependent = Production.TypeDeclarationTail,
                              firstOptionDependent = firstConstParamDependent,
                              lastOptionDependent = lastNoVariantRecDependent;
-    public static int alternateSetOffset = (int)lastOptionDependent - (int)firstOptionDependent + 1;                         
+    public static uint alternateSetOffset = (uint)lastOptionDependent - (uint)firstOptionDependent + 1;               
+    
+    TokenSet[] followSet = new TokenSet[Count()];
+    TokenSet[] firstSet = new TokenSet[Count()];
 
     /* --------------------------------------------------------------------------
      * method Count() -- Returns the number of productions
      * ----------------------------------------------------------------------- */ //SAM CHANGE
 
-    uint Count() {
-        uint total = 0;
-        foreach (String s in Enum.GetNames(typeof(Production))) {
-            total++;
-        }
-        return total;
+    static uint Count() {
+        return (uint)Enum.GetNames(typeof(Production)).Length;
     } /* end Count */
 
 
@@ -113,15 +112,18 @@ public class NonTerminals : INonTerminals {
 
     TokenSet FIRST(Production p) {
         TokenSet tokenset = null;
+        uint index = 0;
 
         if (IsConstParamDependent(p))
         {
-            p += alternateSetOffset;
+            index = Convert.ToUInt32(p) + alternateSetOffset;
         } /* end if */
         if (IsVariantRecordDependent(p) && CompilerOptions.VariantRecords())
         {
-            p += alternateSetOffset;
+            index = Convert.ToUInt32(p) + alternateSetOffset;
         } /* end if */
+
+        tokenset = firstSet[index];
 
         return tokenset;
     } /* end FIRST */
@@ -135,13 +137,16 @@ public class NonTerminals : INonTerminals {
 
     TokenSet FOLLOW(Production p) {
         TokenSet tokenset = null;
+        uint index = 0;
 
         if (IsConstParamDependent(p)) {
-            p += alternateSetOffset;
+            index = Convert.ToUInt32(p) + alternateSetOffset;
         } /* end if */
         if (IsVariantRecordDependent(p) && !CompilerOptions.VariantRecords()) {
-            p += alternateSetOffset;
+            index = Convert.ToUInt32(p) + alternateSetOffset;
         } /* end if */
+
+        tokenset = followSet[index];
 
         return tokenset;
     } /* end FOLLOW */
