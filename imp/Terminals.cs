@@ -361,6 +361,7 @@ public static Token TokenForResword (string lexeme) {
       break;
 
     case /* length 6 */ 6 :
+
       switch (lexeme[2]) {
 
         case 'D' :
@@ -419,7 +420,7 @@ public static Token TokenForResword (string lexeme) {
           break;
 
       } /* end switch */
-break;
+      break;
 
     case /* length = 7 */ 7 :
       switch (lexeme[0]) {

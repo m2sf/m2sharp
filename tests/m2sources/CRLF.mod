@@ -1,0 +1,8 @@
+(* This file has CR LF end-of-file markers, verify with --parser-debug *)
+MODULE CRLF; (* line 2 *)
+ (* line 3 *)
+BEGIN (* line 4 *)
+  Foo; (* line 5 *)
+  Bar; (* line 6 *)
+  Baz (* line 7 *)
+END CRLF. (* line 8 *)

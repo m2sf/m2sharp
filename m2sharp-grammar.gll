@@ -50,8 +50,8 @@ grammar Modula2;
 reserved
   AND, ARGLIST, ARRAY, BEGIN, BY, CASE, CONST, DEFINITION, DIV, DO, ELSE,
   ELSIF, END, EXIT, EXPORT, FOR, FROM, IF, IMPLEMENTATION, IMPORT, IN, LOOP,
-  MOD, MODULE, NOT, OF, OR, POINTER, PROCEDURE, QUALIFIED, RECORD, REPEAT,
-  RETURN, SET, THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH;
+  MOD, MODULE, NOT, OF, OPAQUE, OR, POINTER, PROCEDURE, QUALIFIED, RECORD,
+  REPEAT, RETURN, SET, THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH;
 
 
 /*** Non-Terminal Symbols ***/
@@ -73,11 +73,15 @@ definitionModule :=
 alias moduleIdent = Ident ;
 
 
-/* Import */
+/* Import (PIM) */
 
 import :=
   ( qualifiedImport | unqualifiedImport ) ';'
   ;
+  
+/* Import (Extended) */
+
+alias import = qualifiedImport;
 
 
 /* Qualified Import */
@@ -121,11 +125,19 @@ constDefinition :=
   Ident '=' constExpression
   ;
 
+alias constExpression = expression;
 
-/* Type Definition */
+
+/* Type Definition (PIM) */
 
 typeDefinition :=
   Ident ( '=' type )?
+  ;
+
+/* Type Definition (Extended) */
+
+typeDefinition :=
+  Ident '=' ( type | OPAQUE )?
   ;
 
 
@@ -137,10 +149,16 @@ type :=
   ;
 
 
-/* Derived Type or Subrange Type */
+/* Derived Type or Subrange Type (PIM) */
 
 derivedOrSubrangeType :=
   typeIdent range? | range
+  ;
+
+/* Derived Type or Subrange Type (Extended) */
+
+derivedOrSubrangeType :=
+  ( range OF )? typeIdent
   ;
 
 alias typeIdent = qualident ;
@@ -188,22 +206,13 @@ arrayType :=
   ;
 
 
-/* Extensible Record Type */
+/* Record Type (PIM) */
 
-extensibleRecordType :=
-  RECORD ( '(' baseType ')' )? fieldListSequence END
-  ;
+alias recordType = variantRecordType;
 
-alias baseType = typeIdent ;
+/* Record Type (Extended) */
 
-
-/* Field List Sequence */
-
-fieldListSequence :=
-  fieldList ( ';' fieldList )*
-  ;
-
-alias fieldList = variableDeclaration ;
+alias recordType = extensibleRecordType;
 
 
 /* Variant Record Type */
@@ -258,6 +267,24 @@ caseLabels :=
   ;
 
 
+/* Extensible Record Type */
+
+extensibleRecordType :=
+  RECORD ( '(' baseType ')' )? fieldListSequence END
+  ;
+
+alias baseType = typeIdent ;
+
+
+/* Field List Sequence */
+
+fieldListSequence :=
+  fieldList ( ';' fieldList )*
+  ;
+
+alias fieldList = variableDeclaration ;
+
+
 /* Pointer Type */
 
 pointerType :=
@@ -280,19 +307,32 @@ formalType :=
   ;
 
 
-/* Simple Formal Type */
+/* Simple Formal Type (PIM) */
+
+simpleFormalType :=
+  ( ARRAY OF )? typeIdent
+  ;
+
+
+/* Simple Formal Type (Extended) */
 
 simpleFormalType :=
   ( ( ARGLIST | ARRAY ) OF )? typeIdent
   ;
 
 
-/* Attributed Formal Type */
+/* Attributed Formal Type (PIM) */
+
+attributedFormalType :=
+  VAR simpleFormalType
+  ;
+
+
+/* Attributed Formal Type (Extended) */
 
 attributedFormalType :=
   ( CONST | VAR ) simpleFormalType
   ;
-
 
 /* Procedure Header */
 
@@ -329,12 +369,18 @@ simpleFormalParams :=
   ;
 
 
-/* Attributed Formal Parameters */
+/* Attributed Formal Parameters (PIM) */
+
+attribFormalParams :=
+  VAR simpleFormalParams
+  ;
+
+
+/* Attributed Formal Parameters (Extended) */
 
 attribFormalParams :=
   ( CONST | VAR ) simpleFormalParams
   ;
-
 
 /* Implementation Module */
 
@@ -343,10 +389,18 @@ implementationModule :=
   ;
 
 
-/* Program Module */
+/* Program Module (PIM) */
 
 programModule :=
   MODULE moduleIdent modulePriority? ';'
+  import* block moduleIdent '.'
+  ;
+
+
+/* Program Module (Extended) */
+
+programModule :=
+  MODULE moduleIdent ';'
   import* block moduleIdent '.'
   ;
 
@@ -365,7 +419,7 @@ block :=
   ;
 
 
-/* Declaration */
+/* Declaration (PIM) */
 
 declaration :=
   CONST ( constDeclaration ';' )* |
@@ -375,19 +429,41 @@ declaration :=
   moduleDeclaration ';'
   ;
 
+/* Declaration (Extended) */
 
-/* Type Declaration */
+declaration :=
+  CONST ( constDeclaration ';' )* |
+  TYPE ( typeDeclaration ';' )* |
+  VAR ( variableDeclaration ';' )* |
+  procedureDeclaration ';'
+  ;
+
+
+/* Type Declaration (PIM) */
+
+typeDeclaration :=
+  Ident '=' type
+  ;
+
+/* Type Declaration (Extended) */
 
 typeDeclaration :=
   Ident '=' ( type | varSizeRecordType )
   ;
 
+
 /* Variable Size Record Type */
 
 varSizeRecordType :=
   VAR RECORD fieldListSequence
-  VAR Ident ':' ARRAY sizeFieldIdent OF typeIdent
+  IN indeterminateField
   END
+  ;
+
+/* Indeterminate Field */
+
+indeterminateField :=
+  Ident : ARRAY sizeFieldIdent OF typeIdent
   ;
 
 alias sizeFieldIdent = Ident;
@@ -429,7 +505,7 @@ statementSequence :=
   ;
 
 
-/* Statement */
+/* Statement (PIM) */
 
 statement :=
   assignmentOrProcCall | returnStatement | withStatement | ifStatement |
@@ -437,12 +513,30 @@ statement :=
   forStatement | EXIT
   ;
 
+/* Statement (Extended) */
 
-/* Assignment Or Procedure Call */
+statement :=
+  assignmentOrProcCall | returnStatement | ifStatement |  caseStatement |
+  loopStatement | whileStatement | repeatStatement | forStatement | EXIT
+  ;
+
+
+/* Assignment Or Procedure Call (PIM) */
 
 assignmentOrProcCall :=
   designator ( ':=' expression | actualParameters )?
   ;
+
+/* Assignment Or Procedure Call (Extended) */
+
+assignmentOrProcCall :=
+  designator ( incOrDecSuffix | ':=' expression | actualParameters )?
+  ;
+
+
+/* Increment or Decrement Suffix */
+
+.IncOrDecSuffix := '++' | '--' ;
 
 
 /* Actual Parameters */
@@ -485,7 +579,15 @@ ifStatement :=
 alias boolExpression = expression ;
 
 
-/* CASE Statement */
+/* CASE Statement (PIM) */
+
+caseStatement :=
+  CASE expression OF case ( case '|' )*
+  ( ELSE statementSequence )?
+  END
+  ;
+
+/* CASE Statement (Extended) */
 
 caseStatement :=
   CASE expression OF case ( '|' case )*
@@ -558,6 +660,8 @@ expression :=
   simpleExpression ( OperL1 simpleExpression )?
   ;
 
+/* Level-1 Operator */
+
 .OperL1 = := '=' | '#' | '<' | '<=' | '>' | '>=' | IN ;
 
 
@@ -567,7 +671,18 @@ simpleExpression :=
   ( '+' | '-' )? term ( OperL2 term )*
   ;
 
+/* Level-2 Operator (PIM) */
+
 .OperL2 = := '+' | '-' | OR ;
+
+/* Level-2 Operator (Extended) */
+
+.OperL2 = := '+' | '-' | OR | SetDiffOp ;
+
+
+/* Set Difference Operator */
+
+.SetDiffOp = '\' ;
 
 
 /* Term */
@@ -576,7 +691,7 @@ term :=
   simpleTerm ( OperL3 simpleTerm )*
   ;
 
-.OperL3 = := '*' | '/' | DIV | MOD | AND ;
+.OperL3 := '*' | '/' | DIV | MOD | AND ;
 
 
 /* Simple Term */
