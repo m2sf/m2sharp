@@ -154,7 +154,7 @@ namespace org.m2sf.m2sharp
 
 }; /* end m2c_token_name_table */
 
-        public static const int segmentCount = (Enum.GetNames(typeof(Token)).Length / 32) + 1;
+        public const int segmentCount = (Enum.GetNames(typeof(Token)).Length / 32) + 1;
 
         public struct TokenSetBits
         {
@@ -176,18 +176,36 @@ namespace org.m2sf.m2sharp
         } /* end TokenSet */
 
         /* ---------------------------------------------------------------------------
-        * private constructor TokenSet (uint[])
-        * ---------------------------------------------------------------------------
-        * used to instantiate the prefabricated first and follow lists
+         * private TokenSet newFromRawData(uint[])
+         * ---------------------------------------------------------------------------
+         * Used to instantiate the prefabricated first and follow lists.
+         * Expects TSB[segmentCount] to be the number of tokens, and returns null if 
+         * the count does not match.
          * ------------------------------------------------------------------------ */
 
-        public TokenSet(params uint[] TSB)
+        public static TokenSet newFromRawData(params uint[] TSB)
         {
-            dataStored.segments[0] = TSB[0];
-            dataStored.segments[1] = TSB[1];
-            dataStored.segments[2] = TSB[2]; 
-            dataStored.elemCount = TSB[3];
-        }
+            TokenSet newSet = new TokenSet();
+            uint counter = 0;
+
+            for (int i = 0; i < segmentCount; i++) {
+
+                for (int j = 0; j < 32; j++) { 
+                    if ((TSB[i] & (1 << j)) == (1 << j))
+                        counter++;
+                } /* end for */
+
+                newSet.dataStored.segments[i] = TSB[i];
+            } /* end for */
+
+            if (counter != TSB[segmentCount]) {
+                return null;
+            } /* end if */
+
+            newSet.dataStored.elemCount = TSB[segmentCount];
+
+            return newSet;
+        } /* end newFromData */
 
         /* --------------------------------------------------------------------------
          * constructor newFromList(token, ...)

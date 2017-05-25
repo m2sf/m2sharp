@@ -61,298 +61,298 @@ public class NonTerminals : INonTerminals {
 
     #region followSets
     TokenSet[] followSets = {
-                                new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* definitionModule */
+                                TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* definitionModule */
                                
-                               new TokenSet( /* bits: */ 0x108050C8, 0x00000050, 0x00000000, /* counter: */ 9 ), /* import */
+                               TokenSet.newFromRawData( /* bits: */ 0x108050C8, 0x00000050, 0x00000000, /* counter: */ 9 ), /* import */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* qualifiedImport */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* qualifiedImport */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* unqualifiedImport */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* unqualifiedImport */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x80000000, 0x00000021, /* counter: */ 3 ), /* identList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x80000000, 0x00000021, /* counter: */ 3 ), /* identList */
                                
-                               new TokenSet( /* bits: */ 0x00001000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* definition */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* definition */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* constDefinition */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* constDefinition */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* typeDefinition */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* typeDefinition */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* type */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* type */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* derivedOrSubrangeType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* derivedOrSubrangeType */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x3FFC002C, 0x0000037B, /* counter: */ 34 ), /* qualident */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x3FFC002C, 0x0000037B, /* counter: */ 34 ), /* qualident */
                                
-                               new TokenSet( /* bits: */ 0x02000000, 0x20000000, 0x00000001, /* counter: */ 3 ), /* range */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x20000000, 0x00000001, /* counter: */ 3 ), /* range */
                                
-                               new TokenSet( /* bits: */ 0x02000000, 0x20000000, 0x00000001, /* counter: */ 3 ), /* enumType */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x20000000, 0x00000001, /* counter: */ 3 ), /* enumType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* setType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* setType */
                                
-                               new TokenSet( /* bits: */ 0x02000000, 0x20000000, 0x00000001, /* counter: */ 3 ), /* countableType */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x20000000, 0x00000001, /* counter: */ 3 ), /* countableType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* arrayType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* arrayType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* extensibleRecordType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* extensibleRecordType */
                                
-                               new TokenSet( /* bits: */ 0x00001000, 0x00000040, 0x00000000, /* counter: */ 2 ), /* fieldListSequence */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001000, 0x00000040, 0x00000000, /* counter: */ 2 ), /* fieldListSequence */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* variantRecordType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* variantRecordType */
                                
-                               new TokenSet( /* bits: */ 0x00001400, 0x00000000, 0x00000008, /* counter: */ 3 ), /* variantFieldListSeq */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001400, 0x00000000, 0x00000008, /* counter: */ 3 ), /* variantFieldListSeq */
                                
-                               new TokenSet( /* bits: */ 0x00001400, 0x00000000, 0x00000009, /* counter: */ 4 ), /* variantFieldList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001400, 0x00000000, 0x00000009, /* counter: */ 4 ), /* variantFieldList */
                                
-                               new TokenSet( /* bits: */ 0x00001400, 0x00000000, 0x00000009, /* counter: */ 4 ), /* variantFields */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001400, 0x00000000, 0x00000009, /* counter: */ 4 ), /* variantFields */
                                
-                               new TokenSet( /* bits: */ 0x00001400, 0x00000000, 0x00000008, /* counter: */ 3 ), /* variant */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001400, 0x00000000, 0x00000008, /* counter: */ 3 ), /* variant */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x80000000, 0x00000000, /* counter: */ 1 ), /* caseLabelList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x80000000, 0x00000000, /* counter: */ 1 ), /* caseLabelList */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0xA0000000, 0x00000000, /* counter: */ 2 ), /* caseLabels */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0xA0000000, 0x00000000, /* counter: */ 2 ), /* caseLabels */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* pointerType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* pointerType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x20000000, 0x00000020, /* counter: */ 2 ), /* simpleFormalType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x20000000, 0x00000020, /* counter: */ 2 ), /* simpleFormalType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureHeader */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureHeader */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureSignature */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureSignature */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000021, /* counter: */ 2 ), /* simpleFormalParams */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000021, /* counter: */ 2 ), /* simpleFormalParams */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* implementationModule */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* implementationModule */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* programModule */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* programModule */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* modulePriority */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* modulePriority */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* block */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* block */
                                
-                               new TokenSet( /* bits: */ 0x00001008, 0x00000000, 0x00000000, /* counter: */ 2 ), /* declaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001008, 0x00000000, 0x00000000, /* counter: */ 2 ), /* declaration */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* typeDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* typeDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* varSizeRecordType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* varSizeRecordType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* variableDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* variableDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* procedureDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* moduleDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* moduleDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x10801048, 0x00000050, 0x00000000, /* counter: */ 7 ), /* export */
+                               TokenSet.newFromRawData( /* bits: */ 0x10801048, 0x00000050, 0x00000000, /* counter: */ 7 ), /* export */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000008, /* counter: */ 5 ), /* statementSequence */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000008, /* counter: */ 5 ), /* statementSequence */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* statement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* statement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* assignmentOrProcCall */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* assignmentOrProcCall */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* actualParameters */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* actualParameters */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000020, /* counter: */ 1 ), /* expressionList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000020, /* counter: */ 1 ), /* expressionList */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* returnStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* returnStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* withStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* withStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* ifStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* ifStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* caseStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* caseStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001400, 0x00000000, 0x00000008, /* counter: */ 3 ), /* case */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001400, 0x00000000, 0x00000008, /* counter: */ 3 ), /* case */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* loopStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* loopStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* whileStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* whileStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* repeatStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* repeatStatement */
                                
-                               new TokenSet( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* forStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00001C00, 0x00000020, 0x00000009, /* counter: */ 6 ), /* forStatement */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x3FFC002C, 0x0000033B, /* counter: */ 33 ), /* designator */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x3FFC002C, 0x0000033B, /* counter: */ 33 ), /* designator */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x3FFC022C, 0x0000033B, /* counter: */ 34 ), /* selector */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x3FFC022C, 0x0000033B, /* counter: */ 34 ), /* selector */
                                
-                               new TokenSet( /* bits: */ 0x02001E10, 0x2000002C, 0x0000022B, /* counter: */ 15 ), /* expression */
+                               TokenSet.newFromRawData( /* bits: */ 0x02001E10, 0x2000002C, 0x0000022B, /* counter: */ 15 ), /* expression */
                                
-                               new TokenSet( /* bits: */ 0x02101E10, 0x23F0002C, 0x0000022B, /* counter: */ 22 ), /* simpleExpression */
+                               TokenSet.newFromRawData( /* bits: */ 0x02101E10, 0x23F0002C, 0x0000022B, /* counter: */ 22 ), /* simpleExpression */
                                
-                               new TokenSet( /* bits: */ 0x06101E10, 0x23FC002C, 0x0000022B, /* counter: */ 25 ), /* term */
+                               TokenSet.newFromRawData( /* bits: */ 0x06101E10, 0x23FC002C, 0x0000022B, /* counter: */ 25 ), /* term */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* simpleTerm */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* simpleTerm */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* factor */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* factor */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* designatorOrFuncCall */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* designatorOrFuncCall */
                                
-                               new TokenSet( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* setValue */
+                               TokenSet.newFromRawData( /* bits: */ 0x06501F12, 0x2FFC002C, 0x0000022B, /* counter: */ 30 ), /* setValue */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x20000000, 0x00000200, /* counter: */ 2 ), /* element */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x20000000, 0x00000200, /* counter: */ 2 ), /* element */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x20000000, 0x00000020, /* counter: */ 2 ), /* formalType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x20000000, 0x00000020, /* counter: */ 2 ), /* formalType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x20000000, 0x00000020, /* counter: */ 2 ), /* attributedFormalType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x20000000, 0x00000020, /* counter: */ 2 ), /* attributedFormalType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000020, /* counter: */ 1 ), /* formalParamList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000020, /* counter: */ 1 ), /* formalParamList */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000021, /* counter: */ 2 ), /* formalParams */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000021, /* counter: */ 2 ), /* formalParams */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000021, /* counter: */ 2 ), /* attribFormalParams */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000021, /* counter: */ 2 ), /* attribFormalParams */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* typeDeclarationTail */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000001, /* counter: */ 1 ), /* typeDeclarationTail */
                             };
 
     #endregion
 
     #region firstSets
     TokenSet[] firstSets = {
-                               new TokenSet( /* bits: */ 0x00000080, 0x00000000, 0x00000000, /* counter: */ 1 ), /* definitionModule */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000100, 0x00000000, 0x00000000, /* counter: */ 1 ), /* definitionModule */
                                
-                               new TokenSet( /* bits: */ 0x00090000, 0x00000000, 0x00000000, /* counter: */ 2 ), /* import */
+                               TokenSet.newFromRawData( /* bits: */ 0x00120000, 0x00000000, 0x00000000, /* counter: */ 2 ), /* import */
                                
-                               new TokenSet( /* bits: */ 0x00080000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* qualifiedImport */
+                               TokenSet.newFromRawData( /* bits: */ 0x00100000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* qualifiedImport */
                                
-                               new TokenSet( /* bits: */ 0x00010000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* unqualifiedImport */
+                               TokenSet.newFromRawData( /* bits: */ 0x00020000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* unqualifiedImport */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* identList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* identList */
                                
-                               new TokenSet( /* bits: */ 0x10000040, 0x00000050, 0x00000000, /* counter: */ 4 ), /* definition */
+                               TokenSet.newFromRawData( /* bits: */ 0x20000080, 0x000000a0, 0x00000000, /* counter: */ 4 ), /* definition */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* constDefinition */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* constDefinition */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* typeDefinition */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* typeDefinition */
                                
-                               new TokenSet( /* bits: */ 0x58000004, 0x00000202, 0x00000050, /* counter: */ 8 ), /* type */
+                               TokenSet.newFromRawData( /* bits: */ 0xb0000008, 0x00000404, 0x00000140, /* counter: */ 8 ), /* type */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000040, /* counter: */ 2 ), /* derivedOrSubrangeType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000100, /* counter: */ 2 ), /* derivedOrSubrangeType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* qualident */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* qualident */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000040, /* counter: */ 1 ), /* range */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000100, /* counter: */ 1 ), /* range */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000010, /* counter: */ 1 ), /* enumType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000040, /* counter: */ 1 ), /* enumType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000002, 0x00000000, /* counter: */ 1 ), /* setType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000004, 0x00000000, /* counter: */ 1 ), /* setType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000050, /* counter: */ 3 ), /* countableType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000140, /* counter: */ 3 ), /* countableType */
                                
-                               new TokenSet( /* bits: */ 0x00000004, 0x00000000, 0x00000000, /* counter: */ 1 ), /* arrayType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000008, 0x00000000, 0x00000000, /* counter: */ 1 ), /* arrayType */
                                
-                               new TokenSet( /* bits: */ 0x40000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* extensibleRecordType */
+                               TokenSet.newFromRawData( /* bits: */ 0x80000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* extensibleRecordType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* fieldListSequence */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* fieldListSequence */
                                
-                               new TokenSet( /* bits: */ 0x40000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* variantRecordType */
+                               TokenSet.newFromRawData( /* bits: */ 0x80000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* variantRecordType */
                                
-                               new TokenSet( /* bits: */ 0x00000020, 0x00000200, 0x00000000, /* counter: */ 2 ), /* variantFieldListSeq */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000040, 0x00000400, 0x00000000, /* counter: */ 2 ), /* variantFieldListSeq */
                                
-                               new TokenSet( /* bits: */ 0x00000020, 0x00000200, 0x00000000, /* counter: */ 2 ), /* variantFieldList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000040, 0x00000400, 0x00000000, /* counter: */ 2 ), /* variantFieldList */
                                
-                               new TokenSet( /* bits: */ 0x00000020, 0x00000000, 0x00000000, /* counter: */ 1 ), /* variantFields */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000040, 0x00000000, 0x00000000, /* counter: */ 1 ), /* variantFields */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* variant */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* variant */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* caseLabelList */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* caseLabelList */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* caseLabels */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* caseLabels */
                                
-                               new TokenSet( /* bits: */ 0x08000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* pointerType */
+                               TokenSet.newFromRawData( /* bits: */ 0x10000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* pointerType */
                                
-                               new TokenSet( /* bits: */ 0x10000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* procedureType */
+                               TokenSet.newFromRawData( /* bits: */ 0x20000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* procedureType */
                                
-                               new TokenSet( /* bits: */ 0x00000004, 0x00000200, 0x00000000, /* counter: */ 2 ), /* simpleFormalType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000008, 0x00000400, 0x00000000, /* counter: */ 2 ), /* simpleFormalType */
                                
-                               new TokenSet( /* bits: */ 0x10000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* procedureHeader */
+                               TokenSet.newFromRawData( /* bits: */ 0x20000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* procedureHeader */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* procedureSignature */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* procedureSignature */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* simpleFormalParams */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* simpleFormalParams */
                                
-                               new TokenSet( /* bits: */ 0x00040000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* implementationModule */
+                               TokenSet.newFromRawData( /* bits: */ 0x00080000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* implementationModule */
                                
-                               new TokenSet( /* bits: */ 0x00800000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* programModule */
+                               TokenSet.newFromRawData( /* bits: */ 0x01000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* programModule */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000040, /* counter: */ 1 ), /* modulePriority */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000100, /* counter: */ 1 ), /* modulePriority */
                                
-                               new TokenSet( /* bits: */ 0x10801048, 0x00000050, 0x00000000, /* counter: */ 7 ), /* block */
+                               TokenSet.newFromRawData( /* bits: */ 0x21002090, 0x000000a0, 0x00000000, /* counter: */ 7 ), /* block */
                                
-                               new TokenSet( /* bits: */ 0x10800040, 0x00000050, 0x00000000, /* counter: */ 5 ), /* declaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x21000080, 0x000000a0, 0x00000000, /* counter: */ 5 ), /* declaration */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* typeDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* typeDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000040, 0x00000000, /* counter: */ 1 ), /* varSizeRecordType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000080, 0x00000000, /* counter: */ 1 ), /* varSizeRecordType */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* variableDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* variableDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x10000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* procedureDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x20000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* procedureDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x00800000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* moduleDeclaration */
+                               TokenSet.newFromRawData( /* bits: */ 0x01000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* moduleDeclaration */
                                
-                               new TokenSet( /* bits: */ 0x00004000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* export */
+                               TokenSet.newFromRawData( /* bits: */ 0x00008000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* export */
                                
-                               new TokenSet( /* bits: */ 0x8022A020, 0x00000381, 0x00000000, /* counter: */ 10 ), /* statementSequence */
+                               TokenSet.newFromRawData( /* bits: */ 0x00454040, 0x00000703, 0x00000000, /* counter: */ 10 ), /* statementSequence */
                                
-                               new TokenSet( /* bits: */ 0x8022A020, 0x00000381, 0x00000000, /* counter: */ 10 ), /* statement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00454040, 0x00000703, 0x00000000, /* counter: */ 10 ), /* statement */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* assignmentOrProcCall */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* assignmentOrProcCall */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000010, /* counter: */ 1 ), /* actualParameters */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000040, /* counter: */ 1 ), /* actualParameters */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* expressionList */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* expressionList */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000001, 0x00000000, /* counter: */ 1 ), /* returnStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000002, 0x00000000, /* counter: */ 1 ), /* returnStatement */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000100, 0x00000000, /* counter: */ 1 ), /* withStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* withStatement */
                                
-                               new TokenSet( /* bits: */ 0x00020000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* ifStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00040000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* ifStatement */
                                
-                               new TokenSet( /* bits: */ 0x00000020, 0x00000000, 0x00000000, /* counter: */ 1 ), /* caseStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000040, 0x00000000, 0x00000000, /* counter: */ 1 ), /* caseStatement */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* case */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* case */
                                
-                               new TokenSet( /* bits: */ 0x00200000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* loopStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00400000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* loopStatement */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000080, 0x00000000, /* counter: */ 1 ), /* whileStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000100, 0x00000000, /* counter: */ 1 ), /* whileStatement */
                                
-                               new TokenSet( /* bits: */ 0x80000000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* repeatStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000001, 0x00000000, /* counter: */ 1 ), /* repeatStatement */
                                
-                               new TokenSet( /* bits: */ 0x00008000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* forStatement */
+                               TokenSet.newFromRawData( /* bits: */ 0x00010000, 0x00000000, 0x00000000, /* counter: */ 1 ), /* forStatement */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* designator */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* designator */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x40000000, 0x00000044, /* counter: */ 3 ), /* selector */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000111, /* counter: */ 3 ), /* selector */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* expression */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* expression */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* simpleExpression */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* simpleExpression */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x00003E00, 0x00000110, /* counter: */ 8 ), /* term */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00007c00, 0x00000440, /* counter: */ 8 ), /* term */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x00003E00, 0x00000110, /* counter: */ 8 ), /* simpleTerm */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00007c00, 0x00000440, /* counter: */ 8 ), /* simpleTerm */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00003E00, 0x00000110, /* counter: */ 7 ), /* factor */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00007c00, 0x00000440, /* counter: */ 7 ), /* factor */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000200, 0x00000000, /* counter: */ 1 ), /* designatorOrFuncCall */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000400, 0x00000000, /* counter: */ 1 ), /* designatorOrFuncCall */
                                
-                               new TokenSet( /* bits: */ 0x00000000, 0x00000000, 0x00000100, /* counter: */ 1 ), /* setValue */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000000, 0x00000000, 0x00000400, /* counter: */ 1 ), /* setValue */
                                
-                               new TokenSet( /* bits: */ 0x01000000, 0x000C3E00, 0x00000110, /* counter: */ 10 ), /* element */
+                               TokenSet.newFromRawData( /* bits: */ 0x02000000, 0x00187c00, 0x00000440, /* counter: */ 10 ), /* element */
                                
-                               new TokenSet( /* bits: */ 0x00000044, 0x00000240, 0x00000000, /* counter: */ 4 ), /* formalType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000088, 0x00000480, 0x00000000, /* counter: */ 4 ), /* formalType */
                                
-                               new TokenSet( /* bits: */ 0x00000040, 0x00000040, 0x00000000, /* counter: */ 2 ), /* attributedFormalType */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000080, 0x00000080, 0x00000000, /* counter: */ 2 ), /* attributedFormalType */
                                
-                               new TokenSet( /* bits: */ 0x00000040, 0x00000240, 0x00000000, /* counter: */ 3 ), /* formalParamList */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000080, 0x00000480, 0x00000000, /* counter: */ 3 ), /* formalParamList */
                                
-                               new TokenSet( /* bits: */ 0x00000040, 0x00000240, 0x00000000, /* counter: */ 3 ), /* formalParams */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000080, 0x00000480, 0x00000000, /* counter: */ 3 ), /* formalParams */
                                
-                               new TokenSet( /* bits: */ 0x00000040, 0x00000040, 0x00000000, /* counter: */ 2 ), /* attribFormalParams */
+                               TokenSet.newFromRawData( /* bits: */ 0x00000080, 0x00000080, 0x00000000, /* counter: */ 2 ), /* attribFormalParams */
                                
-                               new TokenSet( /* bits: */ 0x58000004, 0x00000242, 0x00000050, /* counter: */ 9 ), /* typeDeclarationTail */
+                               TokenSet.newFromRawData( /* bits: */ 0xb0000008, 0x00000484, 0x00000140, /* counter: */ 9 ), /* typeDeclarationTail */
                            };
     #endregion
 
