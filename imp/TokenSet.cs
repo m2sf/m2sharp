@@ -52,7 +52,8 @@ using System.Text;
 namespace org.m2sf.m2sharp
 {
 
-    public class TokenSet : ITokenSet {
+    public class TokenSet //: ITokenSet
+    {
 
         /* Lexeme Table */
         public static string[] lexemeTable = {
@@ -154,11 +155,11 @@ namespace org.m2sf.m2sharp
 
 }; /* end m2c_token_name_table */
 
-        public const int segmentCount = (Enum.GetNames(typeof(Token)).Length / 32) + 1;
+        private static readonly int segmentCount = (Enum.GetNames(typeof(Token)).Length / 32) + 1;
 
         public struct TokenSetBits
         {
-            public uint[] segments = new uint[segmentCount];
+            public uint[] segments;
             public uint elemCount;
         } /* end struct */
 
@@ -168,41 +169,54 @@ namespace org.m2sf.m2sharp
          * private constructor TokenSet ()
          * ---------------------------------------------------------------------------
          * Prevents clients from invoking the default constructor.
+         * Sets the length of dataStored.segments.
          * ------------------------------------------------------------------------ */
 
         private TokenSet()
         {
-            // no operation
+            this.dataStored.segments = new uint[segmentCount];
         } /* end TokenSet */
 
-        /* ---------------------------------------------------------------------------
-         * private TokenSet newFromRawData(uint[])
-         * ---------------------------------------------------------------------------
-         * Used to instantiate the prefabricated first and follow lists.
-         * Expects TSB[segmentCount] to be the number of tokens, and returns null if 
-         * the count does not match.
-         * ------------------------------------------------------------------------ */
 
-        public static TokenSet newFromRawData(params uint[] TSB)
-        {
+
+        /* --------------------------------------------------------------------------
+         * constructor newFromRawData( bits95to64, bits63to32, bits31to0, counter )
+         * --------------------------------------------------------------------------
+         * Returns a newly allocated tokenset object from raw data passed in as
+         * three data segments of 32 bits from highest to lowest, followed by a bit
+         * counter. Returns null if the input data is inconsistent.
+         * ----------------------------------------------------------------------- */
+
+        public static TokenSet newFromRawData(params uint[] args) {
+
             TokenSet newSet = new TokenSet();
             uint counter = 0;
 
-            for (int i = 0; i < segmentCount; i++) {
-
-                for (int j = 0; j < 32; j++) { 
-                    if ((TSB[i] & (1 << j)) == (1 << j))
-                        counter++;
-                } /* end for */
-
-                newSet.dataStored.segments[i] = TSB[i];
-            } /* end for */
-
-            if (counter != TSB[segmentCount]) {
+            if (args.Length != segmentCount + 1) {
                 return null;
             } /* end if */
 
-            newSet.dataStored.elemCount = TSB[segmentCount];
+            if (args[segmentCount] > segmentCount * 32) {
+                return null;
+            } /* end if */
+
+            for (int segmentIndex = args.Length - 2; segmentIndex >= 0; segmentIndex--) {
+
+                for (int bitIndex = 0; bitIndex < 32; bitIndex++) {
+
+                    if ((args[segmentIndex] & (1 << bitIndex)) == (1 << bitIndex))
+                        counter++;
+                } /* end for */
+
+                newSet.dataStored.segments[segmentIndex] = args[segmentIndex];
+            } /* end for */
+
+            if (counter != args[segmentCount])
+            {
+                return null;
+            } /* end if */
+
+            newSet.dataStored.elemCount = args[segmentCount];
 
             return newSet;
         } /* end newFromData */
@@ -556,19 +570,24 @@ namespace org.m2sf.m2sharp
          * Format: ( 0xHHHHHHHH, 0xHHHHHHHH, ..., count );
          * ----------------------------------------------------------------------- */
 
-        public void PrintLiteral()
+        public String PrintLiteral()
         {
             uint segmentIndex;
+            String returnVal;
 
+            returnVal = "( /* bits: */ 0x" + this.dataStored.segments[0].ToString("x08");
             Console.Write("( /* bits: */ 0x" + this.dataStored.segments[0].ToString("x08"));
 
             for (segmentIndex = 1; segmentIndex < segmentCount; segmentIndex++)
             {
-
+                returnVal += ", 0x" + this.dataStored.segments[segmentIndex].ToString("x08");
                 Console.Write(", 0x" + this.dataStored.segments[segmentIndex].ToString("x08"));
             } /* end for */
 
+            returnVal += ", /* counter: */ " + this.dataStored.elemCount + " );";
             Console.WriteLine(", /* counter: */ " + this.dataStored.elemCount + " );");
+
+            return returnVal;
         } /* end PrintLiteral */
 
         /* --------------------------------------------------------------------------
