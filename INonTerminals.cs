@@ -43,7 +43,7 @@
  * NB: Components in the domain part of email addresses are in reverse order.
  */
 
-namespace M2SF.M2Sharp {
+namespace org.m2sf.m2sharp {
 
 /* --------------------------------------------------------------------------
  * type Production
@@ -131,7 +131,7 @@ public enum Production {
   AttribFormalParams,       /* attribFormalParams */
   
   /* Dependent on option --no-variant-records */
-  TypeDeclarationTail;      /* typeDeclarationTail */
+  TypeDeclarationTail      /* typeDeclarationTail */
 
 } /* Production */
 
